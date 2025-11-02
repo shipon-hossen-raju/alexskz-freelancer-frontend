@@ -30,12 +30,10 @@ export default function BannerHero({  onSearch }) {
         <div className="mx-auto h-full w-full max-w-6xl px-4 md:px-6 flex items-center">
           <div className="w-full max-w-3xl ">
             {/* Heading — Open Sans */}
-            <h1 className="font-open-sans text-white leading-[1.3] font-bold  tracking-[-0.01em] text-[34px] sm:text-5xl md:text-[52px]">
-              Hire the Right
-              <br className="hidden sm:block" />
-              Professional for Your
-              <br className="hidden sm:block" />
-              Business Growth
+            <h1 className="font-open-sans text-white leading-[1.3] font-bold   text-[34px] sm:text-5xl md:text-[52px]  max-w-2xl">
+              Hire the Right Professional for Your  Business Growth
+              
+             
             </h1>
 
             {/* Search row */}
