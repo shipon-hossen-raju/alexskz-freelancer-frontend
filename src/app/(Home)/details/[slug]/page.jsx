@@ -86,7 +86,7 @@ export default function FreelancerDetailsPage({ params }) {
 
 
             {/* about */}
-            <div className='flex flex-col md:flex-row gap-10 md:gap-20 xl:gap-40 items-center'>
+            <div className='flex flex-col md:flex-row gap-10 md:gap-20 xl:gap-40 items-center -mt-10 lg:-mt-20'>
                 {/* left section */}
                 <div className='space-y-4 lg:space-y-8 md:w-3/5'>
                     <div className='flex justify-between items-center'>

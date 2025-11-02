@@ -67,6 +67,13 @@ export default function ClientProfile() {
             </Link>
           </div>
 
+          {/* Degicnation */}
+          <div>
+            <span className="text-[14px] font-open-sans">
+              Chief Executive Officer (CEO)
+            </span> 
+          </div>
+
           {/* Email */}
           <div className="mt-2 flex items-center gap-2">
             <span className="inline-flex items-center justify-center w-6 h-6 rounded-full bg-transparent">

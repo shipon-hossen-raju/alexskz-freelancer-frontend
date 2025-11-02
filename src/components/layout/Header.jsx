@@ -74,7 +74,7 @@ export default function Header() {
           {/* logo  */}
           <div className=''>
             <Link href="/">
-            <Image src={logo} alt="logo" />
+              <Image src={logo} alt="logo" />
             </Link>
           </div>
 
@@ -89,36 +89,40 @@ export default function Header() {
 
           {/* lists */}
           <div className='hidden xl:block'>
-            <ul className='font-open-sans lg:text-[16px] xl:text-[22px] flex items-center '>
-              <Link href="/"><li className={`mx-4 cursor-pointer   ${pathname === "/" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Home</li></Link>
+            <ul className='font-open-sans lg:text-[16px] xl:text-[22px] flex items-center  gap-8'>
+              <Link href="/"><li className={` cursor-pointer   ${pathname === "/" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Home</li></Link>
               {
-                !user && (
-                  <Link href="/explore"><li className={`mx-4 cursor-pointer  ${pathname === "/explore" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Explore</li></Link>
+                // !user && (
+                <Link href="/explore"><li className={` cursor-pointer  ${pathname === "/explore" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Explore</li></Link>
 
-                )
+                // )
               }
               {
                 !user && (
-                  <Link href="/start-selling"><li className={`mx-4 cursor-pointer  ${pathname === "/start-selling" ? activeBtn : " hover:font-semibold hover:text-[#144A6C]"}`}>Join as a Pro</li></Link>
+                  <Link href="/start-selling"><li className={` cursor-pointer  ${pathname === "/start-selling" ? activeBtn : " hover:font-semibold hover:text-[#144A6C]"}`}>Join as a Pro</li></Link>
 
                 )
               }
               {
                 user && (
-                  <Link href="/inbox"><li className={`mx-4 cursor-pointer  ${pathname === "/inbox" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Messages</li></Link>
+                  <Link href="/inbox"><li className={` cursor-pointer  ${pathname === "/inbox" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Messages</li></Link>
 
                 )
               }
               {
                 user && (
-                  <Link href="/bookings"><li className={`mx-4 cursor-pointer  ${pathname === "/bookings" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Bookings</li></Link>
+                  <Link href="/bookings"><li className={` cursor-pointer  ${pathname === "/bookings" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Bookings</li></Link>
 
                 )
               }
-              <Link href="/services"><li className={`mx-4 cursor-pointer  ${pathname === "/services" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Certified Services</li></Link>
               {
                 !user && (
-                  <Link href="/about-us"><li className={`mx-4 cursor-pointer ${pathname === "/about-us" ? activeBtn : " hover:font-semibold hover:text-[#144A6C]"}`}>About us</li></Link>
+                  <Link href="/services"><li className={` cursor-pointer  ${pathname === "/services" ? activeBtn : "hover:font-semibold hover:text-[#144A6C] "}`}>Certified Services</li></Link>
+
+                )
+              }              {
+                !user && (
+                  <Link href="/about-us"><li className={` cursor-pointer ${pathname === "/about-us" ? activeBtn : " hover:font-semibold hover:text-[#144A6C]"}`}>About us</li></Link>
                 )
               }
 
@@ -133,7 +137,7 @@ export default function Header() {
             <div className=''>
               <LanguageDropdown />
             </div>
-            
+
             {/* Button */}
             {
               user ? (
@@ -161,47 +165,47 @@ export default function Header() {
                 </div>
               ) : (
                 <div className='flex gap-2 lg:gap-4 items-center '>
-                  
 
-                   <Link href='/sign-in' className="hidden md:block  border border-[#144A6C] text-[#144A6C] font-open-sans font-semibold px-3 py-1 md:px-8 md:py-2 rounded-[8px]">
+
+                  <Link href='/sign-in' className="hidden md:block  border border-[#144A6C] text-[#144A6C] font-open-sans font-semibold px-3 py-1 md:px-8 md:py-2 rounded-[8px]">
                     Sign in
                   </Link>
 
                   <Link href='/sign-up' className="hidden md:block bg-[#144A6C] text-white font-open-sans font-semibold px-3 py-1 md:px-8 md:py-2 rounded-[8px]">
                     Join
                   </Link>
-                  
+
 
                 </div>
               )
             }
 
             <div className='flex items-center '>
-              
 
-            {/* mobile hamburger */}
-            <div className="xl:hidden pl-2">
 
-              <Dropdown
-                menu={{ items, onClick: onMenuClick }}
-                trigger={['click']}
-                placement="bottomRight"
-                arrow={{ pointAtCenter: true }}
-                open={dropdownOpen}
-                onOpenChange={(open) => {
-                  setDropDownOpen(open);
-                  if (open) window.dispatchEvent(new CustomEvent('dropdown:open'));
-                }}
+              {/* mobile hamburger */}
+              <div className="xl:hidden pl-2">
 
-                overlayStyle={{ zIndex: 1300 }}
-                getPopupContainer={() => document.body}
-              >
-                <button type="button" aria-label="Open menu" className="rounded flex items-center cursor-pointer">
-                  <TfiAlignJustify style={{ fontSize: 20 }} />
-                </button>
-              </Dropdown>
+                <Dropdown
+                  menu={{ items, onClick: onMenuClick }}
+                  trigger={['click']}
+                  placement="bottomRight"
+                  arrow={{ pointAtCenter: true }}
+                  open={dropdownOpen}
+                  onOpenChange={(open) => {
+                    setDropDownOpen(open);
+                    if (open) window.dispatchEvent(new CustomEvent('dropdown:open'));
+                  }}
 
-            </div>
+                  overlayStyle={{ zIndex: 1300 }}
+                  getPopupContainer={() => document.body}
+                >
+                  <button type="button" aria-label="Open menu" className="rounded flex items-center cursor-pointer">
+                    <TfiAlignJustify style={{ fontSize: 20 }} />
+                  </button>
+                </Dropdown>
+
+              </div>
             </div>
           </div>
 

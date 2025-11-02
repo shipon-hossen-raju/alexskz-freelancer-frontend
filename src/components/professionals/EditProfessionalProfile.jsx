@@ -1,11 +1,12 @@
 import React from 'react'
 import { useState } from 'react';
 import SubHeadingBlack from '../ui/SubHeadingBlack'
-import { Form, Input, Select } from 'antd';
+import { Form, Input, Select, Checkbox } from 'antd';
 import { EnvironmentOutlined } from '@ant-design/icons';
 import TealBtn from '@/components/ui/TealBtn';
 import SkillsInput from '@/components/ui/SkillsInput';
 import '@/styles/Auth.css'
+import '@/styles/AntCheckBox.css'
 
 export default function EditProfessionalProfile() {
     const [form] = Form.useForm();
@@ -26,7 +27,7 @@ export default function EditProfessionalProfile() {
                         layout="vertical"
                         requiredMark={false}
                         onFinish={onFinish}
-                            initialValues={{
+                        initialValues={{
                             firstName: 'Asadujjaman',
                             lastName: 'Asadujjaman',
                             email: 'Asadujjaman@gmail.com',
@@ -46,7 +47,7 @@ export default function EditProfessionalProfile() {
                             <div className='grid grid-cols-1 md:grid-cols-2 gap-3'>
                                 {/* 1st col */}
                                 <div>
-                                    {/* <div className="grid grid-cols-1 sm:grid-cols-2 gap-3"> */}
+                                    <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                                         <Form.Item
                                             label="First name"
                                             name="firstName"
@@ -62,7 +63,9 @@ export default function EditProfessionalProfile() {
                                         >
                                             <Input size="large" placeholder="e.g. Doe" />
                                         </Form.Item>
-                                    {/* </div> */}
+                                    </div>
+
+
 
 
                                     <Form.Item
@@ -87,6 +90,19 @@ export default function EditProfessionalProfile() {
                                     >
                                         <Input size="large" prefix={<EnvironmentOutlined />} placeholder="Dhaka ,Bangladesh" />
                                     </Form.Item>
+
+                                    {/* Availability - full width */}
+                                    <Form.Item
+                                        className="md:col-span-2"
+                                        label="Availability"
+                                        name="availability"
+                                        rules={[{ required: true, message: 'Please select at least one option' }]}
+                                    >
+                                        <Checkbox.Group>
+                                            <Checkbox value="online" className="custom-green-checkbox">Online</Checkbox>
+                                            <Checkbox value="in-person" className="custom-green-checkbox">In Person</Checkbox>
+                                        </Checkbox.Group>
+                                    </Form.Item>
                                 </div>
 
                                 {/* 2nd col */}
@@ -110,7 +126,7 @@ export default function EditProfessionalProfile() {
 
                                     </Form.Item>
 
-                                    
+
 
                                     <Form.Item
                                         label="Experience"
@@ -163,6 +179,8 @@ export default function EditProfessionalProfile() {
                                 // className="!rounded-[8px]"
                                 />
                             </Form.Item>
+
+
                         </div>
 
                         {/* Button centered */}
