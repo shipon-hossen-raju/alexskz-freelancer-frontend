@@ -1,36 +1,53 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
+# Freelancer Marketplace Platform (Frontend Prototype)
 
-## Getting Started
+A modern **freelancer marketplace platform** prototype built with **JavaScript**, **Next.js** and **Ant Design**.  
+The platform allows professionals to offer services, clients to book services, and supports **real-time chat, Zoom meetings, subscriptions, and notifications**.  
 
-First, run the development server:
+> **Note:** Backend is not yet implemented. The current version focuses on the frontend UI and workflow.
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
-```
+---
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+## 🌐 Live Demo
+[https://freelancer-website-orpin.vercel.app/](https://freelancer-website-orpin.vercel.app/)
 
-You can start editing the page by modifying `app/page.js`. The page auto-updates as you edit the file.
+---
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+## 📝 Features (Frontend/UI Only)
+- **Professional Features:**  
+  - Create and manage services  
+  - Offer services to clients  
+  - Purchase subscription plans to provide services  
 
-## Learn More
+- **Client Features:**  
+  - Browse and book services  
+  - Real-time chat with professionals (UI placeholder)  
+  - Zoom meeting integration (UI placeholder)  
+  - Receive real-time notifications (UI placeholder)  
 
-To learn more about Next.js, take a look at the following resources:
+- **General Features:**  
+  - Responsive design for desktop and mobile  
+  - Clean, modern UI using Ant Design  
+  - Interactive components like cards, buttons, menus, and modals  
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+---
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## 🛠️ Tech Stack
+**Frontend:**  
+- JavaScript
+- Next.js (React framework with SSR & SSG)  
+- Ant Design (UI components & layout system)  
+- RTK Query / React state management (for future API integration)  
 
-## Deploy on Vercel
+**Backend:**  
+- *Not yet developed* – backend API, database, and real-time features are planned  
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+---
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+## 🧪 Workflow (UI Prototype)
+1. Professionals create services and manage their listings (static placeholders).  
+2. Clients browse services and book appointments (static UI).  
+3. UI demonstrates real-time chat, Zoom meeting scheduling, and notifications (placeholders).  
+4. Responsive layout adapts to desktop and mobile screens.  
+5. Frontend ready to connect to backend APIs for full functionality.  
+
+
