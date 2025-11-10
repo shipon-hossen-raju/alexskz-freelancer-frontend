@@ -34,7 +34,7 @@ export default function AuthShell({
       <div className="mx-auto max-w-5xl px-4 py-8 md:py-12 lg:py-20">
         <div className="grid grid-cols-1 md:grid-cols-[1.05fr_1fr] rounded-[28px] overflow-hidden">
           {/* Left image */}
-          <div className="relative h-[260px] md:h-[680px]">
+          <div className="relative ">
             <img
               src={imageSrc.src}
               alt="auth-visual"

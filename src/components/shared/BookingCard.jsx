@@ -26,7 +26,7 @@ export default function BookingCard({ booking }) {
                     <h3 className='text-[#0A0A0A] font-open-sans font-semibold'>{booking.name}</h3>
                     {
                         role === 'Client' && (
-                            <p className='bg-[#8BCF9A26] rounded-[2px] p-1 text-sm text-[#8BCF9A] font-nunito font-medium'>{booking.category}</p>
+                            <p className='bg-[#e7f3e9] rounded-md p-1 text-sm text-[#1e863a] font-nunito font-medium'>{booking.category}</p>
                         )
                     }
                     <p className=' text-[#9F9C96] font-open-sans flex items-center justify-center md:justify-start gap-1 text-[16px]'>

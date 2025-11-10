@@ -1,0 +1,17 @@
+.ant-switch.ant-switch-checked .ant-switch-inner {
+    background-color: #8BCF9A !important;
+}
+
+/* Inactive state */
+.ant-switch .ant-switch-inner {
+  background-color:  !important; /* choose your inactive color */
+}
+
+/* Remove AntD default blue glow (the ghost tint) */
+.ant-switch.ant-switch-checked {
+  background-color: #8BCF9A !important;
+}
+
+.ant-switch {
+  background-color: #ccc !important; /* inactive bg */
+}

@@ -14,6 +14,7 @@ import { useSelector } from "react-redux";
 // import { Tabs } from 'antd'; // Removed unused Tabs import
 import { Switch } from 'antd'
 import TealOutLineBtn from "@/components/ui/TealOutLineBtn";
+import "@/styles/AntSwitch.css"
 
 
 
@@ -103,7 +104,7 @@ function BookingItem({ item }) {
                     <div>
                         <div className="text-sm font-semibold text-[#0b1320]">{item.name}</div>
                         <div className="mt-2 inline-block">
-                            <span className="text-xs font-medium px-2 py-1 rounded-md bg-[#e9fff0] text-[#2aa36a]">
+                            <span className="text-xs font-medium px-2 py-1 rounded-md bg-[#e7f3e9] text-[#1e863a] font-nunito">
                                 {item.category}
                             </span>
                         </div>

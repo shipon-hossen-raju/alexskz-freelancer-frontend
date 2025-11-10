@@ -28,11 +28,11 @@ export default function PortfolioCard({
 
 
             {/* image */}
-            <div className='relative py-4  px-6 rounded-[10px] ' style={{
-                background: 'linear-gradient(135deg, rgba(254,99,110,0.85) 0%, rgba(251,140,0,0.85) 100%)',
+            <div className='relative   ' style={{
+                // background: 'linear-gradient(135deg, rgba(254,99,110,0.85) 0%, rgba(251,140,0,0.85) 100%)',
 
             }}>
-                <Image src={imgSrc} alt="image" className="shadow-2xl" />
+                <Image src={imgSrc} alt="image" className="rounded-[10px]" />
 
                 {showPlay && (
                     <div className="absolute inset-0 flex items-center justify-center">
@@ -50,7 +50,7 @@ export default function PortfolioCard({
 
 
             {/* content */}
-            <div className=" pb-4 pt-2 flex-1 flex flex-col">
+            <div className=" pb-4 pt-4 flex-1 flex flex-col">
                 <h3 className="text-[18px] font-semibold text-gray-800 font-open-sans">{title}</h3>
                 <p className="mt-4  text-[#9F9C96] leading-relaxed flex-1 font-open-sans">{description}</p>
 

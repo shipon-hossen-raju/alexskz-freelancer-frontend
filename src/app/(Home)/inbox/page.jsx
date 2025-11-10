@@ -53,7 +53,7 @@ const MessagingInterface = () => {
               <input
                 type="text"
                 placeholder="Search"
-                className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-500"
+                className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#144A6C]"
               />
               <Search className="absolute right-3 top-2.5 w-5 h-5 text-gray-400" />
             </div>
@@ -229,16 +229,12 @@ const MessagingInterface = () => {
           {/* Message Input */}
           <div className="border-t border-gray-200 px-6 py-4">
             <div className="flex items-center gap-3">
-              {/* <input
-                type="text"
-                placeholder="Send Message"
-                className="w-10 flex-1 px-4 py-3 border border-gray-300 rounded-full focus:outline-none focus:ring-2 focus:ring-blue-500"
-              /> */}
+            
               <Input size="large" placeholder="Send Message" />
-              <button className="p-3 hover:bg-gray-100 rounded-full">
+              <button className="p-3 hover:bg-gray-100 rounded-full cursor-pointer">
                 <Paperclip className="w-5 h-5 text-gray-500" />
               </button>
-              <button className="p-3 bg-blue-600 hover:bg-blue-700 rounded-full">
+              <button className="p-3 bg-[#144A6C] cursor-pointer rounded-full">
                 <Send className="w-5 h-5 text-white" />
               </button>
             </div>
@@ -262,7 +258,7 @@ const MessagingInterface = () => {
             />
             <h2 className="text-xl font-bold text-gray-900">Ahamad musa</h2>
             <p className="text-sm text-gray-500 mb-4">Online</p>
-            <button className="w-full border border-blue-600 text-blue-600 font-medium py-2 rounded-lg hover:bg-blue-50">
+            <button className="w-full border border-[#144A6C] text-[#144A6C] font-semibold font-open-sans py-2 rounded-lg hover:bg-blue-50 cursor-pointer">
               View Profile
             </button>
           </div>

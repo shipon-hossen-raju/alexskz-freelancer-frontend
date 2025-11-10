@@ -51,7 +51,7 @@ export default function PortfolioViewModal({
         </div>
 
         {/* Description */}
-        <div className="px-6 md:px-8 pt-2">
+        <div className="px-6 md:px-8 pt-4">
           <Paragraph text={description} />
         </div>
 
@@ -59,11 +59,11 @@ export default function PortfolioViewModal({
         <div className="px-4 md:px-6 pb-6 md:pb-8 pt-6">
          {
             images.map((image) =>(
-                 <div className='relative mb-6 py-4 px-6  lg:py-10   lg:px-16 rounded-[10px] ' style={{
-                                background: 'linear-gradient(135deg, rgba(254,99,110,0.85) 0%, rgba(251,140,0,0.85) 100%)',
+                 <div className='relative mb-6   ' style={{
+                                // background: 'linear-gradient(135deg, rgba(254,99,110,0.85) 0%, rgba(251,140,0,0.85) 100%)',
                                 
                             }}>
-                                <Image src={image} alt="image" className="shadow-2xl" />
+                                <Image src={image} alt="image" className="rounded-[10px]" />
                 
                                   
                           </div>

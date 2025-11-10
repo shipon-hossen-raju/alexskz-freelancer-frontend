@@ -42,6 +42,22 @@ export const MobileMenuItems = [
       </Link>
     ),
   },
+  {
+    key: '6',
+    label: (
+      <Link href="/sign-in">
+        Sing in
+      </Link>
+    ),
+  },
+  {
+    key: '5',
+    label: (
+      <Link href="/sign-up">
+        Join
+      </Link>
+    ),
+  },
 
 
 ];
