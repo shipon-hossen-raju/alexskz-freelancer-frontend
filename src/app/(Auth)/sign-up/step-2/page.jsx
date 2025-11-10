@@ -71,16 +71,16 @@ export default function RegisterPageStep2() {
             >
 
                 <Form.Item
-                    label="Skills"
-                    name="skills"
+                    label="Categories"
+                    name="category"
                     rules={[
-                        { required: true, message: 'Please enter your skill' },
+                        { required: true, message: 'Please enter your category' },
 
                     ]}
                 >
                    
 
-                        <Select size="large" placeholder="Please select a skill" className="wa-select">
+                        <Select size="large" placeholder="Please select a category" className="wa-select">
                             <Select.Option value="finance-expert">Finance Expert</Select.Option>
                             <Select.Option value="web-developer">Web Developer</Select.Option>
                             <Select.Option value="graphic-designer">Graphic Designer</Select.Option>

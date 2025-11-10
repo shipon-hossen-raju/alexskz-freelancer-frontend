@@ -84,7 +84,8 @@ export default function AuthShell({
 
             </div>
 
-            <div className="max-w-md">{children}</div>
+            {/* <div className="md:max-w-md">{children}</div> */}
+            <div className="">{children}</div>
           </div>
         </div>
       </div>
