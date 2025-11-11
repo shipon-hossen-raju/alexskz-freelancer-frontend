@@ -1,11 +1,20 @@
 'use client'
 import { createSlice } from '@reduxjs/toolkit'
 
-const initialState = {
-  initialRole: null,
-  user: false,
-  role: null,
+const loadInitialState = () => {
+  const token = localStorage.getItem('user-token');
+  // console.log('token form user slice: ', token)
+
+  return {
+    initialRole: null,
+    user: null,
+    role: null,
+    token,
+    isAuthenticated: !!token,
+  }
 }
+
+const initialState = loadInitialState();
 
 export const userSlice = createSlice({
   name: 'user',
@@ -17,23 +26,28 @@ export const userSlice = createSlice({
     },
 
     createUser: (state, action) => {
-        state.role = action.payload;
-        // state.role = null;
+      state.role = action.payload;
+      // state.role = null;
     },
 
-    loginUser:(state, action) => {
-        
-        state.user = action.payload;
-        
+    setCredentials: (state, action) => {
+      const { user, token } = action.payload;
+      state.user = user;
+      state.token = token;
+      state.isAuthenticated = true;
     },
 
-    logoutUser:(state, action) => {
-      state.user = action.payload;
-      console.log('from slice',state.user)
+    logoutUser: (state) => {
+      state.user = null;
+      state.token = null;
+      state.isAuthenticated = false;
+
+      // Clear token from localStorage
+      localStorage.removeItem('user-token');
     }
   },
 });
 
 
-export const {initiateRole, createUser, loginUser, logoutUser } = userSlice.actions;
+export const { initiateRole,createUser, setCredentials, logoutUser } = userSlice.actions;
 export default userSlice.reducer;

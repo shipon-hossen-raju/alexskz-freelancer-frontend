@@ -23,6 +23,8 @@ export default function HomePage() {
     console.log('search:', query);
   };
 
+  // throw new Error ("")
+
   return (
     <div>
       {

@@ -35,6 +35,8 @@ export default function Header() {
   const user = useSelector((state) => state.user.user ?? null);
   const role = useSelector((state) => state.user.role ?? null);
 
+  // throw new Error("")
+
   let items = [];
 
   if (user) {
@@ -44,7 +46,7 @@ export default function Header() {
     items = MobileMenuItems;
   }
 
-  console.log(user)
+  // console.log(user)
 
   const pathname = usePathname();
   const activeBtn = "bg-[#144A6C] text-white rounded-[8px] px-4 py-1 ";
