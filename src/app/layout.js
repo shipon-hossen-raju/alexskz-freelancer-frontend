@@ -3,7 +3,7 @@ import { Geist, Geist_Mono, Noto_Serif, Open_Sans, Poppins } from "next/font/goo
 import "./globals.css";
 import { Providers } from "@/redux/provider";
 import { ErrorBoundary } from "node_modules/next/dist/client/components/error-boundary";
-
+import { Toaster } from 'react-hot-toast';
 
 const openSans = Open_Sans({
   subsets: ["latin"],
@@ -38,6 +38,8 @@ export default function RootLayout({ children }) {
             {children}
           
         </ErrorBoundary>
+
+        <Toaster />
       </body>
     </html>
   );

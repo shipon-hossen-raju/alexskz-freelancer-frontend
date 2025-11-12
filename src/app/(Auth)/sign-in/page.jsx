@@ -8,7 +8,7 @@ import { MailOutlined, LockOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import '@/styles/Auth.css'
 import { useDispatch } from 'react-redux';
-import { loginUser } from '@/redux/auth/userSlice';
+// import { loginUser } from '@/redux/auth/userSlice';
 import { useRouter } from 'next/navigation';
 
 export default function LoginPage() {
@@ -20,7 +20,7 @@ export default function LoginPage() {
   const onFinish = async (values) => {
 
     const payload = true;
-    dispatch(loginUser(payload));
+    // dispatch(loginUser(payload));
     router.push('/');
 
     // setLoading(true);

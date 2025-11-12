@@ -7,37 +7,64 @@ import { useState } from 'react';
 import Link from 'next/link';
 import '@/styles/Auth.css'
 import { Select } from 'antd';
+import toast from 'react-hot-toast';
+
+import { useParams, useRouter } from 'node_modules/next/navigation';
+import { useGetAllCategoryQuery } from '@/redux/api/categoryApi';
+import Loading from '@/components/shared/Loading';
+import { useSelector } from 'react-redux';
+import { useSignUpForProfessionalMutation } from '@/redux/auth/authApi';
 
 
-import { useRouter } from 'node_modules/next/navigation';
 
-
-
-export default function RegisterPageStep2() {
+export default function RegisterPageStep2({  }) {
     const [form] = Form.useForm();
-    const [loading, setLoading] = useState(false);
-
-
     const router = useRouter();
+    const { data: categoryData, error, isLoading } = useGetAllCategoryQuery()
+   
+    const stepOneValues = useSelector((state) => state.user.stepOne ?? null)
 
+    const [signUpForProfessional, {isLoading: createUserLoading}] = useSignUpForProfessionalMutation();
 
+    if (error) {
+        throw new Error(error?.message);
+    }
 
+    if (isLoading) {
+        return <Loading />
+    }
+
+    // console.log(error)
+
+    const categories = categoryData?.data?.categories
+    // console.log('category: ', categories)
 
     const onFinish = async (values) => {
-
         console.log(values)
-
-        setLoading(true);
-        try {
-            // TODO: signup
-            message.success('Account created successfully');
-        } finally {
-            setLoading(false);
+        
+        const payload = {
+            firstName: stepOneValues.firstName,
+            lastName: stepOneValues.lastName,
+            password: stepOneValues.password,
+            email: stepOneValues.email,
+            address: stepOneValues.address,
+            categoryId: values.category,
+            experience: values.experience,
+            language: values.language
         }
 
-        router.push('/price')
-
-
+        signUpForProfessional(payload)
+        .unwrap()
+        .then(() => {
+          toast.success('Account created successfully');
+          
+          router.push('/verify-code');
+        })
+        .catch((error) =>{
+          console.log(error)
+          toast.error(error?.data?.message);
+         
+        })
 
     };
 
@@ -78,15 +105,22 @@ export default function RegisterPageStep2() {
 
                     ]}
                 >
-                   
 
-                        <Select size="large" placeholder="Please select a category" className="wa-select">
-                            <Select.Option value="finance-expert">Finance Expert</Select.Option>
-                            <Select.Option value="web-developer">Web Developer</Select.Option>
-                            <Select.Option value="graphic-designer">Graphic Designer</Select.Option>
-                        </Select>
 
-                    
+                    <Select size="large" placeholder="Please select a category" className="wa-select">
+                      
+                        {
+                            categories?.map((category) => {
+
+                                return (
+                                    <Select.Option value={category.id}>{category.title}</Select.Option>
+                                )
+
+                            })
+                        }
+                    </Select>
+
+
                 </Form.Item>
 
 
@@ -113,7 +147,7 @@ export default function RegisterPageStep2() {
 
                 <div className='md:pt-6'>
 
-                    <AuthButton htmlType="submit" loading={loading} text="Create Profile">
+                    <AuthButton htmlType="submit"  text="Create Profile">
 
                     </AuthButton>
 

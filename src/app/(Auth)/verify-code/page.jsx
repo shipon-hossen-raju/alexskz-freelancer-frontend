@@ -32,7 +32,7 @@ export default function VerifyCodePage() {
       title="Verify Code"
       subtitle="Please check your email and enter the code."
 
-      backHref="/forgot-password"
+      backHref="/sign-in"
     >
       <Form form={form} layout="vertical" requiredMark={false} onFinish={onFinish}>
         <div className="mb-6 flex gap-3">

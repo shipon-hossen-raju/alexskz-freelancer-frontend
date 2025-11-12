@@ -31,10 +31,10 @@ export default function AuthShell({
   return (
     <div className="min-h-screen w-full bg-[#1e1f22] text-[#0c1323]">
 
-      <div className="mx-auto max-w-5xl px-4 py-8 md:py-12 lg:py-20">
+      <div className="mx-auto max-w-5xl px-4 py-8 md:py-12 lg:py-20  ">
         <div className="grid grid-cols-1 md:grid-cols-[1.05fr_1fr] rounded-[28px] overflow-hidden">
           {/* Left image */}
-          <div className="relative ">
+          <div className="relative  min-h-[70vh]">
             <img
               src={imageSrc.src}
               alt="auth-visual"
@@ -43,7 +43,7 @@ export default function AuthShell({
           </div>
 
           {/* Right panel */}
-          <div className="bg-white px-5 sm:px-8 md:px-10 py-6 md:py-10 md:rounded-r-[28px]">
+          <div className="bg-white px-5 sm:px-8 md:px-10 py-6 md:py-10 md:rounded-r-[28px] ">
             <div className='flex justify-between'>
               <div className="mb-6">
                 <Link

@@ -10,12 +10,15 @@ import '@/styles/Auth.css'
 import RoleToggleMUI from '@/components/auth/RoleToggle';
 import { useDispatch, useSelector } from 'react-redux';
 import { useRouter } from 'node_modules/next/navigation';
-import { createUser } from '@/redux/auth/userSlice';
-
+import { createUser, createUserStepOne } from '@/redux/auth/userSlice';
+import { Password } from 'node_modules/@mui/icons-material/index';
+import { useSignupForClientMutation } from '@/redux/auth/authApi';
+import toast from 'react-hot-toast';
+import RegisterPageStep2 from './step-2/page';
 
 export default function RegisterPage() {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
   const router = useRouter();
 
@@ -24,27 +27,47 @@ export default function RegisterPage() {
   const role1 = 'Client';
   const role2 = 'Become a Pro'
 
+  const [signupForClient, {isLoading}] = useSignupForClientMutation();
+
   const onFinish = async (values) => {
+  
+
+    // console.log("saved role: ", savedRole)
+
     
-    
 
-    setLoading(true);
-    try {
-      // TODO: signup
-      message.success('Account created successfully');
-    } finally {
-      setLoading(false);
+    if(savedRole === "Client") {
+
+      const payload = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      password: values.password,
+      email: values.email
+
     }
 
-    const payload = values.role;
-    dispatch(createUser(payload));
-    if(payload === role1){
-      router.push('/sign-in')
-    }
-    else if(payload === role2) {
-      router.push('/sign-up/step-2')
+      signupForClient(payload)
+        .unwrap()
+        .then(() => {
+          toast.success('Account created successfully');
+          
+          router.push('/verify-code');
+        })
+        .catch((error) =>{
+          console.log(error)
+          toast.error(error?.data?.message);
+         
+        })
     }
 
+    else if(savedRole === "Become a Pro")
+    {
+      // console.log(values)
+
+      
+     dispatch(createUserStepOne(values))
+     router.push('/sign-up/step-2')
+    }
   };
 
 
@@ -132,7 +155,7 @@ export default function RegisterPage() {
 
         <div className='md:pt-6'>
           
-            <AuthButton htmlType="submit" loading={loading} text={savedRole=== role2?"Next" : "Create Account"}>
+            <AuthButton   text={savedRole=== role2?"Next" : ((savedRole !== role2 && isLoading)? "Creating Account..." : "Create Account")}>
 
             </AuthButton>
           

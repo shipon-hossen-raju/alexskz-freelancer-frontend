@@ -11,6 +11,7 @@ const loadInitialState = () => {
     role: null,
     token,
     isAuthenticated: !!token,
+    stepOne: null,
   }
 }
 
@@ -25,9 +26,12 @@ export const userSlice = createSlice({
       state.initialRole = action.payload;
     },
 
-    createUser: (state, action) => {
-      state.role = action.payload;
-      // state.role = null;
+    createUserStepOne: (state, action) => {
+      state.stepOne = action.payload;
+    },
+
+    clearStepOne(state) {
+      state.stepOne = null;
     },
 
     setCredentials: (state, action) => {
@@ -49,5 +53,5 @@ export const userSlice = createSlice({
 });
 
 
-export const { initiateRole,createUser, setCredentials, logoutUser } = userSlice.actions;
+export const { initiateRole,createUserStepOne, clearStepOne, setCredentials, logoutUser } = userSlice.actions;
 export default userSlice.reducer;
