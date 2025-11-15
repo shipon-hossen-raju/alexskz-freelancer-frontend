@@ -53,12 +53,12 @@ export const MobileMenuItemsForLoginUser = [
       </Link>
     ),
   },
-  {
-    key: 'logout',
-    label: (
-      <span className="cursor-pointer">Logout</span>
-    ),
-  },
+  // {
+  //   key: 'logout',
+  //   label: (
+  //     <span className="cursor-pointer">Logout</span>
+  //   ),
+  // },
 
 ];
 

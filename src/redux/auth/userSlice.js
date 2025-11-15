@@ -10,7 +10,7 @@ const loadInitialState = () => {
     user: null,
     role: null,
     token,
-    isAuthenticated: !!token,
+    isAuthenticated: false,
     stepOne: null,
   }
 }
@@ -26,6 +26,10 @@ export const userSlice = createSlice({
       state.initialRole = action.payload;
     },
 
+    clearInitialRole: (state) => {
+      state.initialRole = null
+    },
+
     createUserStepOne: (state, action) => {
       state.stepOne = action.payload;
     },
@@ -34,24 +38,21 @@ export const userSlice = createSlice({
       state.stepOne = null;
     },
 
-    setCredentials: (state, action) => {
+    setUser: (state, action) => {
       const { user, token } = action.payload;
-      state.user = user;
       state.token = token;
       state.isAuthenticated = true;
     },
 
-    logoutUser: (state) => {
+    clearUser: (state) => {
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
-
-      // Clear token from localStorage
       localStorage.removeItem('user-token');
-    }
+    },
   },
 });
 
 
-export const { initiateRole,createUserStepOne, clearStepOne, setCredentials, logoutUser } = userSlice.actions;
+export const { initiateRole,clearInitialRole, createUserStepOne, clearStepOne, setUser, clearUser } = userSlice.actions;
 export default userSlice.reducer;

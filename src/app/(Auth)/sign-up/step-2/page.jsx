@@ -12,17 +12,21 @@ import toast from 'react-hot-toast';
 import { useParams, useRouter } from 'node_modules/next/navigation';
 import { useGetAllCategoryQuery } from '@/redux/api/categoryApi';
 import Loading from '@/components/shared/Loading';
-import { useSelector } from 'react-redux';
+import { useDispatch, useSelector } from 'react-redux';
 import { useSignUpForProfessionalMutation } from '@/redux/auth/authApi';
+import { clearInitialRole, clearStepOne } from '@/redux/auth/userSlice';
 
 
 
 export default function RegisterPageStep2({  }) {
     const [form] = Form.useForm();
     const router = useRouter();
+    const dispatch = useDispatch();
     const { data: categoryData, error, isLoading } = useGetAllCategoryQuery()
    
     const stepOneValues = useSelector((state) => state.user.stepOne ?? null)
+
+    dispatch(clearInitialRole())
 
     const [signUpForProfessional, {isLoading: createUserLoading}] = useSignUpForProfessionalMutation();
 
@@ -37,10 +41,10 @@ export default function RegisterPageStep2({  }) {
     // console.log(error)
 
     const categories = categoryData?.data?.categories
-    // console.log('category: ', categories)
+    
 
     const onFinish = async (values) => {
-        console.log(values)
+        
         
         const payload = {
             firstName: stepOneValues.firstName,
@@ -50,15 +54,18 @@ export default function RegisterPageStep2({  }) {
             address: stepOneValues.address,
             categoryId: values.category,
             experience: values.experience,
-            language: values.language
+            language: values.language,
+            role: "FREELANCER"
         }
 
+        console.log(payload)
         signUpForProfessional(payload)
         .unwrap()
         .then(() => {
           toast.success('Account created successfully');
-          
+          localStorage.setItem('email', payload.email)
           router.push('/verify-code');
+       
         })
         .catch((error) =>{
           console.log(error)
@@ -147,7 +154,7 @@ export default function RegisterPageStep2({  }) {
 
                 <div className='md:pt-6'>
 
-                    <AuthButton htmlType="submit"  text="Create Profile">
+                    <AuthButton htmlType="submit"  text={`${createUserLoading? "Creating Profile..." : "Create Profile"}`}>
 
                     </AuthButton>
 

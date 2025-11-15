@@ -10,13 +10,15 @@ import ProfessionalHome from '@/components/professionals/ProfessionalHome';
 import CategoriesSection from '@/components/shared/CategorySection';
 import FreelancerSection from '@/components/shared/FreelancerSection';
 import CustomContainer from '@/components/ui/CustomContainer';
+import { useGetUserProfileQuery } from '@/redux/auth/authApi';
 import React from 'react'
 import { useSelector } from 'react-redux';
 
 export default function HomePage() {
 
-  const user = useSelector((state) => state.user.user ?? null);
-  const role = useSelector((state) => state.user.role ?? null);
+ const {data: user, isLoading, error} = useGetUserProfileQuery()
+
+ const role = user?.data?.role ;
 
   const handleSearch = (query) => {
 
@@ -66,7 +68,7 @@ export default function HomePage() {
       }
 
       {
-        user && role === 'Client' && (
+        user && role === 'USER' && (
           <CustomContainer>
             <ClientHome />
           </CustomContainer>
@@ -76,7 +78,7 @@ export default function HomePage() {
       {/* professional home */}
 
       {
-        user && role === 'Become a Pro' && (
+        user && role === 'FREELANCER' && (
           
             <ProfessionalHome />
          

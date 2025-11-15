@@ -19,9 +19,12 @@ import { Search, Bell, ChevronDown, SlidersHorizontal, User, Menu, X } from "luc
 import { MobileMenuItemsForLoginUser } from '@/lib/MobileMenuItemsForLoginUser';
 import { MobileMenuItems } from '@/lib/MobileMenuItems';
 import { useRouter } from 'next/navigation';
-import { logoutUser } from '@/redux/auth/userSlice';
 import CustomSearch from '../ui/CustomSearch';
 import LanguageDropdown from '../ui/LanguageDropdown';
+import { useGetUserProfileQuery, useLogoutUserMutation } from '@/redux/auth/authApi';
+import { clearUser } from '@/redux/auth/userSlice';
+import toast from 'react-hot-toast';
+import Loading from '../shared/Loading';
 
 
 
@@ -31,11 +34,21 @@ export default function Header() {
   const [dropdownOpen, setDropDownOpen] = useState(false);
   const dispatch = useDispatch();
   const router = useRouter();
+  const [ logoutUser ] = useLogoutUserMutation();
 
-  const user = useSelector((state) => state.user.user ?? null);
-  const role = useSelector((state) => state.user.role ?? null);
+  const {data: user, isLoading, error} = useGetUserProfileQuery()
 
-  // throw new Error("")
+  
+
+  if(isLoading){
+    return <Loading />
+  }
+
+  console.log('user',user)
+
+  const role = user?.data?.role;
+
+
 
   let items = [];
 
@@ -58,11 +71,6 @@ export default function Header() {
   }, []);
 
   const onMenuClick = ({ key }) => {
-
-    if (key === 'logout') {
-      dispatch(logoutUser(false));
-      router.push('/');
-    }
   };
 
   return (
@@ -145,7 +153,7 @@ export default function Header() {
               user ? (
                 <div className='flex items-center gap-2 '>
                   <Link href="/profile"><Avatar size={{ xs: 48, sm: 48, md: 50, lg: 64, xl: 70, xxl: 74 }} src={userImg.src} /></Link>
-                  <div className='hidden md:block'>
+                  <div className=''>
                     <ProfileDropdown />
                   </div>
                   {/* Notifications */}

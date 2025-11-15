@@ -3,7 +3,7 @@
 import { Form, Input, message, Avatar, Space } from 'antd';
 import AuthShell from '@/components/shared/AuthShell';
 import AuthButton from '@/components/ui/AuthButton';
-import { LockOutlined, UserOutlined, MailOutlined,EnvironmentOutlined  } from '@ant-design/icons';
+import { LockOutlined, UserOutlined, MailOutlined, EnvironmentOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Link from 'next/link';
 import '@/styles/Auth.css'
@@ -27,46 +27,49 @@ export default function RegisterPage() {
   const role1 = 'Client';
   const role2 = 'Become a Pro'
 
-  const [signupForClient, {isLoading}] = useSignupForClientMutation();
+  const [signupForClient, { isLoading }] = useSignupForClientMutation();
 
   const onFinish = async (values) => {
-  
 
-    // console.log("saved role: ", savedRole)
+    const role = savedRole || values.role
 
-    
+    // console.log("saved role: ", role)
+    console.log('sign up', values)
 
-    if(savedRole === "Client") {
+
+
+    if (role === "Client") {
 
       const payload = {
-      firstName: values.firstName,
-      lastName: values.lastName,
-      password: values.password,
-      email: values.email
+        firstName: values.firstName,
+        lastName: values.lastName,
+        password: values.password,
+        email: values.email,
+        role: "USER",
 
-    }
+      }
+      console.log(payload)
 
       signupForClient(payload)
         .unwrap()
         .then(() => {
           toast.success('Account created successfully');
-          
+          localStorage.setItem('email', payload.email)
           router.push('/verify-code');
         })
-        .catch((error) =>{
+        .catch((error) => {
           console.log(error)
           toast.error(error?.data?.message);
-         
+
         })
     }
 
-    else if(savedRole === "Become a Pro")
-    {
+    else if (savedRole === "Become a Pro") {
       // console.log(values)
 
-      
-     dispatch(createUserStepOne(values))
-     router.push('/sign-up/step-2')
+
+      dispatch(createUserStepOne(values))
+      router.push('/sign-up/step-2')
     }
   };
 
@@ -99,7 +102,7 @@ export default function RegisterPage() {
       >
         {/* Toggle button for buyer & seller */}
         <Form.Item name="role" valuePropName="value">
-          <RoleToggleMUI role1= {role1} role2={role2}/>
+          <RoleToggleMUI role1={role1} role2={role2} />
         </Form.Item>
 
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
@@ -132,16 +135,16 @@ export default function RegisterPage() {
         </Form.Item>
 
         {savedRole === role2 && (
-           <Form.Item
-          label="Address"
-          name="address"
-          rules={[
-            { required: true, message: 'Please enter your address' },
-            // { type: 'text', message: 'Enter a valid email' },
-          ]}
-        >
-          <Input size="large" prefix={<EnvironmentOutlined />} placeholder="Dhaka ,Bangladesh" />
-        </Form.Item>
+          <Form.Item
+            label="Address"
+            name="address"
+            rules={[
+              { required: true, message: 'Please enter your address' },
+              // { type: 'text', message: 'Enter a valid email' },
+            ]}
+          >
+            <Input size="large" prefix={<EnvironmentOutlined />} placeholder="Dhaka ,Bangladesh" />
+          </Form.Item>
 
         )}
 
@@ -154,11 +157,13 @@ export default function RegisterPage() {
         </Form.Item>
 
         <div className='md:pt-6'>
-          
-            <AuthButton   text={savedRole=== role2?"Next" : ((savedRole !== role2 && isLoading)? "Creating Account..." : "Create Account")}>
+
+          <Form.Item>
+            <AuthButton htmlType="submit" text={savedRole === role2 ? "Next" : ((savedRole !== role2 && isLoading) ? "Creating Account..." : "Create Account")}>
 
             </AuthButton>
-          
+
+          </Form.Item>
         </div>
       </Form>
     </AuthShell>

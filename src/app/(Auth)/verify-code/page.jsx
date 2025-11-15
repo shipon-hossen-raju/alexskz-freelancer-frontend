@@ -5,27 +5,89 @@ import AuthShell from '@/components/shared/AuthShell';
 import AuthButton from '@/components/ui/AuthButton';
 import { useRef, useState } from 'react';
 import Link from 'next/link';
+import toast from 'react-hot-toast';
+import '@/styles/OtpInput.css'
+import { useResendCodeMutation, useVerifyCodeMutation } from '@/redux/auth/authApi';
+import { useDispatch } from 'react-redux';
+import { clearStepOne } from '@/redux/auth/userSlice';
+import { useRouter } from 'node_modules/next/navigation';
+
 
 export default function VerifyCodePage() {
   const [form] = Form.useForm();
-  const inputsRef = useRef([]);
-  const [loading, setLoading] = useState(false);
+  const [otp, setOtp] = useState();
 
-  const handleKeyUp = (idx, e) => {
-    const v = e.target.value;
-    if (v.length === 1 && idx < 5) inputsRef.current[idx + 1]?.focus();
-    if (e.key === 'Backspace' && v === '' && idx > 0) inputsRef.current[idx - 1]?.focus();
+  const [verifyCode, {isLoading, error}] = useVerifyCodeMutation();
+  const [resendCode, {isLoading: isLoadingResendCode, error: resendCodeError}] = useResendCodeMutation();
+
+  const dispatch = useDispatch();
+  const router = useRouter()
+
+  const email = localStorage.getItem('email')
+
+  console.log('from verify page', email);
+
+ 
+
+  
+  const onChange = text => {
+    console.log('onChange:', text);
+    setOtp(text)
+  };
+  const onInput = value => {
+    // console.log('onInput:', value);
+  };
+
+  const sharedProps = {
+    onChange,
+    onInput,
   };
 
   const onFinish = async () => {
-    setLoading(true);
-    try {
-      // TODO: verify code
-      message.success('Code verified successfully.');
-    } finally {
-      setLoading(false);
+    
+    const payload = {
+      email: email,
+      verificationCode: otp,
     }
+
+    verifyCode(payload)
+      .unwrap()
+        .then(() =>{
+          toast.success('Code verified successfully.');
+          dispatch(clearStepOne());
+          localStorage.removeItem('email');
+          router.push('/sign-in')
+        })
+        .catch((error) => {
+          console.log(error)
+          toast.error(error?.data?.message);
+
+        })
+   
   };
+
+  const handleResendOTP = ()=> {
+     const payload = {
+      email: email,
+      
+    }
+
+    resendCode(payload)
+      .unwrap()
+        .then(() =>{
+          toast.success('Code resent.');
+          
+
+          
+        })
+        .catch((error) => {
+          console.log(error)
+          toast.error(error?.data?.message);
+
+        })
+   
+  }
+
 
   return (
     <AuthShell
@@ -35,38 +97,38 @@ export default function VerifyCodePage() {
       backHref="/sign-in"
     >
       <Form form={form} layout="vertical" requiredMark={false} onFinish={onFinish}>
-        <div className="mb-6 flex gap-3">
-          {Array.from({ length: 5 }).map((_, i) => (
-            <Input
-              key={i}
-              size="large"
-              maxLength={1}
-              bordered={false}
-              className="h-11 w-11 text-center  !rounded-none !px-0 !border-b-1 !border-[#8BCF9A] 
-              focus:!shadow-none focus:!outline-none
-              focus:border-b-2 focus:border-[#8BCF9A] 
-            hover:!border-[#8BCF9A]"
-              onKeyUp={(e) => handleKeyUp(i, e)}
-              ref={(el) => (inputsRef.current[i] = el)}
+        <div className="pt-6 otp-wrapper">
+      
+          <Form.Item
+            name="code"
+            // rules={[{ required: true, message: 'Please enter the OTP digit' }]}
+            className=" text-center"
+          >
+            <Input.OTP length={5} {...sharedProps} 
+            
             />
-          ))}
+
+          </Form.Item>
+
         </div>
 
-       <div className='md:py-6'>
-         <Link href="/reset-password">
-         <AuthButton htmlType="submit" loading={loading} text="Send Code">
+        <div className='md:py-6'>
+          {/* <Link href="/reset-password"> */}
+          <AuthButton htmlType="submit" text="Send Code">
 
-        </AuthButton>
-         </Link>
-       </div>
+          </AuthButton>
+          {/* </Link> */}
+        </div>
 
-        <p className="mt-4 text-[12px] text-[#9F9C96]">
+        
+      </Form>
+
+      <p className="mt-4 text-[12px] text-[#9F9C96]">
           Didn’t receive it? Wait a few minutes or <br />
-          <button className="cursor-pointer !text-[#595D62] text-sm !underline hover:!text-[#144A6C]">
+          <button onClick={handleResendOTP} className="cursor-pointer !text-[#595D62] text-sm !underline hover:!text-[#144A6C]">
             resend the code.
           </button>
         </p>
-      </Form>
     </AuthShell>
   );
 }

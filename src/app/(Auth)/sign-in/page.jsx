@@ -10,29 +10,53 @@ import '@/styles/Auth.css'
 import { useDispatch } from 'react-redux';
 // import { loginUser } from '@/redux/auth/userSlice';
 import { useRouter } from 'next/navigation';
+import { useLoginUserMutation } from '@/redux/auth/authApi';
+import { Password } from 'node_modules/@mui/icons-material/index';
+import toast from 'react-hot-toast';
+import { setUser } from '@/redux/auth/userSlice';
 
 export default function LoginPage() {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+
   const dispatch = useDispatch();
-  const router = useRouter()
+  const router = useRouter();
+
+  const [loginUser, {isloading}] = useLoginUserMutation();
 
   const onFinish = async (values) => {
 
-    const payload = true;
-    // dispatch(loginUser(payload));
-    router.push('/');
+    // console.log(values)
 
-    // setLoading(true);
-    // try {
-      
-    //   message.success('Logged in successfully');
-    //   dispatch(loginUser(payload));
-    //   router.push('/');
+    const payload = {
+      email: values.email,
+      password: values.password
 
-    // } finally {
-    //   setLoading(false);
-    // }
+    }
+
+    loginUser(payload)
+      .unwrap()
+        .then((res) =>{
+          // console.log('login res', res?.data?.token)
+          const accessToken = res?.data?.token
+          if(accessToken) {
+            localStorage.setItem("user-token", accessToken)
+          }
+
+          dispatch(setUser({
+            user: payload,
+            token: accessToken
+          }));
+
+          toast.success('Login successful');
+          router.push('/');
+        })
+        .catch((error) =>{
+          toast.error(error?.data?.message);
+        })
+    
+    
+
+   
   };
 
   return (
@@ -83,22 +107,24 @@ export default function LoginPage() {
           </Link>
         </div>
 
-        <AuthButton htmlType="submit" loading={loading} text="Sign In">
+        <AuthButton htmlType="submit"  text={`${isloading? "Signing In..." : "Sign In"}`}>
           
         </AuthButton>
 
-        <p className="mt-4 text-[12px] leading-relaxed text-[#9F9C96] ">
+        
+      </Form>
+
+      <p className="mt-4 text-[12px] leading-relaxed text-[#9F9C96] ">
           By joining, you agree to the{' '}
-          <a className="!text-[#8BCF9A] hover:underline" href="#">
+          <Link className="!text-[#8BCF9A] hover:underline" href="/terms-conditions">
             Terms of Service
-          </a>{' '}
+          </Link>{' '}
            and to occasionally receive emails from us. Please read our{' '}
-          <a className="!text-[#8BCF9A] hover:underline" href="#">
+          <Link className="!text-[#8BCF9A] hover:underline" href="privacy-policy">
             Privacy Policy
-          </a>
+          </Link>
           to learn how we use your personal data.
         </p>
-      </Form>
     </AuthShell>
   );
 }

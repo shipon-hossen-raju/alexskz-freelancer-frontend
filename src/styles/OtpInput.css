@@ -1,0 +1,22 @@
+/* OtpInput.css (global) */
+.otp-wrapper .ant-input-outlined {
+  border: none;
+  border-bottom: 1px solid #8BCF9A;
+}
+
+.otp-wrapper .ant-input-outlined:focus {
+  border-bottom: 1px solid #8BCF9A;
+  box-shadow: none;
+}
+
+.otp-wrapper .ant-input-outlined:hover {
+  border-bottom: 1px solid #8BCF9A;
+}
+
+.otp-wrapper .ant-input {
+  border-radius: 0;
+}
+
+.otp-wrapper .ant-otp .ant-otp-input {
+  padding-inline: 10px;
+}
