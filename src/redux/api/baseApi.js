@@ -3,8 +3,8 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const baseQuery = fetchBaseQuery({
 
   
-    // baseUrl: 'https://alexskz-freelancer-backend.vercel.app/api/v1/',
-     baseUrl: 'http://10.10.20.2:5005/api/v1/',
+    baseUrl: 'https://alexskz-freelancer-backend.vercel.app/api/v1/',
+    //  baseUrl: 'http://10.10.20.2:5005/api/v1/',
 
     //  if token is saved in cookies then this portion is not needed
 
@@ -22,6 +22,7 @@ const baseQuery = fetchBaseQuery({
 export const baseApi = createApi({
     reducerPath: 'baseApi',
     baseQuery: baseQuery,
+    tagTypes: ['User'],
     endpoints: () => ({})
 
 });

@@ -7,19 +7,36 @@ import { MailOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import Link from 'next/link';
 import '@/styles/Auth.css'
+import { useForgotPasswordMutation } from '@/redux/auth/authApi';
+import toast from 'react-hot-toast';
+import { usePathname, useRouter } from 'node_modules/next/navigation';
 
 export default function ForgotPasswordPage() {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
+  const router = useRouter();
+  const pathname = usePathname();
+  const [forgotPassword, {isLoading}] = useForgotPasswordMutation();
+  
 
-  const onFinish = async () => {
-    setLoading(true);
-    try {
-      // TODO: send code
-      message.success('Verification code sent (demo)');
-    } finally {
-      setLoading(false);
+  const onFinish = async (values) => {
+    
+    // console.log(values.email)
+    const payload = {
+      email: values.email
     }
+    forgotPassword(payload)
+      .unwrap()
+        .then((res) =>{
+          toast.success("Code is sent!")
+          localStorage.setItem('email', payload.email)
+          localStorage.setItem('previous-pathname', pathname)
+          router.push("/verify-code");
+        })
+        .catch((error) => {
+          console.log(error)
+          toast.error(error?.data?.message);
+
+        })
   };
 
   return (
@@ -48,11 +65,11 @@ export default function ForgotPasswordPage() {
         </Form.Item>
 
         <div className='md:pt-10'>
-         <Link href="/verify-code">
-          <AuthButton htmlType="submit" loading={loading} text="Send Code">
+         
+          <AuthButton htmlType="submit"  text={`${isLoading? "Sending Code..." : "Send Code"}`}>
           
         </AuthButton>
-         </Link>
+         
         </div>
       </Form>
     </AuthShell>

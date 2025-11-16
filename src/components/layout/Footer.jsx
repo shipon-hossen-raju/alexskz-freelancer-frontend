@@ -40,7 +40,7 @@ export default function Footer() {
                     <div className=' space-y-8 text-center md:text-left '>
                         <h1 className='font-poppins text-xl lg:text-2xl text-white font-semibold '>Information</h1>
                         <ul className='text-sm lg:text-[16px] space-y-4 font-open-sans text-gray-400'>
-                            <li>About Us</li>
+                            <li><Link href="about-us">About Us</Link></li>
                             <li><Link href="/contact-us">Contact Us</Link></li>
                             <li><Link href="/terms-conditions">Terms & Conditions</Link></li>
                             <li><Link href="/privacy-policy">Privacy Policy</Link></li>

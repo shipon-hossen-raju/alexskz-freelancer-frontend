@@ -1,15 +1,29 @@
 'use client'
 import EditClientProfile from '@/components/clients/EditClientProfile';
 import EditProfessionalProfile from '@/components/professionals/EditProfessionalProfile';
+import Loading from '@/components/shared/Loading';
 import CustomContainer from '@/components/ui/CustomContainer';
+import { useGetUserProfileQuery } from '@/redux/auth/authApi';
 import { Divider } from 'antd';
 import Link from 'node_modules/next/link';
 import React from 'react'
 import { useSelector } from 'react-redux';
 
 export default function EditProfilePage() {
-     const user = useSelector((state) => state.user.user ?? null);
-        const role = useSelector((state) => state.user.role ?? null);
+      const { data: user, isLoading, isError, error } = useGetUserProfileQuery();
+       
+       if (isError) {
+     
+         throw new Error(error?.data?.message)
+       }
+     
+       if (isLoading) {
+         return <Loading />
+       }
+     
+     
+     
+       const role = user?.data?.role;
   return (
    <CustomContainer>
             {/* links */}
@@ -21,13 +35,13 @@ export default function EditProfilePage() {
             </div>
 
     {
-        (role==='Client') && (
+        (role==='USER') && (
             <EditClientProfile />
         )
     }
 
     {
-        (role === 'Become a Pro') && (
+        (role === 'FREELANCER') && (
             <EditProfessionalProfile />
         )
     }

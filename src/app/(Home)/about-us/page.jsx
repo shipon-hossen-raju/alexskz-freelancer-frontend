@@ -1,4 +1,4 @@
-
+'use client'
 
 import Image from 'next/image';
 import FlexibleBanner from '@/components/shared/FlexibleBanner';
@@ -12,8 +12,21 @@ import hero from '@/assets/image/aboutBG.png';
 import img1 from '@/assets/image/about/img1.png';
 import img2 from '@/assets/image/about/img2.png';
 import img3 from '@/assets/image/about/img3.png';
+import { useGetAboutUsQuery } from '@/redux/api/legalApi';
+import Loading from '@/components/shared/Loading';
 
 export default function AboutUsPage() {
+  const {data, isError, error, isLoading} = useGetAboutUsQuery();
+
+  if(isLoading) {
+    return <Loading />
+  }
+
+  if(isError) {
+    throw new Error (error?.data?.message)
+  }
+
+  // console.log(data?.data?.content)
   return (
     <CustomContainer>
       {/* Banner */}
@@ -79,7 +92,8 @@ export default function AboutUsPage() {
               <Heading text="Empowering Connections, Enabling Growth" />
             </div>
 
-            <Paragraph text="We believe every professional deserves the opportunity to showcase their talent and connect with the right clients. Our platform bridges the gap between freelancers and businesses, making collaboration seamless, transparent, and rewarding..." />
+            {/* <Paragraph text="We believe every professional deserves the opportunity to showcase their talent and connect with the right clients. Our platform bridges the gap between freelancers and businesses, making collaboration seamless, transparent, and rewarding..." /> */}
+            <Paragraph text={data?.data?.content} />
 
             <div className="mt-6">
               <StatsSection />

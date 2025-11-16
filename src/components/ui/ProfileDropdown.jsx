@@ -9,7 +9,8 @@ import { useRouter } from 'next/navigation';
 import { useLogoutUserMutation } from '@/redux/auth/authApi';
 import { clearUser } from '@/redux/auth/userSlice';
 import { baseApi } from '@/redux/api/baseApi';
-// import { logoutUser } from '@/redux/auth/userSlice';
+import toast from 'node_modules/react-hot-toast/dist/index';
+
 
 export default function ProfileDropdown() {
   const dispatch = useDispatch();
@@ -35,6 +36,7 @@ export default function ProfileDropdown() {
         .unwrap()
         .then(() => {
           dispatch(clearUser());
+          dispatch(baseApi.util.resetApiState());   // <-- clear all RTK Query cache
           router.push('/sign-in');
         })
         .catch((error) => {

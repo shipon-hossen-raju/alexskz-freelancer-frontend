@@ -1,6 +1,6 @@
 import Link from "node_modules/next/link";
 
-export const MobileMenuItems = [
+export const  MenuItemsForLargeDevices  = [
   {
     key: '1',
     label: (
@@ -42,23 +42,8 @@ export const MobileMenuItems = [
       </Link>
     ),
   },
-  {
-    key: '6',
-    label: (
-      <Link href="/sign-in">
-        Sing in
-      </Link>
-    ),
-  },
-  {
-    key: '7',
-    label: (
-      <Link href="/sign-up">
-        Join
-      </Link>
-    ),
-  },
-
+  
+  
 
 ];
 

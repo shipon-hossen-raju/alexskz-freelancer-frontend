@@ -37,6 +37,7 @@ const persistConfig = {
     version: 1,
     storage,
     transforms: [removeInitialRoleTransform],
+    blacklist: [baseApi.reducerPath],
 }
 
 const persistedReducer = persistReducer(persistConfig, combineReducers({

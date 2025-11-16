@@ -4,6 +4,7 @@ import "../globals.css";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import { Providers } from "@/redux/provider";
+import AuthGuard from "@/components/ProtectRoute/AuthGuard";
 
 
 
@@ -54,7 +55,11 @@ export default function RootLayout({ children }) {
             <Header />
           </div>
           
-            <main className="">{children}</main>
+            <main className="">
+              <AuthGuard>
+                {children}
+              </AuthGuard>
+            </main>
           
           <Footer />
         </Providers>

@@ -9,6 +9,7 @@ import TestimonialsSection from '@/components/Home/testimonials/TestimonialsSect
 import ProfessionalHome from '@/components/professionals/ProfessionalHome';
 import CategoriesSection from '@/components/shared/CategorySection';
 import FreelancerSection from '@/components/shared/FreelancerSection';
+import Loading from '@/components/shared/Loading';
 import CustomContainer from '@/components/ui/CustomContainer';
 import { useGetUserProfileQuery } from '@/redux/auth/authApi';
 import React from 'react'
@@ -16,7 +17,12 @@ import { useSelector } from 'react-redux';
 
 export default function HomePage() {
 
- const {data: user, isLoading, error} = useGetUserProfileQuery()
+ const {data: user, isLoading, isError, error} = useGetUserProfileQuery()
+
+
+ if(isLoading){
+  return <Loading />
+ }
 
  const role = user?.data?.role ;
 

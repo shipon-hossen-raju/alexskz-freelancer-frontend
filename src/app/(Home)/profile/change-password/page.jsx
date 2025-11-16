@@ -8,12 +8,31 @@ import { Divider } from 'antd';
 import Link from 'next/link';
 import CustomContainer from '@/components/ui/CustomContainer';
 import { LockOutlined } from '@ant-design/icons';
+import { useChangePasswordMutation } from '@/redux/api/profileApi';
+import toast from 'react-hot-toast';
 
 export default function ChangePassword() {
     const [form] = Form.useForm();
+    const [changePassword, {isLoading, error}] = useChangePasswordMutation();
+    
 
     const onFinish = (values) => {
         console.log('Save Changes:', values);
+        const payload = {
+            newPassword: values.password,
+            confirmNewPassword: values.confirm,
+            oldPassword: values.current
+
+        }
+        changePassword(payload)
+          .unwrap()
+            .then((res) =>{
+                toast.success(res?.data?.message || "Password changed successfully!");
+                form.resetFields();
+            })
+            .catch((error) =>{
+                toast.error(error?.data?.message || "Password not changed!");
+            })
     };
 
     return (
@@ -73,7 +92,9 @@ export default function ChangePassword() {
                                 {/* Button */}
                                 <div className="pt-2 flex justify-center">
                                     {/* If your TealBtn expects children instead of a prop, use: <TealBtn>Save Changes</TealBtn> */}
-                                    <TealBtn htmlType="submit" text="Save Changes" className="shadow-md" />
+                                    <Form.Item>
+                                        <TealBtn  text={`${isLoading? "Saving..." : "Save Changes"}`}  />
+                                    </Form.Item>
                                 </div>
                             </Form>
                         </div>

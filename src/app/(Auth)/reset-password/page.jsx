@@ -7,25 +7,40 @@ import { LockOutlined } from '@ant-design/icons';
 import { useState } from 'react';
 import '@/styles/Auth.css'
 import Link from 'next/link';
-
+import toast from 'react-hot-toast';
+import { useResetPasswordMutation } from '@/redux/auth/authApi';
+import { useRouter } from 'node_modules/next/navigation';
 
 
 export default function ResetPasswordPage() {
   const [form] = Form.useForm();
-  const [loading, setLoading] = useState(false);
-
+  const router = useRouter();
+  const [resetPassword, {isLoading}] = useResetPasswordMutation();
+  const email = localStorage.getItem('email')
+ 
   const onFinish = async ({ password, confirm }) => {
     if (password !== confirm) {
-      message.error('Passwords do not match');
+      toast.error('Passwords do not match');
       return;
     }
-    setLoading(true);
-    try {
-      // TODO: reset password
-      message.success('Password reset (demo)');
-    } finally {
-      setLoading(false);
+    const payload = {
+      email: email,
+      password: password
     }
+
+    resetPassword(payload)
+      .unwrap()
+        .then((res) => {
+          toast.success("Password reset successfully!")
+          localStorage.removeItem('email')
+          router.push('/sign-in')
+        })
+        .catch((error) =>{
+          console.log(error)
+          toast.error(error?.data?.message || "Something went wrong!");
+        })
+
+    
   };
 
   return (
@@ -60,11 +75,11 @@ export default function ResetPasswordPage() {
         </Form.Item>
 
        <div className='md:pt-6'>
-        <Link href="/sign-in">
-         <AuthButton htmlType="submit" loading={loading} text="Save Changes">
+        
+         <AuthButton htmlType="submit"  text={`${isLoading? "Saving..." : "Save Changes"}`}>
           
         </AuthButton>
-        </Link>
+        
        </div>
       </Form>
     </AuthShell>

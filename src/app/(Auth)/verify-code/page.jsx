@@ -10,24 +10,24 @@ import '@/styles/OtpInput.css'
 import { useResendCodeMutation, useVerifyCodeMutation } from '@/redux/auth/authApi';
 import { useDispatch } from 'react-redux';
 import { clearStepOne } from '@/redux/auth/userSlice';
-import { useRouter } from 'node_modules/next/navigation';
+import { usePathname, useRouter } from 'node_modules/next/navigation';
 
 
 export default function VerifyCodePage() {
   const [form] = Form.useForm();
   const [otp, setOtp] = useState();
+  const dispatch = useDispatch();
+  const router = useRouter();
+
+
 
   const [verifyCode, {isLoading, error}] = useVerifyCodeMutation();
   const [resendCode, {isLoading: isLoadingResendCode, error: resendCodeError}] = useResendCodeMutation();
 
-  const dispatch = useDispatch();
-  const router = useRouter()
 
   const email = localStorage.getItem('email')
 
-  console.log('from verify page', email);
-
- 
+  const prevPath = localStorage.getItem('previous-pathname')
 
   
   const onChange = text => {
@@ -55,8 +55,15 @@ export default function VerifyCodePage() {
         .then(() =>{
           toast.success('Code verified successfully.');
           dispatch(clearStepOne());
-          localStorage.removeItem('email');
-          router.push('/sign-in')
+          
+          if(prevPath === '/forgot-password') {
+            localStorage.removeItem('previous-pathname')
+            router.push('/reset-password');
+          }
+          else {
+            localStorage.removeItem('email');
+            router.push('/sign-in')
+          }
         })
         .catch((error) => {
           console.log(error)
@@ -81,7 +88,7 @@ export default function VerifyCodePage() {
           
         })
         .catch((error) => {
-          console.log(error)
+          
           toast.error(error?.data?.message);
 
         })
@@ -94,7 +101,7 @@ export default function VerifyCodePage() {
       title="Verify Code"
       subtitle="Please check your email and enter the code."
 
-      backHref="/sign-in"
+      backHref={`${prevPath? "/forgot-password" : "/sign-in"}`}
     >
       <Form form={form} layout="vertical" requiredMark={false} onFinish={onFinish}>
         <div className="pt-6 otp-wrapper">

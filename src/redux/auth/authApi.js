@@ -1,3 +1,4 @@
+// 'use client'
 
 import { baseApi } from '../api/baseApi.js';
 
@@ -61,14 +62,20 @@ const authApi = baseApi.injectEndpoints({
             }),
         }),
 
+
+
         // Get Profile
         getUserProfile: builder.query({
             query: () => ({
                 url: 'auth/me',
                 method: 'GET',
-                // credentials: 'include',
-                providesTags: ['User'],
-            })
+            }),
+            providesTags: ['User'],
+            keepUnusedDataFor: 0,      // delete cached data immediately
+            refetchOnMountOrArgChange: true,
+            refetchOnReconnect: true,
+            refetchOnFocus: true,
+
         }),
 
         // Logout user
@@ -76,15 +83,31 @@ const authApi = baseApi.injectEndpoints({
             query: () => ({
                 url: 'auth/logout',
                 method: 'POST',
-                invalidatesTags: ['User']
-                
+
+
             }),
+            invalidatesTags: ['User'],
         }),
 
 
+        // forgot password
+        forgotPassword: builder.mutation({
+            query: (data) => ({
+                url: 'auth/forgot-password',
+                method: 'POST',
+                body: data,
 
+            })
+        }),
 
-
+        // reset password
+        resetPassword: builder.mutation({
+            query: (data) => ({
+                url: 'auth/reset-password',
+                method: 'POST',
+                body: data,
+            })
+        })
 
 
     }),
@@ -96,8 +119,12 @@ export const {
     useVerifyCodeMutation,
     useResendCodeMutation,
     useLoginUserMutation,
+
     useGetUserProfileQuery,
     useLogoutUserMutation,
+
+    useForgotPasswordMutation,
+    useResetPasswordMutation,
 
 
 } = authApi;

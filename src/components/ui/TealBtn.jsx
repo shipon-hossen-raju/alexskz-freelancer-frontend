@@ -31,6 +31,7 @@ export default function TealBtn({ text, onClick = () => {}, icon = null }) {
     <div className="gold-btn">
       <Button
         onClick={onClick}
+        htmlType="submit"
         className="
           !bg-[#144A6C] !text-white !font-open-sans !border-none
           !rounded-[8px] !font-semibold
