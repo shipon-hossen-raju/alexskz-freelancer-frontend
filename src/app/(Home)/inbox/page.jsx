@@ -7,6 +7,7 @@ import RateReviewModal from "@/components/modals/RateReviewModal";
 import { Search, Video, Paperclip, Send, Download, Play, ChevronLeft } from "lucide-react"
 import { Input } from 'antd';
 import '@/styles/Auth.css'
+import ChatSidebar from "@/components/features/Chat/ChatSidebar";
 
 const MessagingInterface = () => {
     const user = useSelector((state) => state.user.user ?? null);
@@ -40,70 +41,10 @@ const MessagingInterface = () => {
     
 
   <CustomContainer>
-      <div className="flex min-h-screen bg-white rounded-md font-poppins ">
+      <div className="flex h-[80vh] bg-white rounded-md font-poppins ">
         {/* Left Sidebar - Inbox */}
-        <div
-          className={`w-full lg:w-80 border-r border-gray-200 flex flex-col ${
-            mobileView === "sidebar" ? "flex" : "hidden"
-          } lg:flex`}
-        >
-          <div className="p-6">
-            <h1 className="text-2xl font-bold text-gray-900 mb-4">Inbox</h1>
-            <div className="relative">
-              <input
-                type="text"
-                placeholder="Search"
-                className="w-full pl-4 pr-10 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-1 focus:ring-[#144A6C]"
-              />
-              <Search className="absolute right-3 top-2.5 w-5 h-5 text-gray-400" />
-            </div>
-          </div>
-
-          {/* Contact List */}
-          <div className="flex-1 overflow-y-auto">
-            {/* Contact 1 - Online */}
-            <div
-              onClick={handleConversationClick}
-              className="flex items-center gap-3 px-6 py-4 hover:bg-gray-50 cursor-pointer"
-            >
-              <div className="relative">
-                <img
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=ahamad1"
-                  alt="Ahamad musa"
-                  className="w-12 h-12 rounded-full"
-                />
-                <div className="absolute bottom-0 right-0 w-3 h-3 bg-green-500 border-2 border-white rounded-full"></div>
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-gray-900">Ahamad musa</h3>
-                  <span className="text-xs text-gray-500">Online</span>
-                </div>
-                <p className="text-xs text-gray-500 truncate">tur risus ut neque tellus vitae....</p>
-              </div>
-            </div>
-
-            {/* Contact 2 - 6 min ago */}
-            <div
-              onClick={handleConversationClick}
-              className="flex items-center gap-3 px-6 py-4 hover:bg-gray-50 cursor-pointer"
-            >
-              <div className="relative">
-                <img
-                  src="https://api.dicebear.com/7.x/avataaars/svg?seed=ahamad2"
-                  alt="Ahamad musa"
-                  className="w-12 h-12 rounded-full"
-                />
-              </div>
-              <div className="flex-1 min-w-0">
-                <div className="flex items-center justify-between">
-                  <h3 className="text-sm font-semibold text-gray-900">Ahamad musa</h3>
-                  <span className="text-xs text-gray-500">6 min ago</span>
-                </div>
-                <p className="text-xs text-gray-500 truncate">tur risus ut neque tellus vitae....</p>
-              </div>
-            </div>
-          </div>
+        <div>
+          <ChatSidebar />
         </div>
 
         {/* Main Chat Area */}

@@ -4,7 +4,7 @@ import { useRouter, usePathname } from 'next/navigation';
 import { useEffect, useState } from 'react';
 
 const TOKEN_KEY = 'user-token';
-const PROTECTED = ['/profile', '/dashboard']; // exact prefixes to protect
+const PROTECTED = ['/profile', '/inbox']; // exact prefixes to protect
 
 function isProtected(path) {
   return PROTECTED.some(p => path === p || path.startsWith(p + '/'));
