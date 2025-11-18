@@ -10,11 +10,13 @@ import { useLogoutUserMutation } from '@/redux/auth/authApi';
 import { clearUser } from '@/redux/auth/userSlice';
 import { baseApi } from '@/redux/api/baseApi';
 import toast from 'node_modules/react-hot-toast/dist/index';
+import { useSocket } from '@/hooks/useSocket';
 
 
 export default function ProfileDropdown() {
   const dispatch = useDispatch();
   const router = useRouter();
+  const { socket } = useSocket();
   const [logoutUser] = useLogoutUserMutation();
 
   const items = useMemo(
@@ -35,8 +37,12 @@ export default function ProfileDropdown() {
       logoutUser()
         .unwrap()
         .then(() => {
+          if(socket) {
+            socket.disconnect();
+          }
           dispatch(clearUser());
           dispatch(baseApi.util.resetApiState());   // <-- clear all RTK Query cache
+
           router.push('/sign-in');
         })
         .catch((error) => {

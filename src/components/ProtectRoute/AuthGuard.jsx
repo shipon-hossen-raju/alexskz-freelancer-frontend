@@ -20,7 +20,8 @@ export default function AuthGuard({ children }) {
     const token = typeof window !== 'undefined' ? localStorage.getItem(TOKEN_KEY) : null;
 
     if (isProtected(pathname) && !token) {
-      router.replace(`/sign-in?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+      // router.replace(`/sign-in?returnTo=${encodeURIComponent(window.location.pathname + window.location.search)}`);
+      router.replace(`/sign-in`);
       return;
     }
 

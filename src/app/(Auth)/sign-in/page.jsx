@@ -14,12 +14,14 @@ import { useLoginUserMutation } from '@/redux/auth/authApi';
 import { Password } from 'node_modules/@mui/icons-material/index';
 import toast from 'react-hot-toast';
 import { setUser } from '@/redux/auth/userSlice';
+import { useSocket } from '@/hooks/useSocket';
 
 export default function LoginPage() {
   const [form] = Form.useForm();
 
   const dispatch = useDispatch();
   const router = useRouter();
+  const { authenticate } = useSocket();
 
   const [loginUser, {isloading}] = useLoginUserMutation();
 
@@ -40,12 +42,16 @@ export default function LoginPage() {
           const accessToken = res?.data?.token
           if(accessToken) {
             localStorage.setItem("user-token", accessToken)
+            authenticate(accessToken);    //for real time chatting
           }
 
           dispatch(setUser({
             user: payload,
             token: accessToken
           }));
+          
+          const userId = res?.data?.userData?.id
+          localStorage.setItem('user-id', userId);
 
           toast.success('Login successful');
           router.push('/');

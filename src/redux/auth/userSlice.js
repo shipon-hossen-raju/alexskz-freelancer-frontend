@@ -49,6 +49,8 @@ export const userSlice = createSlice({
       state.token = null;
       state.isAuthenticated = false;
       localStorage.removeItem('user-token');
+      localStorage.removeItem('user-id');
+
     },
   },
 });
