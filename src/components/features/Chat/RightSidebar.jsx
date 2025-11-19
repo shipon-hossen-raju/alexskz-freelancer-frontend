@@ -1,6 +1,32 @@
-import React from 'react'
+import React, { useState } from 'react'
+import { Search, Video, Paperclip, Send, Download, Play, ChevronLeft } from "lucide-react"
 
 export default function RightSidebar() {
+
+  
+      const [visible, setVisible] = useState(false);
+  
+      const [mobileView, setMobileView] = useState("sidebar")
+  
+    const openModal = () => setVisible(true);
+    const closeModal = () => setVisible(false);
+  
+    const handleConversationClick = () => {
+      setMobileView("chat")
+    }
+  
+    const handleAvatarClick = () => {
+      setMobileView("profile")
+    }
+  
+    const handleBackToChat = () => {
+      setMobileView("chat")
+    }
+  
+    const handleBackToSidebar = () => {
+      setMobileView("sidebar")
+    }
+  
   return (
     <div>
        
@@ -81,13 +107,13 @@ export default function RightSidebar() {
           </div>
 
           {/* Deliver Button */}
-          <div className="p-6 flex justify-center">
+          {/* <div className="p-6 flex justify-center">
             {role === "Client" ? (
               <TealBtn text="Accept Delivery" onClick={openModal} />
             ) : (
               <TealBtn text="Deliver the project" />
             )}
-          </div>
+          </div> */}
         </div>
     </div>
   )

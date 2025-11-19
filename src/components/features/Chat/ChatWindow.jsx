@@ -7,7 +7,7 @@ import { useSelector } from "react-redux";
 import { useGetUserProfileQuery } from "@/redux/auth/authApi";
 
 
-export default function ChatWindow({ onBack = () => {} }) {
+export default function ChatWindow({ onBack = () => { } }) {
   // --- hooks (declare at top) ---
   const { socket, authenticate } = useSocket();
 
@@ -47,7 +47,7 @@ export default function ChatWindow({ onBack = () => {} }) {
   const scrollToBottom = () => {
     try {
       if (messagesRef.current) messagesRef.current.scrollTop = messagesRef.current.scrollHeight;
-    } catch {}
+    } catch { }
   };
 
   const fetchMessages = (roomToFetch, page = 1) => {
@@ -146,23 +146,27 @@ export default function ChatWindow({ onBack = () => {} }) {
             <ChevronLeft className="w-6 h-6 text-gray-600" />
           </button>
 
-          <div className="flex items-center gap-3">
-            {receiver?.profileImage ? (
-              <img src={receiver.profileImage} alt={receiver.firstName} className="w-12 h-12 rounded-full" />
-            ) : (
-              <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                <span className="text-xl font-semibold">{receiver?.firstName?.[0] ?? "U"}</span>
-              </div>
-            )}
+          {
+            receiver && (
+              <div className="flex items-center gap-3">
+                {receiver?.profileImage ? (
+                  <img src={receiver.profileImage} alt={receiver.firstName} className="w-12 h-12 rounded-full" />
+                ) : (
+                  <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                    <span className="text-xl font-semibold">{receiver?.firstName?.[0]}</span>
+                  </div>
+                )}
 
-            <div>
-              <div className="flex gap-1">
-                <h2 className="text-lg font-semibold text-gray-900">{receiver?.firstName ?? ""}</h2>
-                <h2 className="text-lg font-semibold text-gray-900">{receiver?.lastName ?? ""}</h2>
+                <div>
+                  <div className="flex gap-1">
+                    <h2 className="text-lg font-semibold text-gray-900">{receiver?.firstName ?? ""}</h2>
+                    <h2 className="text-lg font-semibold text-gray-900">{receiver?.lastName ?? ""}</h2>
+                  </div>
+                  {/* <p className="text-sm text-gray-500">Online</p> */}
+                </div>
               </div>
-              <p className="text-sm text-gray-500">Online</p>
-            </div>
-          </div>
+            )
+          }
         </div>
 
         <button className="hidden lg:block p-2 hover:bg-gray-100 rounded-lg">
@@ -179,7 +183,7 @@ export default function ChatWindow({ onBack = () => {} }) {
 
       {/* messages */}
       <div ref={messagesRef} className="flex-1 overflow-auto px-4 py-6 space-y-4 bg-white">
-        {loading && <div className="text-sm text-gray-500 px-2 text-center">Loading messages…</div>}
+        {loading && <div className="text-sm text-gray-500 px-2 text-center">Select an user to start chatting</div>}
         {error && <div className="text-sm text-red-500 px-2">{error}</div>}
 
         {!loading && !error && messages.length === 0 && (
@@ -237,7 +241,7 @@ export default function ChatWindow({ onBack = () => {} }) {
 
       {/* read-only input area (UI only) */}
       <div className="">
-        <MessageInput disabled />
+        <MessageInput  chatRoomId={roomId}/>
       </div>
     </div>
   );

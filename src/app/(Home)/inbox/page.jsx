@@ -9,6 +9,7 @@ import { Input } from 'antd';
 import '@/styles/Auth.css'
 import ChatSidebar from "@/components/features/Chat/ChatSidebar";
 import ChatWindow from "@/components/features/Chat/ChatWindow";
+import RightSidebar from "@/components/features/Chat/RightSidebar";
 
 const MessagingInterface = () => {
     const user = useSelector((state) => state.user.user ?? null);
@@ -54,6 +55,10 @@ const MessagingInterface = () => {
        </div>
 
          {/* Right Sidebar - Profile */}
+
+         <div>
+          <RightSidebar />
+         </div>
       </div>
   
   
