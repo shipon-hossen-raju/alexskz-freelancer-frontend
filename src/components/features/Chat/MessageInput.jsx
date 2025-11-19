@@ -23,17 +23,19 @@ export default function MessageInput({ chatRoomId }) {
 
   const handleChange = info => {
     // keep only last 2 files (same behavior you had before)
-    let newFileList = [...info.fileList].slice(-2);
+    let newFileList = [...info.fileList].slice(-1);
     setFileList(newFileList);
   };
 
   const onFinish = values => {
     const message = values.text;
+    const images = fileList.map(file => file.originFileObj);
 
     if (socket) {
       socket.emit('sendMessage', {
         chatRoomId: chatRoomId,
         message: message,
+        images: images,
 
       })
 
@@ -44,7 +46,7 @@ export default function MessageInput({ chatRoomId }) {
 
     console.log('Send:', {
       text: values.text,
-      images: fileList,
+      images: images,
     });
 
 

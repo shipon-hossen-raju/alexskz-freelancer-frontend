@@ -5,6 +5,7 @@ import { useSocket } from "@/hooks/useSocket";
 import MessageInput from "./MessageInput";
 import { useSelector } from "react-redux";
 import { useGetUserProfileQuery } from "@/redux/auth/authApi";
+import Image from "node_modules/next/image";
 
 
 export default function ChatWindow({ onBack = () => { } }) {
@@ -136,6 +137,8 @@ export default function ChatWindow({ onBack = () => { } }) {
     socket.emit("joinRoom", { receiverId: receiver.id });
   }, [socket, receiver?.id, roomId]);
 
+  console.log('messages from chat: ', messages)
+
   // --- UI render ---
   return (
     <div className="h-screen flex flex-col lg:flex">
@@ -195,15 +198,33 @@ export default function ChatWindow({ onBack = () => { } }) {
           const text = m.message ?? "";
           const date = m.createdAt ? formatDate(m.createdAt) : "";
           const time = m.createdAt ? formatTime(m.createdAt) : "";
-
+          const images = m.images ?? "";
+          
           if (isMe) {
             // sender (right)
             return (
               <div key={m.id} className="flex gap-3 justify-end">
                 <div className="max-w-[44%]">
-                  <div style={{ background: "#EEF8F0" }} className="rounded-2xl rounded-br-none px-4 py-3 break-words">
-                    <p className="text-sm text-gray-800">{text}</p>
-                  </div>
+                  {
+                    text && (
+                      <div style={{ background: "#EEF8F0" }} className="rounded-2xl rounded-br-none px-4 py-3 break-words">
+                        <p className="text-sm text-gray-800">{text}</p>
+                      </div>
+                    )
+                  }
+
+                  {
+                    images && (
+                      images.map((image) => {
+                        // console.log('single msg images: ', image)
+                        return (
+                          <div >
+                            <Image src={image} alt="images" width={100} height={100} className="rounded"/>
+                          </div>
+                        )
+                      })
+                    )
+                  }
                   <p className="text-xs text-gray-400 mt-1 mr-2 text-right">{`${date} ${time}`}</p>
                 </div>
                 {userProfile?.data?.profileImage ? (
@@ -229,9 +250,13 @@ export default function ChatWindow({ onBack = () => { } }) {
               )}
 
               <div className=" max-w-[44%]">
-                <div style={{ background: "#E8EDF0" }} className="rounded-2xl rounded-bl-none px-4 py-3 break-words">
-                  <p className="text-sm text-gray-800">{text}</p>
-                </div>
+                {
+                  text && (
+                    <div style={{ background: "#E8EDF0" }} className="rounded-2xl rounded-bl-none px-4 py-3 break-words">
+                      <p className="text-sm text-gray-800">{text}</p>
+                    </div>
+                  )
+                }
                 <p className="text-xs text-gray-400 mt-1 ml-2">{`${date} — ${time}`}</p>
               </div>
             </div>
@@ -241,7 +266,7 @@ export default function ChatWindow({ onBack = () => { } }) {
 
       {/* read-only input area (UI only) */}
       <div className="">
-        <MessageInput  chatRoomId={roomId}/>
+        <MessageInput chatRoomId={roomId} />
       </div>
     </div>
   );

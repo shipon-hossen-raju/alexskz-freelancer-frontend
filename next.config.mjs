@@ -5,6 +5,11 @@ const nextConfig = {
 	serverActions: {
 		bodySizeLimit: 20 * 1024 * 1024, // 20 MB
 	},
+
+	// Allow Cloudinary images to be used with next/image
+  images: {
+    domains: ['res.cloudinary.com'], // Allow Cloudinary domain
+  },
 };
 
 export default nextConfig;
