@@ -29,19 +29,19 @@ export default function ChatSidebar() {
     setLoading(true);
 
     const onAuthenticated = () => {
-      console.log("[CHAT] authenticated by server");
+      // console.log("[CHAT] authenticated by server");
       socket.emit("getChatUsers");
     };
 
     const onChatUsers = (usersList) => {
-      console.log("[CHAT] getChatUsers event:", usersList);
+      // console.log("[CHAT] getChatUsers event:", usersList);
       setUsers(normalizeChatUsers(usersList));
       setLoading(false);
       setError(null);
     };
 
     const onError = (err) => {
-      console.error("[CHAT] error:", err);
+      // console.error("[CHAT] error:", err);
       setError(err?.message || "Something went wrong");
       setLoading(false);
     };
@@ -133,7 +133,7 @@ export default function ChatSidebar() {
 
   const handleSelectChat = (selectedUser) =>{
 
-    console.log('selectedUser', selectedUser?.user)
+    // console.log('selectedUser', selectedUser?.user)
     const id = selectedUser?.user?.id;
     setSelectedUserId(id);
     setSelectedUser(selectedUser);

@@ -6,12 +6,13 @@ import MessageInput from "./MessageInput";
 import { useSelector } from "react-redux";
 import { useGetUserProfileQuery } from "@/redux/auth/authApi";
 import Image from "node_modules/next/image";
-
+import { ZoomTitleInputModal } from "@/components/modals/ZoomTitleInputModal";
+import { format } from "date-fns";
 
 export default function ChatWindow({ onBack = () => { } }) {
   // --- hooks (declare at top) ---
   const { socket, authenticate } = useSocket();
-
+  const [isZoomModalOpen, setIsZoomModalOpen] = useState(false)
   const [messages, setMessages] = useState([]); // ascending oldest -> newest
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -24,6 +25,7 @@ export default function ChatWindow({ onBack = () => { } }) {
 
   // Redux: selected conversation
   const { receiver, chatRoomId: roomId, unreadMessage } = useSelector((state) => state.chat);
+
 
   // Keep refs for latest room & receiver so socket handlers read latest values
   const roomRef = useRef(roomId);
@@ -104,13 +106,18 @@ export default function ChatWindow({ onBack = () => { } }) {
     };
 
     const onError = (err) => {
-      console.error("[chat] socket error:", err);
+      // console.error("[chat] socket error:", err);
       setError(err?.message || "Socket error");
       setLoading(false);
     };
 
     socket.on("getMessages", onGetMessages);
-    socket.on("receiveMessage", onReceiveMessage);
+    // socket.on("receiveMessage", onReceiveMessage);
+
+    socket.on("receiveMessage", (message) => {
+      console.log("[SOCKET] receiveMessage event triggered");
+      console.log("Message data:", message);
+    });
     socket.on("error", onError);
 
     return () => {
@@ -137,7 +144,13 @@ export default function ChatWindow({ onBack = () => { } }) {
     socket.emit("joinRoom", { receiverId: receiver.id });
   }, [socket, receiver?.id, roomId]);
 
-  console.log('messages from chat: ', messages)
+  const handleSendTitle = async (title) => {
+    // console.log("Title sent:", title)
+    // Add your logic here
+    setIsZoomModalOpen(false);
+  }
+
+  // console.log('messages from chat: ', messages)
 
   // --- UI render ---
   return (
@@ -172,7 +185,7 @@ export default function ChatWindow({ onBack = () => { } }) {
           }
         </div>
 
-        <button className="hidden lg:block p-2 hover:bg-gray-100 rounded-lg">
+        <button onClick={() => setIsZoomModalOpen(true)} className=" p-2 hover:bg-gray-100 rounded-lg cursor-pointer">
           <Video className="w-6 h-6 text-gray-600" />
         </button>
       </div>
@@ -199,7 +212,18 @@ export default function ChatWindow({ onBack = () => { } }) {
           const date = m.createdAt ? formatDate(m.createdAt) : "";
           const time = m.createdAt ? formatTime(m.createdAt) : "";
           const images = m.images ?? "";
-          
+          const meeting = m.meeting ?? "";
+          const meetingTime = m.meeting?.startTime ?? "";
+          const meetingLink = m.meeting?.joinUrl ?? "";
+
+          let formattedMeetingTime = "";
+          if (meetingTime) {
+            const meetingdate = new Date(meetingTime);
+            formattedMeetingTime = format(meetingdate, "EEEE, MMM dd, yyyy • h:mm a");
+          }
+
+          // console.log("single meeting:", meeting)
+
           if (isMe) {
             // sender (right)
             return (
@@ -219,21 +243,50 @@ export default function ChatWindow({ onBack = () => { } }) {
                         // console.log('single msg images: ', image)
                         return (
                           <div >
-                            <Image src={image} alt="images" width={100} height={100} className="rounded"/>
+                            <Image src={image} alt="images" width={100} height={100} className="rounded" />
                           </div>
                         )
                       })
                     )
                   }
+
+                  {
+                    meeting && (
+
+
+                      <div >
+
+                        {/* meeting card */}
+                        <div className="flex flex-col md:flex-row items-center gap-4 border border-gray-200 rounded-xl p-4 max-w-full md:max-w-md shadow-sm">
+                          <div className="bg-blue-500 rounded-lg p-3">
+                            <Video className="w-6 h-6 text-white" />
+                          </div>
+                          <div className="flex-1 text-center md:text-left">
+                            <h4 className="text-sm font-semibold text-gray-900 font-adamina">{meeting.topic ?? "Topic"}</h4>
+                            <p className="text-xs text-gray-500">Zoom Meeting</p>
+                            <p className="text-xs text-gray-500">{formattedMeetingTime}</p>
+                          </div>
+                          <a href={meetingLink} target="_blank" className="bg-[#1DBF73] cursor-pointer text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2">
+                            Join
+                          </a>
+
+                        </div>
+                      </div>
+
+
+                    )
+                  }
                   <p className="text-xs text-gray-400 mt-1 mr-2 text-right">{`${date} ${time}`}</p>
                 </div>
-                {userProfile?.data?.profileImage ? (
-                  <img src={userProfile.data.profileImage} alt={userProfile.data.firstName} className="w-12 h-12 rounded-full" />
-                ) : (
-                  <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                    <span className="text-lg">{userProfile?.data?.firstName?.[0] ?? "U"}</span>
-                  </div>
-                )}
+                {
+                  userProfile?.data?.profileImage ? (
+                    <img src={userProfile.data.profileImage} alt={userProfile.data.firstName} className="w-12 h-12 rounded-full" />
+                  ) : (
+                    <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                      <span className="text-lg">{userProfile?.data?.firstName?.[0] ?? "U"}</span>
+                    </div>
+                  )
+                }
               </div>
             );
           }
@@ -257,6 +310,19 @@ export default function ChatWindow({ onBack = () => { } }) {
                     </div>
                   )
                 }
+
+                {
+                  images && (
+                    images.map((image) => {
+                      // console.log('single msg images: ', image)
+                      return (
+                        <div >
+                          <Image src={image} alt="images" width={100} height={100} className="rounded" />
+                        </div>
+                      )
+                    })
+                  )
+                }
                 <p className="text-xs text-gray-400 mt-1 ml-2">{`${date} — ${time}`}</p>
               </div>
             </div>
@@ -268,6 +334,18 @@ export default function ChatWindow({ onBack = () => { } }) {
       <div className="">
         <MessageInput chatRoomId={roomId} />
       </div>
-    </div>
+
+      {/* Zoom Modal */}
+      <ZoomTitleInputModal
+        isOpen={isZoomModalOpen}
+        onClose={() => setIsZoomModalOpen(false)}
+        chatRoomId={roomId}
+
+      />
+    </div >
   );
 }
+
+
+
+// <p className="text-xs text-gray-400 text-right mr-2">You-9:30</p>

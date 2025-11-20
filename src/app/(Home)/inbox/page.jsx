@@ -56,9 +56,9 @@ const MessagingInterface = () => {
 
          {/* Right Sidebar - Profile */}
 
-         <div>
+         {/* <div>
           <RightSidebar />
-         </div>
+         </div> */}
       </div>
   
   
