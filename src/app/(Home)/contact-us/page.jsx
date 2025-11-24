@@ -8,20 +8,43 @@ import { MailOutlined, PhoneOutlined } from '@ant-design/icons';
 import AuthButton from '@/components/ui/AuthButton';
 import { useState } from 'react';
 import '@/styles/Auth.css'
+import { useGetContactUsQuery, useGetInTouchMutation } from '@/redux/api/legalApi';
+import Loading from '@/components/shared/Loading';
+import toast from 'react-hot-toast';
 
 export default function ContactPage() {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const { data: contactUsData, error: contactUsError, isLoading: contactUsIsLoading } = useGetContactUsQuery();
+    const [getInTouch, { isLoading }] = useGetInTouchMutation();
 
-    const onFinish = async () => {
-        setLoading(true);
-        try {
-            // TODO: send form data
-            message.success('Message sent');
-            form.resetFields();
-        } finally {
-            setLoading(false);
+    if (contactUsIsLoading) {
+        return <Loading />
+    }
+
+    const contactData = contactUsData?.data;
+
+    const onFinish = async (values) => {
+        // console.log('contact us from', values)
+        const payload = {
+            name: values.name,
+            email: values.email,
+            contactNo: values.phone,
+            subject: values.subject,
+            opinions: values.message
         }
+
+        getInTouch(payload)
+            .unwrap()
+            .then(() => {
+                toast.success("Your message is sent successfully!")
+                form.resetFields()
+            })
+            .catch((error) => {
+                // console.log(error)
+                toast.error(error?.data?.message);
+
+            })
     };
 
 
@@ -40,8 +63,15 @@ export default function ContactPage() {
                             </div>
 
                             <div>
-                                <p className='text-[#6F6F6F] font-open-sans'>youremail@gmail.com</p>
-                                <p className='text-[#6F6F6F] font-open-sans'>letstalk@gmail.com</p>
+
+                                {Array.isArray(contactData) && contactData.map(d => {
+                                    if (d?.type !== 'GENERAL') return null;
+                                    return (
+                                        <p key={d.id ?? d.value} className='text-[#6F6F6F] font-open-sans'>
+                                            {d.value ?? ''}
+                                        </p>
+                                    );
+                                })}
                             </div>
                         </div>
 
@@ -139,7 +169,7 @@ export default function ContactPage() {
 
                             {/* Send button */}
                             <div className="pt-1">
-                                <AuthButton text="Send" loading={loading} />
+                                <AuthButton text={isLoading? "Sending..." : "Send" } />
                             </div>
                         </Form>
                     </div>

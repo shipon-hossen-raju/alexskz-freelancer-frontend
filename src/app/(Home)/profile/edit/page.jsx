@@ -12,10 +12,10 @@ import { useSelector } from 'react-redux';
 export default function EditProfilePage() {
       const { data: user, isLoading, isError, error } = useGetUserProfileQuery();
        
-       if (isError) {
+      //  if (isError) {
      
-         throw new Error(error?.data?.message)
-       }
+      //    throw new Error(error?.data?.message)
+      //  }
      
        if (isLoading) {
          return <Loading />

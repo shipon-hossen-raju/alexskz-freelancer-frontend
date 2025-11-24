@@ -20,6 +20,8 @@ export default function ClientProfile() {
     return false; // prevent auto upload
   };
 
+  console.log('avatar',avatar)
+
   return (
     <div className="w-full max-w-xl  p-4">
       <div className="bg-white rounded-[6px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)]">

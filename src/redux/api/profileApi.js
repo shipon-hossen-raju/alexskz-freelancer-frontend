@@ -3,6 +3,15 @@ import { baseApi } from "./baseApi";
 const profileApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
+        // edit profile
+        editProfile: builder.mutation({
+            query: (data) => ({
+                url: 'users/profile-update',
+                method: 'PUT',
+                body: data,
+            })
+        }),
+
         // Change password
         changePassword: builder.mutation({
             query: (data) => ({
@@ -17,6 +26,7 @@ const profileApi = baseApi.injectEndpoints({
 })
 
 export const  {
+    useEditProfileMutation,
     useChangePasswordMutation,
 
 } = profileApi

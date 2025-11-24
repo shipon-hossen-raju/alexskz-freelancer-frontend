@@ -58,7 +58,7 @@ export default function RegisterPageStep2({  }) {
             role: "FREELANCER"
         }
 
-        console.log(payload)
+        // console.log(payload)
         signUpForProfessional(payload)
         .unwrap()
         .then(() => {

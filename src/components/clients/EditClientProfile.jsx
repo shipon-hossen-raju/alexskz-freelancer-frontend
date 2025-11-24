@@ -4,12 +4,40 @@ import React from 'react';
 import { Form, Input } from 'antd';
 import TealBtn from '@/components/ui/TealBtn';
 import '@/styles/Auth.css'
+import { useGetUserProfileQuery } from '@/redux/auth/authApi';
+import Loading from '../shared/Loading';
+import { useEditProfileMutation } from '@/redux/api/profileApi';
+import toast from 'react-hot-toast';
 
 export default function EditClientProfile() {
   const [form] = Form.useForm();
+  const {data: userData, error:userError, isLoading: isUserLoading} = useGetUserProfileQuery();
+  const [editProfile, {isLoading}] = useEditProfileMutation();
+
+  if(isUserLoading) {
+    return <Loading />
+  }
+
+  console.log(userData)
 
   const onFinish = (values) => {
     console.log('Save Changes:', values);
+    const payload = {
+      firstName: values.firstName,
+      lastName: values.lastName,
+      jobTitle: values.job
+    }
+
+    editProfile(payload)
+      .unwrap()
+        .then(()=>{
+          toast.success("Profile updated successfully!")
+          
+        })
+        .catch((error) =>{
+          toast.error(error?.data?.message);
+        })
+
   };
 
   return (
@@ -28,9 +56,9 @@ export default function EditClientProfile() {
             requiredMark={false}
             onFinish={onFinish}
             initialValues={{
-              firstName: 'Asadujjaman',
-              lastName: 'Asadujjaman',
-              email: 'Asadujjaman@gmail.com',
+              firstName: userData?.data?.firstName || "",
+              lastName: userData?.data?.lastName || "",
+              email: userData?.data?.email || "",
             }}
             className="[&_.ant-form-item-label>label]:text-[13px] [&_.ant-form-item]:mb-4"
           >
@@ -39,7 +67,7 @@ export default function EditClientProfile() {
               <Form.Item label="First name" name="firstName">
                 <Input
                   size="large"
-                  placeholder="Asadujjaman"
+                  placeholder=""
                   className="placeholder-poppins"
                 />
               </Form.Item>
@@ -47,7 +75,7 @@ export default function EditClientProfile() {
               <Form.Item label="Last name" name="lastName">
                 <Input
                   size="large"
-                  placeholder="Asadujjaman"
+                  placeholder=""
                   className="placeholder-poppins"
                 />
               </Form.Item>
@@ -67,7 +95,8 @@ export default function EditClientProfile() {
               <Input
                 size="large"
                 type="email"
-                placeholder="Asadujjaman@gmail.com"
+                placeholder="example@gmail.com"
+                disabled
                 className="placeholder-poppins"
               />
             </Form.Item>
@@ -75,7 +104,7 @@ export default function EditClientProfile() {
             {/* Button */}
             <div className="pt-2 flex justify-center">
               {/* If your TealBtn expects children instead of a prop, use: <TealBtn>Save Changes</TealBtn> */}
-              <TealBtn htmlType="submit" text="Save Changes" className="shadow-md" />
+              <TealBtn htmlType="submit" text={isLoading? "Saving..." : "Save Changes"}  />
             </div>
           </Form>
         </div>
