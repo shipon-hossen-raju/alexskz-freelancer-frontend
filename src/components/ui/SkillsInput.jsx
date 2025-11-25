@@ -8,7 +8,7 @@ export default function SkillsInput({   onChange = () => {}, skill }) {
   const [text, setText] = useState('')
   const [skills, setSkills] = useState(Array.isArray(skill) ? skill : [])
 
-  console.log('skills',skill)
+  // console.log('skills',skill)
  
   useEffect(() => {
     setSkills(Array.isArray(skill) ? skill : [])

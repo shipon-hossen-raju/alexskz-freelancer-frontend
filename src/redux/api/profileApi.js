@@ -7,7 +7,7 @@ const profileApi = baseApi.injectEndpoints({
         // edit profile
         editProfile: builder.mutation({
             query: (data) => ({
-                url: 'users/profile-image',
+                url: 'users/profile-update',
                 method: 'PUT',
                 body: data,
             })
