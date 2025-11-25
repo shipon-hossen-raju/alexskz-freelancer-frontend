@@ -4,19 +4,15 @@ import React, { useState, useEffect } from 'react'
 import { Input, Button } from 'antd'
 import { CloseOutlined, PlusOutlined } from '@ant-design/icons'
 
-// Reusable skills input component
-// Props:
-// - value: optional initial array of skills
-// - onChange(skillsArray): called whenever skills change
-// Styling aims to match existing inputs (border-[#E6E6E6], rounded)
-export default function SkillsInput({ value = [], onChange = () => {} }) {
+export default function SkillsInput({   onChange = () => {}, skill }) {
   const [text, setText] = useState('')
-  const [skills, setSkills] = useState(Array.isArray(value) ? value : [])
+  const [skills, setSkills] = useState(Array.isArray(skill) ? skill : [])
 
-  // keep internal skills in sync if parent/form passes a new value
+  console.log('skills',skill)
+ 
   useEffect(() => {
-    setSkills(Array.isArray(value) ? value : [])
-  }, [value])
+    setSkills(Array.isArray(skill) ? skill : [])
+  }, [skill])
 
   const addSkill = () => {
     const trimmed = (text || '').trim()

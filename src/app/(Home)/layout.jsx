@@ -51,7 +51,7 @@ export default function RootLayout({ children }) {
       >
 
         <Providers>
-          <div className=" ">
+          <div className="absolute inset-x-0 top-0 z-50">
             <Header />
           </div>
           

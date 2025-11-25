@@ -3,6 +3,7 @@ import { createApi, fetchBaseQuery } from "@reduxjs/toolkit/query/react";
 const baseQuery = fetchBaseQuery({
 
   
+    // baseUrl: 'https://alexskz-freelancer-backend.vercel.app/api/v1/',
     baseUrl: 'https://alexskz-freelancer-backend.vercel.app/api/v1/',
     //  baseUrl: 'http://10.10.20.2:5005/api/v1/',
 

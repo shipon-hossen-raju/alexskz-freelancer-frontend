@@ -1,11 +1,11 @@
 'use client';
 
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 import Image from 'next/image';
 import { Upload } from 'antd';
 
 // demo images – replace with yours
-import coverPhoto from '@/assets/image/freelancer/coverPhoto.jpg';
+
 import userImg from '@/assets/image/freelancer/user.jpg';
 import { IoIosArrowForward } from "react-icons/io";
 import Paragraph from '../ui/Paragraph';
@@ -21,6 +21,10 @@ import OfferedServicesCard from '../shared/OfferedServicesCard';
 import img from '@/assets/image/popularService.jpg'
 import CreateEditPackageModal from '../modals/CreateEditPackageModal';
 import AddWhatsAppModal from '../modals/AddWhatsAppModal';
+import { useGetUserProfileQuery } from '@/redux/auth/authApi';
+import { useUploadCoverPhotoMutation, useUploadProfileImageMutation } from '@/redux/api/profileApi';
+import toast from 'react-hot-toast';
+import Avatar from "@mui/material/Avatar";
 
 const linkItems = [
     {
@@ -89,8 +93,34 @@ const services = [
 ]
 
 export default function ProfessionalProfile() {
-    const [avatar, setAvatar] = useState(userImg?.src || '');
+
     const [openWhatsAppModal, setopenWhatsAppModal] = useState(false);
+    const [avatar, setAvatar] = useState("");
+    const [coverPhoto, setCoverPhoto] = useState("");
+    const { data: myData, error: myError, isLoading: amILoading, refetch } = useGetUserProfileQuery();
+    const [uploadProfileImage, { isLoading }] = useUploadProfileImageMutation();
+    const [uploadCoverPhoto, { isLoading: isCoverPhotoLoading }] = useUploadCoverPhotoMutation();
+
+    const me = myData?.data;
+    const firstName = me?.firstName || "";
+    const lastName = me?.lastName || "";
+    const name = `${firstName} ${lastName}`.trim();
+    const about = me?.about || "";
+
+    console.log(me)
+
+    useEffect(() => {
+        if (me?.profileImage) {
+            setAvatar(me.profileImage);
+        }
+    }, [me?.profileImage]);
+
+    useEffect(() => {
+        if(me?.cover) {
+            setCoverPhoto(me.cover);
+        }
+    }, [me?.cover])
+
 
     const handleWhatsApp = () => {
         setopenWhatsAppModal(true);
@@ -101,10 +131,71 @@ export default function ProfessionalProfile() {
         setopenWhatsAppModal(false);
     }
 
-    const beforeUpload = (file) => {
-        const reader = new FileReader();
-        reader.onload = (e) => setAvatar(e.target.result);
-        reader.readAsDataURL(file);
+    // profile pic upload
+    const beforeUpload = async (file) => {
+        const isImage = file.type && file.type.startsWith("image/");
+        if (!isImage) {
+            toast.error("You can only upload image files");
+            return Upload.LIST_IGNORE;
+        }
+
+        // show immediate preview using object URL
+        const localPreview = URL.createObjectURL(file);
+        setAvatar(localPreview);
+        const fd = new FormData();
+        fd.append("image", file);
+        try {
+            const res = await uploadProfileImage(fd).unwrap();
+            const returnedUrl = res?.data?.profileImage || res?.profileImage || null;
+            if (returnedUrl) {
+                setAvatar(returnedUrl);
+
+            } else {
+                await refetch();
+            }
+            toast.success("Successfully uploaded!");
+        } catch (err) {
+            console.error("Upload failed:", err);
+            toast.error("Upload failed. Try again.");
+            // optionally revert preview
+            if (me?.profileImage) setAvatar(me.profileImage);
+            else setAvatar("");
+        }
+
+        return false;
+    };
+
+    // cover photo upload
+    const beforeUploadCoverPhoto = async (file) => {
+        const isImage = file.type && file.type.startsWith("image/");
+        if (!isImage) {
+            toast.error("You can only upload image files");
+            return Upload.LIST_IGNORE;
+        }
+
+        // show immediate preview using object URL
+        const localPreview = URL.createObjectURL(file);
+        setCoverPhoto(localPreview);
+        const fdCover = new FormData();
+        fdCover.append("image", file);
+        try {
+            const res = await uploadCoverPhoto(fdCover).unwrap();
+            const returnedUrl = res?.data?.cover || res?.cover || null;
+            if (returnedUrl) {
+                setCoverPhoto(returnedUrl);
+
+            } else {
+                await refetch();
+            }
+            toast.success("Successfully uploaded!");
+        } catch (err) {
+            console.error("Upload failed:", err);
+            toast.error("Upload failed. Try again.");
+            // optionally revert preview
+            if (me?.cover) setCoverPhoto(me.cover);
+            else setCoverPhoto("");
+        }
+
         return false;
     };
 
@@ -126,11 +217,12 @@ export default function ProfessionalProfile() {
                 <div className="relative h-[140px] lg:h-[190px] w-full">
                     <Image src={coverPhoto} alt="cover" fill className="object-cover rounded-[12px]" />
                     <div className="absolute bottom-1 right-1">
-                        <Upload accept="image/*" showUploadList={false} beforeUpload={beforeUpload}>
+                        {/* upload cover photo */}
+                        <Upload accept="image/*" showUploadList={false} beforeUpload={beforeUploadCoverPhoto}>
                             <button
                                 type="button"
                                 aria-label="Upload avatar"
-                                className="w-7 h-7 rounded-full bg-white border border-[#8BCF9A] grid place-items-center shadow-sm"
+                                className="cursor-pointer w-7 h-7 rounded-full bg-white border border-[#8BCF9A] grid place-items-center shadow-sm"
                             >
                                 {/* camera icon */}
                                 <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -148,8 +240,13 @@ export default function ProfessionalProfile() {
                     <div className="relative -mt-12 lg:-mt-15 mb-2 w-[72px] h-[72px] lg:w-[102px] lg:h-[102px]">
                         <div className="relative w-full h-full rounded-full ring-2 ring-[#8BCF9A] overflow-hidden bg-gray-100">
                             {avatar ? (
-                                <Image src={avatar} alt="avatar" fill className="object-cover" />
-                            ) : null}
+
+                                <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
+                            ) : (
+                                <div className="w-full h-full bg-gray-200 grid place-items-center">
+                                    <Avatar sx={{ width: 84, height: 84 }} />
+                                </div>
+                            )}
                         </div>
 
                         {/* camera upload */}
@@ -158,7 +255,7 @@ export default function ProfessionalProfile() {
                                 <button
                                     type="button"
                                     aria-label="Upload avatar"
-                                    className="w-7 h-7 rounded-full bg-white border border-[#8BCF9A] grid place-items-center shadow-sm"
+                                    className="cursor-pointer w-7 h-7 rounded-full bg-white border border-[#8BCF9A] grid place-items-center shadow-sm"
                                 >
                                     {/* camera icon */}
                                     <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
@@ -172,16 +269,14 @@ export default function ProfessionalProfile() {
 
                     <div className='font-open-sans mt-4'>
                         {/* Name */}
-                        <SubHeadingBlack text="Mr. Jhon" />
+                        <SubHeadingBlack text={name} />
 
                         {/* About */}
                         <div className="mt-3">
                             <div className="text-[16px] font-semibold text-[#202020]">About me</div>
 
 
-                            <Paragraph text=" Experienced HR freelancer specializing in recruitment, employee relations, and talent
-                                Experienced HR freelancer specializing in recruitment, employee relations, and talent
-                                Experienced HR freelancer specializing in recruitment,"/>
+                            <Paragraph text={about}/>
                         </div>
 
                         {/* Divider */}
@@ -194,17 +289,17 @@ export default function ProfessionalProfile() {
                                     if (item.id === 3) {
                                         return (
                                             <li key={item.id} className=' mb-4 cursor-pointer' onClick={handleWhatsApp}>
-                                                
-                                                    <div className='flex justify-between items-center'>
-                                                        <div className='flex gap-2 mb-4'>
+
+                                                <div className='flex justify-between items-center'>
+                                                    <div className='flex gap-2 mb-4'>
 
 
-                                                            <Image src={item.icon} alt="icon" />
-                                                            {item.text}
-                                                        </div>
-                                                        <IoIosArrowForward className="text-xl" />
+                                                        <Image src={item.icon} alt="icon" />
+                                                        {item.text}
                                                     </div>
-                                               
+                                                    <IoIosArrowForward className="text-xl" />
+                                                </div>
+
                                                 <hr className='text-[#E9E9E9] ' />
                                             </li>
                                         )
@@ -293,7 +388,7 @@ export default function ProfessionalProfile() {
             />
 
             {/* Add whats app modal */}
-            <AddWhatsAppModal 
+            <AddWhatsAppModal
                 open={openWhatsAppModal}
                 onClose={handleCloseWhatsAppModal}
             />

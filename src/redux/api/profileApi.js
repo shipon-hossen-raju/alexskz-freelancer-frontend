@@ -1,3 +1,4 @@
+'use client'
 import { baseApi } from "./baseApi";
 
 const profileApi = baseApi.injectEndpoints({
@@ -6,7 +7,7 @@ const profileApi = baseApi.injectEndpoints({
         // edit profile
         editProfile: builder.mutation({
             query: (data) => ({
-                url: 'users/profile-update',
+                url: 'users/profile-image',
                 method: 'PUT',
                 body: data,
             })
@@ -20,14 +21,40 @@ const profileApi = baseApi.injectEndpoints({
                 body: data,
             })
         }),
-        
-    
+
+        // upload profile image
+        uploadProfileImage: builder.mutation({
+
+            query: (formData) => ({
+                url: 'users/profile-image',
+                method: 'PUT',
+                body: formData,
+            }),
+
+            invalidatesTags: ['User'],
+        }),
+
+        // upload cover photo for Professional
+        uploadCoverPhoto: builder.mutation({
+
+            query: (formData) => ({
+                url: 'users/profile-cover-image',
+                method: 'PUT',
+                body: formData,
+            }),
+
+            invalidatesTags: ['User'],
+        }),
+
+
     })
 })
 
-export const  {
+export const {
     useEditProfileMutation,
     useChangePasswordMutation,
+    useUploadProfileImageMutation,
+    useUploadCoverPhotoMutation,
 
 } = profileApi
 

@@ -7,13 +7,66 @@ import TealBtn from '@/components/ui/TealBtn';
 import SkillsInput from '@/components/ui/SkillsInput';
 import '@/styles/Auth.css'
 import '@/styles/AntCheckBox.css'
+import Loading from '../shared/Loading';
+import { useGetUserProfileQuery } from '@/redux/auth/authApi';
+import { useEditProfileMutation } from '@/redux/api/profileApi';
+import { useGetAllCategoryQuery } from '@/redux/api/categoryApi';
 
 export default function EditProfessionalProfile() {
     const [form] = Form.useForm();
 
-    const onFinish = (vals) => {
-        console.log('Save Changes:', vals);
+    const { data: userData, error: userError, isLoading: isUserLoading } = useGetUserProfileQuery();
+    const [editProfile, { isLoading }] = useEditProfileMutation();
+    const { data: categoryData, error, isLoading: isCategoryLoading } = useGetAllCategoryQuery()
+
+    if (isUserLoading || isLoading || isCategoryLoading) {
+        return <Loading />
+    }
+
+    const categories = categoryData?.data?.categories
+
+
+    const user = userData?.data;
+    const firstName = user?.firstName;
+    const lastName = user?.lastName;
+    const email = user?.email;
+    const address = user?.address ?? "";
+    const category = user?.category?.title;
+    const experience = user?.experience;
+    const skills = user?.skills || [];
+    const language = user?.language || "";
+    const about = user?.about;
+    const availableOnline = user?.availableOnline || false;
+    const availabilityInPerson = user?.availabilityInPerson || false;
+
+
+
+    console.log('from edit ', skills)
+
+    const onFinish = (values) => {
+        console.log('Save Changes:', values);
+        const payload = {
+            // firstName: values.firstName,
+            // lastName: values.lastName,
+            // jobTitle: values.job
+        }
+
+        editProfile(payload)
+            .unwrap()
+            .then(() => {
+                toast.success("Profile updated successfully!")
+
+            })
+            .catch((error) => {
+                toast.error(error?.data?.message);
+            })
+
     };
+
+    const initialAvailability = [
+        availableOnline ? 'online' : null,
+        availabilityInPerson ? "in-person" : null,
+    ]
 
     return (
         <div>
@@ -28,14 +81,16 @@ export default function EditProfessionalProfile() {
                         requiredMark={false}
                         onFinish={onFinish}
                         initialValues={{
-                            firstName: 'Asadujjaman',
-                            lastName: 'Asadujjaman',
-                            email: 'Asadujjaman@gmail.com',
-                            address: 'Dhaka ,Bangladesh',
+                            firstName: firstName,
+                            lastName: lastName,
+                            email: email,
+                            address: address,
                             skills: [],
-                            experience: '5 years',
-                            language: 'Bengle, English',
-                            about: '',
+                            experience: experience,
+                            language: language,
+                            about: about,
+                            category: category,
+                            availability: initialAvailability,
                         }}
                         className="[&_.ant-form-item-label>label]:text-[13px] [&_.ant-form-item]:mb-4 !font-open-sans"
                     >
@@ -118,9 +173,15 @@ export default function EditProfessionalProfile() {
 
 
                                         <Select size="large" placeholder="Please select a category" className="wa-select">
-                                            <Select.Option value="finance-expert">Finance Expert</Select.Option>
-                                            <Select.Option value="web-developer">Web Developer</Select.Option>
-                                            <Select.Option value="graphic-designer">Graphic Designer</Select.Option>
+                                            {
+                                                categories?.map((category) => {
+
+                                                    return (
+                                                        <Select.Option value={category.id}>{category.title}</Select.Option>
+                                                    )
+
+                                                })
+                                            }
                                         </Select>
 
 
@@ -155,7 +216,7 @@ export default function EditProfessionalProfile() {
 
                                         ]}
                                     >
-                                        <SkillsInput />
+                                        <SkillsInput skill={skills}/>
                                     </Form.Item>
                                 </div>
                             </div>

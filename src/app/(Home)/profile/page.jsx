@@ -24,8 +24,9 @@ export default function ProfilePage() {
   const role = user?.data?.role;
 
   return (
-    <CustomContainer>
-
+    
+    <div>
+       <CustomContainer>
       {
         (role === 'USER') && (
           <ClientProfile />
@@ -39,5 +40,6 @@ export default function ProfilePage() {
       }
 
     </CustomContainer>
+    </div>
   )
 }

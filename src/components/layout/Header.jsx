@@ -46,7 +46,6 @@ export default function Header() {
   const user = !isUnauthorized ? data : null;
   const role = user?.data?.role;
 
-  
 
   // console.log(user)
 
@@ -86,8 +85,8 @@ export default function Header() {
   };
 
   return (
-    <div className="px-2 md:px-4">
-      <nav className="relative z-20 container mx-auto px-2 md:px-4 xl:px-8 py-3 lg:py-4 bg-[#E1E1E1]/50 mt-4 rounded-[20px] border border-[#E1E1E1]">
+    <div className="px-2 md:px-4  w-full">
+      <nav className="w-full relative z-20 container mx-auto px-2 md:px-4 xl:px-8 py-3 lg:py-4 bg-[#E1E1E1]/50 mt-4 rounded-[20px] border border-[#E1E1E1]">
         <div className="flex justify-between items-center">
           {/* logo */}
           <div>
@@ -97,7 +96,7 @@ export default function Header() {
           </div>
 
           {/* search field for Client */}
-          {user && role === 'Client' && (
+          {user && role === 'USER' && (
             <div className="hidden md:block">
               <CustomSearch />
             </div>

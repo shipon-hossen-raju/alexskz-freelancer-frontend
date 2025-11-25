@@ -9,15 +9,23 @@ import SubHeadingBlack from '../ui/SubHeadingBlack'
 import Heading from '../ui/Heading'
 import BookingCard from '../shared/BookingCard'
 import img from '@/assets/image/freelancer/user.jpg'
+import { useGetUserProfileQuery } from '@/redux/auth/authApi'
+import CustomSearch from '../ui/CustomSearch'
 
 const bookings = [
-    { id: 1, name: "Mr. Lee", image:img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "confirmed" },
-    { id: 2, name: "Mr. Lee", image:img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "pending" },
-    { id: 3, name: "Mr. Lee", image:img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "canceled" },
-    { id: 4, name: "Mr. Lee", image:img,  category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "completed" },
+    { id: 1, name: "Mr. Lee", image: img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "confirmed" },
+    { id: 2, name: "Mr. Lee", image: img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "pending" },
+    { id: 3, name: "Mr. Lee", image: img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "canceled" },
+    { id: 4, name: "Mr. Lee", image: img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "completed" },
 ]
 
 export default function ClientHome() {
+    const { data: myData, error: myError, isLoading: amILoading, refetch } = useGetUserProfileQuery();
+    const me = myData?.data;
+    const firstName = me?.firstName || "";
+    const lastName = me?.lastName || "";
+    const name = `${firstName} ${lastName}`.trim();
+    const role = me?.role
 
     const items = [
         {
@@ -52,6 +60,11 @@ export default function ClientHome() {
 
     return (
         <div>
+            {role === 'USER' && (
+                    <div className="pb-6 md:hidden ">
+                        <CustomSearch />
+                    </div>
+                )}
             {/* Heading */}
             <div
                 className="flex w-full items-center gap-4 rounded-2xl p-6 shadow-sm border border-transparent"
@@ -63,13 +76,15 @@ export default function ClientHome() {
                     backgroundRepeat: 'no-repeat',
                 }}
             >
+
+                
                 {/* Waving hand emoji */}
                 <span className="text-3xl">👋</span>
 
                 {/* Text content */}
                 <div className='space-y-2'>
                     <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-[#333333] font-open-sans">
-                        Welcome back, Sujon!
+                        Welcome back, {name}!
                     </h2>
 
                     <Paragraph text="Here's what's happening in your account today" />
@@ -88,12 +103,12 @@ export default function ClientHome() {
 
             {/* upcoming bookings */}
             <div>
-               <div className='flex justify-between items-center'>
-                 <div className='flex-1'>
-                    <Heading text="Upcoming Bookings" />
-                 </div>
-                 <p className=' text-[#030213] font-open-sans bg-[#ECEEF2] p-1 rounded-[8px]'>3 Total</p>
-               </div>
+                <div className='flex justify-between items-center'>
+                    <div className='flex-1'>
+                        <Heading text="Upcoming Bookings" />
+                    </div>
+                    <p className=' text-[#030213] font-open-sans bg-[#ECEEF2] p-1 rounded-[8px]'>3 Total</p>
+                </div>
 
                 {/* booking card */}
                 <div className='grid grid-cols-1 gap-4 mt-10'>
