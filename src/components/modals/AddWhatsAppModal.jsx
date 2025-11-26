@@ -5,30 +5,45 @@ import Heading from '@/components/ui/Heading';
 import TealBtn from '@/components/ui/TealBtn';
 import { useState } from 'react';
 import '@/styles/Auth.css'
+import { useUpdateWhatsAppNumberMutation } from '@/redux/api/profileApi';
+import toast from 'react-hot-toast';
 
 
 const countryOpts = [
-    { value: '+880', label: '🇧🇩  +880' },
     { value: '+1', label: '🇺🇸  +1' },
+    { value: '+880', label: '🇧🇩  +880' },
     { value: '+44', label: '🇬🇧  +44' },
     { value: '+971', label: '🇦🇪  +971' },
 ];
 
-export default function AddWhatsAppModal({
-    open,
-    onClose,
-
-
-}) {
+export default function AddWhatsAppModal({ open, onClose }) {
     const [form] = Form.useForm();
     const [loading, setLoading] = useState(false);
+    const [updateWhatsAppNumber, {isLoading}] = useUpdateWhatsAppNumberMutation();
 
-const onFinish = async (values) => {
+    const onFinish = async (values) => {
+        const phn = (values.phone).trim()
+        const dial = (values.dial).trim()
+        const phoneNum = `${dial}${phn}`.trim();
+        console.log('whats app', phoneNum)
 
-   
-    
-  };
-    
+        const payload = {
+            whatsappNumber: phoneNum
+        };
+
+        updateWhatsAppNumber(payload)
+            .unwrap()
+                .then(() => {
+                    toast.success("What's App number added successfully!")
+                    form.resetFields();
+                    onClose?.();
+                })
+                .catch((err) => {
+                    toast.error(err?.data?.message || err?.message || "Something went wrong!")
+                })
+
+    };
+
 
     return (
         <Modal
@@ -59,7 +74,7 @@ const onFinish = async (values) => {
                         requiredMark={false}
                         onFinish={onFinish}
                         className="mt-6"
-                        initialValues={{ dial: '+880', phone: '' }}
+                        initialValues={{ dial: '+1', phone: '' }}
                     >
 
 
@@ -94,7 +109,7 @@ const onFinish = async (values) => {
                                 >
                                     <Input
                                         style={{ width: 'calc(100% - 120px)' }}
-                                        placeholder="+1 111 467 378 399"
+                                        placeholder="111 467 378 399"
                                     />
                                 </Form.Item>
                             </Input.Group>
@@ -102,7 +117,7 @@ const onFinish = async (values) => {
 
                         <Form.Item>
                             <div className="mt-6 flex justify-center">
-                                <TealBtn text={loading ? 'Saving…' : 'Save'} onClick={onClose}/>
+                                <TealBtn text={isLoading ? 'Saving…' : 'Save'}  />
                             </div>
                         </Form.Item>
                     </Form>

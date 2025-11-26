@@ -25,6 +25,8 @@ import { useGetUserProfileQuery } from '@/redux/auth/authApi';
 import { useUploadCoverPhotoMutation, useUploadProfileImageMutation } from '@/redux/api/profileApi';
 import toast from 'react-hot-toast';
 import Avatar from "@mui/material/Avatar";
+import { useDeleteServiceMutation } from '@/redux/api/serviceApi';
+
 
 const linkItems = [
     {
@@ -61,45 +63,22 @@ const linkItems = [
 
 ]
 
-const services = [
-    {
-        id: 1,
-        img: img,
-        title: "Legal and Justice",
-        desc: "Experienced HR freelancer specializing in recruitment, employee relations, and talent Experienced...",
-        price: "From $100"
-    },
-    {
-        id: 2,
-        img: img,
-        title: "Legal and Justice",
-        desc: "Experienced HR freelancer specializing in recruitment, employee relations, and talent Experienced...",
-        price: "From $100"
-    },
-    {
-        id: 3,
-        img: img,
-        title: "Legal and Justice",
-        desc: "Experienced HR freelancer specializing in recruitment, employee relations, and talent Experienced...",
-        price: "From $100"
-    },
-    {
-        id: 4,
-        img: img,
-        title: "Legal and Justice",
-        desc: "Experienced HR freelancer specializing in recruitment, employee relations, and talent Experienced...",
-        price: "From $100"
-    },
-]
+
 
 export default function ProfessionalProfile() {
-
+    const [serviceId, setServiceId] = useState(null);
+    const [openModal, setOpenModal] = useState(false);
+    const [createModal, setCreateModal] = useState(false);
+    const [editModal, setEditModal] = useState(false);
+    const [heading, setHeading] = useState('')
     const [openWhatsAppModal, setopenWhatsAppModal] = useState(false);
     const [avatar, setAvatar] = useState("");
     const [coverPhoto, setCoverPhoto] = useState("");
     const { data: myData, error: myError, isLoading: amILoading, refetch } = useGetUserProfileQuery();
     const [uploadProfileImage, { isLoading }] = useUploadProfileImageMutation();
     const [uploadCoverPhoto, { isLoading: isCoverPhotoLoading }] = useUploadCoverPhotoMutation();
+    const [deleteService, {isLoading: isDeleteLoading}] = useDeleteServiceMutation();
+
 
     const me = myData?.data;
     const firstName = me?.firstName || "";
@@ -107,7 +86,15 @@ export default function ProfessionalProfile() {
     const name = `${firstName} ${lastName}`.trim();
     const about = me?.about || "";
 
-    console.log(me)
+    const services = me?.Service;
+
+    console.log('me',me)
+    useEffect(() => {
+        if(!me) {
+            return;
+        }
+    }, [me])
+
 
     useEffect(() => {
         if (me?.profileImage) {
@@ -199,15 +186,13 @@ export default function ProfessionalProfile() {
         return false;
     };
 
-    const [openModal, setOpenModal] = useState(false);
-    const [createModal, setCreateModal] = useState(false);
-    const [editModal, setEditModal] = useState(false);
-    const [heading, setHeading] = useState('')
-
+    
 
 
     const handleCloseModal = () => {
         setOpenModal(false);
+        setCreateModal(false);
+        setEditModal(false);
     }
 
     return (
@@ -244,7 +229,7 @@ export default function ProfessionalProfile() {
                                 <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
                             ) : (
                                 <div className="w-full h-full bg-gray-200 grid place-items-center">
-                                    <Avatar sx={{ width: 84, height: 84 }} />
+                                    <Avatar sx={{ width: '100%', height: '100%' }} />
                                 </div>
                             )}
                         </div>
@@ -366,13 +351,16 @@ export default function ProfessionalProfile() {
                 {/* services */}
                 <div className='space-y-8 mt-10'>
                     {
-                        services.map((service) => (
+                        services?.map((service) => {
+                            // setServiceId(service?.id)
+                            return (
                             <OfferedServicesCard service={service} profile={true} onEdit={() => {
                                 setOpenModal(true)
                                 setEditModal(true)
                                 setHeading('Edit Service')
                             }} />
-                        ))
+                        )
+                        })
                     }
                 </div>
 
@@ -384,6 +372,7 @@ export default function ProfessionalProfile() {
                 create={createModal}
                 edit={editModal}
                 heading={heading}
+                // onPublish={() => refetch()}
 
             />
 

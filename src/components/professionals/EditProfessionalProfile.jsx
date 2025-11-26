@@ -27,12 +27,12 @@ export default function EditProfessionalProfile() {
     const user = userData?.data;
     if (!user) return;
 
-    console.log(user)
+    // console.log(user)
 
     // set skills
     const initialSkills = Array.isArray(user.skills) ? user.skills : [];
     setSkills(initialSkills);
-
+    
     // compute availability checkbox array
     const availabilityArray = [
       user.availableOnline ? 'online' : null,
@@ -43,7 +43,7 @@ export default function EditProfessionalProfile() {
     form.setFieldsValue({
       firstName: user.firstName ?? '',
       lastName: user.lastName ?? '',
-    //   email: user.email ?? '',
+      email: user.email ?? '',
       address: user.address ?? '',
       category: user?.category?.id ?? undefined, // select expects id
       experience: user.experience ?? '',

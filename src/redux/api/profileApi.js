@@ -46,6 +46,25 @@ const profileApi = baseApi.injectEndpoints({
             invalidatesTags: ['User'],
         }),
 
+        // add Whats App
+        updateWhatsAppNumber: builder.mutation({
+            query: (data) => ({
+                url: 'users/whatsapp-update',
+                method: 'PUT',
+                body: data,
+
+            }),
+        }),
+
+        // varify account for freelancers via certificate upload
+        uploadCertificate: builder.mutation({
+            query: (formData) => ({
+                url: 'users/certificate',
+                method: 'PUT',
+                body: formData,
+            })
+        })
+
 
     })
 })
@@ -55,6 +74,8 @@ export const {
     useChangePasswordMutation,
     useUploadProfileImageMutation,
     useUploadCoverPhotoMutation,
+    useUpdateWhatsAppNumberMutation,
+    useUploadCertificateMutation,
 
 } = profileApi
 

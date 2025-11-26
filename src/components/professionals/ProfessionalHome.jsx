@@ -1,5 +1,5 @@
 'use client'
-import React, { useState } from 'react'
+import React, { useEffect, useState } from 'react'
 import CustomContainer from '../ui/CustomContainer'
 import Paragraph from '../ui/Paragraph'
 import WhiteBoxCard from '../shared/WhiteBoxCard'
@@ -17,6 +17,7 @@ import img2 from '@/assets/image/freelancer/portfolio.jpg'
 import PortfolioCard from '../shared/PortfolioCard'
 import Heading from '../ui/Heading'
 import Link from 'node_modules/next/link'
+import { useGetUserProfileQuery } from '@/redux/auth/authApi'
 
 
 const items = [
@@ -65,6 +66,13 @@ export default function ProfessionalHome() {
     const [createModal, setCreateModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [heading, setHeading] = useState('');
+    // const { data: userData, error: userError, isLoading: isUserLoading } = useGetUserProfileQuery();
+
+    // useEffect(() =>{
+    //     const user = userData?.data;
+    //     if (!user) return;
+
+    // }, [userData])
 
     const handleCloseModal = () => {
         setOpenModal(false);

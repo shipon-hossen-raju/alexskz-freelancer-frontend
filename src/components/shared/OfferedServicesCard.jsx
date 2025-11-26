@@ -7,17 +7,36 @@ import TealBtn from '../ui/TealBtn'
 import ScheduleAppointmentModal from '../modals/ScheduleAppointmentModal'
 import edit from '@/assets/icons/edit.svg'
 import trash from '@/assets/icons/trash.svg'
+import { useDeleteServiceMutation } from '@/redux/api/serviceApi'
+import toast from 'react-hot-toast'
 
-export default function OfferedServicesCard({ 
-    service, 
+export default function OfferedServicesCard({
+    service,
     profile = false,
     onEdit = () => { },
-    onDelete = () => { }, 
+    onDelete = () => { },
 
 }) {
     const [bookingModal, setBookingModal] = useState(false)
+    const [deleteService, { isLoading: isDeleteLoading }] = useDeleteServiceMutation();
 
-   
+    console.log('services', service?.id)
+
+    const handleDeleteService = () => {
+        if (profile) {
+            const payload = service?.id
+            deleteService(payload)
+                .unwrap()
+                .then((res) => {
+                    toast.success("Successfully Deleted!")
+                })
+                .catch((err) => {
+                    toast.error(err?.data?.message || err?.message || "Failed")
+                })
+
+        }
+    }
+
 
 
 
@@ -30,12 +49,12 @@ export default function OfferedServicesCard({
         <div className='flex flex-col md:flex-row gap-4 justify-between items-center md:items-start   bg-white border border-[#E5E5E5] rounded-[10px] p-2'>
             <div className='flex flex-col md:flex-row gap-4 '>
                 <div className='flex justify-center md:justify-start  '>
-                    <Image src={service.img} alt="image" className='rounded-[10px] w-[137px] min-h-[127px] object-cover' />
+                    <Image src={service.thumbnail} alt="image" className='rounded-[10px] w-[137px] min-h-[127px] object-cover' width={100} height={100} />
                 </div>
                 <div className='flex flex-col gap-2 justify-between items-center md:items-start flex-1'>
                     <h3 className='font-open-sans font-semibold text-black text-xl'>{service.title}</h3>
-                    <Paragraph text={service.desc} />
-                    <GreenPara text={service.price} />
+                    <Paragraph text={service.description} />
+                    <GreenPara text={`${service.price}$`} />
                 </div>
             </div>
 
@@ -43,30 +62,30 @@ export default function OfferedServicesCard({
 
             <div>
                 {
-                profile && (
-                    <div className="flex items-center gap-1">
-                        <button onClick={onEdit}  className="cursor-pointer p-1 rounded-md hover:bg-gray-100 focus:outline-none">
-                            <Image src={edit} alt="icon" className="w-10"/>
+                    profile && (
+                        <div className="flex items-center gap-1">
+                            <button onClick={onEdit} className="cursor-pointer p-1 rounded-md hover:bg-gray-100 focus:outline-none">
+                                <Image src={edit} alt="icon" className="w-10" />
 
-                        </button>
+                            </button>
 
-                        <button onClick={() => onDelete(id)}  className="cursor-pointer p-1 rounded-md hover:bg-gray-100 focus:outline-none">
-                            <Image src={trash} alt="icon" className="w-10"/>
-                        </button>
-                    </div>
-                )
-            }
+                            <button onClick={handleDeleteService} className="cursor-pointer p-1 rounded-md hover:bg-gray-100 focus:outline-none">
+                                <Image src={trash} alt="icon" className="w-10" />
+                            </button>
+                        </div>
+                    )
+                }
             </div>
 
             <div>
                 {
-                !profile && (
-                    <div>
-                        <TealBtn text="Book now" onClick={handleBooking} />
-                    </div>
+                    !profile && (
+                        <div>
+                            <TealBtn text="Book now" onClick={handleBooking} />
+                        </div>
 
-                )
-            }
+                    )
+                }
             </div>
             {/* Shcedule Modal */}
             <ScheduleAppointmentModal
