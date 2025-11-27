@@ -8,52 +8,35 @@ import img from '@/assets/image/freelancer/portfolio.jpg'
 import Heading from '@/components/ui/Heading'
 import TealBtn from '@/components/ui/TealBtn';
 import AddEditProjectModal from '@/components/modals/AddEditProjectModal';
+import { useGetMyProjectsQuery } from '@/redux/api/portfolioApi';
+import Loading from '@/components/shared/Loading';
 
 export default function PortfolioPage() {
 
-  const list = [
-    {
-      id: 1,
-      title: 'Legal Consultancy Website Design',
-      description:
-        'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-      imgSrc: img,
-      showPlay: false,
-    },
-    {
-      id: 2,
-      title: 'Legal Consultancy Website Design',
-      description:
-        'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-      imgSrc: img,
-      showPlay: false,
-    },
-    {
-      id: 3,
-      title: 'Legal Consultancy Website Design',
-      description:
-        'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-      imgSrc: img,
-      showPlay: false,
-    },
-    {
-      id: 4,
-      title: 'Legal Consultancy Website Design',
-      description:
-        'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-      imgSrc: img,
-      showPlay: true,
-    },
-  ]
+ 
 
   // for create and edit project
   const [openModal, setOpenModal] = useState(false);
   const [createModal, setCreateModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [heading, setHeading] = useState('');
+  const [selectedProject, setSelectedProject] = useState(null);
+  const { data: projectData, isLoading } = useGetMyProjectsQuery();
+
+  
+
+  if(isLoading){
+    return <Loading />
+  }
+
+  const projects = projectData?.data?.projects;
+  // console.log('projects', projects)
 
   const handleCloseModal = () => {
     setOpenModal(false);
+    setCreateModal(false);
+    setEditModal(false);
+    setSelectedProject(null);
   }
 
 
@@ -75,25 +58,25 @@ export default function PortfolioPage() {
           onClick={() => {
             setOpenModal(true)
             setCreateModal(true)
+            setEditModal(false);
             setHeading('Add New Projects')
+            setSelectedProject(null);
           }}
         />
       </div>
       <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
-        {list.map((it) => (
+        {projects.map((project) => (
           <PortfolioCard
-            key={it.id}
-            id={it.id}
-            title={it.title}
-            description={it.description}
-            imgSrc={it.imgSrc}
-            imgAlt={it.title}
-            showPlay={it.showPlay}
+            key={project.id ?? project._id ?? idx}
+            project={project}
+
             onView={(id) => console.log('view', id)}
-            onEdit={() => {
+            onEdit={(p) => {
               setOpenModal(true)
               setEditModal(true)
+              setCreateModal(false);
               setHeading('Edit Projects')
+              setSelectedProject(p);
             }}
             onDelete={(id) => console.log('delete', id)}
             profile={true}
@@ -109,6 +92,7 @@ export default function PortfolioPage() {
         create={createModal}
         edit={editModal}
         heading={heading}
+        project={selectedProject}
       />
     </CustomContainer>
   )

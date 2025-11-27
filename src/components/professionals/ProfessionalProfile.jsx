@@ -66,7 +66,7 @@ const linkItems = [
 
 
 export default function ProfessionalProfile() {
-    const [serviceId, setServiceId] = useState(null);
+    const [serviceToEdit, setServiceToEdit] = useState(null);
     const [openModal, setOpenModal] = useState(false);
     const [createModal, setCreateModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
@@ -358,6 +358,7 @@ export default function ProfessionalProfile() {
                                 setOpenModal(true)
                                 setEditModal(true)
                                 setHeading('Edit Service')
+                                setServiceToEdit(service)
                             }} />
                         )
                         })
@@ -372,6 +373,7 @@ export default function ProfessionalProfile() {
                 create={createModal}
                 edit={editModal}
                 heading={heading}
+                serviceData={serviceToEdit}
                 // onPublish={() => refetch()}
 
             />

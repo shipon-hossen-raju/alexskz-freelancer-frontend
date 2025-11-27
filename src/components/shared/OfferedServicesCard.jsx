@@ -20,7 +20,7 @@ export default function OfferedServicesCard({
     const [bookingModal, setBookingModal] = useState(false)
     const [deleteService, { isLoading: isDeleteLoading }] = useDeleteServiceMutation();
 
-    console.log('services', service?.id)
+    // console.log('services', service?.id)
 
     const handleDeleteService = () => {
         if (profile) {

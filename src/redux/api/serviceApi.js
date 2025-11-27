@@ -14,6 +14,17 @@ const serviceApi = baseApi.injectEndpoints({
         invalidatesTags: (result, error, arg) => ['User'],
     }),
 
+    // update service
+    updateService: builder.mutation({
+        query:({id, formData}) => ({
+            url: `service/${id}`,
+            method: 'PUT',
+            body: formData,
+        }),
+        invalidatesTags: (result, error, arg) => ['User'],
+    }),
+
+
     // delete service
     deleteService: builder.mutation({
         query: (id) => ({
@@ -31,6 +42,8 @@ const serviceApi = baseApi.injectEndpoints({
 export const {
    
     useCreateServiceMutation,
+    useUpdateServiceMutation,
     useDeleteServiceMutation,
+
     
 } = serviceApi;
