@@ -61,9 +61,10 @@ export default function RegisterPageStep2({  }) {
         // console.log(payload)
         signUpForProfessional(payload)
         .unwrap()
-        .then(() => {
+        .then((res) => {
           toast.success('Account created successfully');
           localStorage.setItem('email', payload.email)
+          localStorage.setItem('role', payload.role)
           router.push('/verify-code');
        
         })

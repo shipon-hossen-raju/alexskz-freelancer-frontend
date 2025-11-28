@@ -3,7 +3,7 @@ export const pricingPlans = [
     id: "basic",
     title : 'Launch — Get started',
     blurb : 'Everything you need to get listed, chat, and start collecting reviews.',
-    price : 6,
+    price : 0,
     currency : 'EUR',
     period : 'month',
     billedText : 'Billed monthly',

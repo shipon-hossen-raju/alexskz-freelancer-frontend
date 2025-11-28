@@ -4,7 +4,7 @@ import AuthButton from "@/components/ui/AuthButton";
 import TealBtn from "@/components/ui/TealBtn";
 import Link from "next/link";
 
-export default function PricingCard({ plan }) {
+export default function PricingCard({ plan, BeSeller = false }) {
 
     console.log(plan)
     return (
@@ -66,7 +66,7 @@ export default function PricingCard({ plan }) {
             {/* CTA */}
             <div className=" mt-4">
                 <Link
-            href={`/payment/${plan.id}`}
+            href={BeSeller? 'sign-up' : `/payment/${plan.id}`}
             className="block bg-[#144A6C] text-white font-open-sans font-semibold !w-full py-2 text-center 2xl:text-[18px] rounded-[6px]"
             >
                 

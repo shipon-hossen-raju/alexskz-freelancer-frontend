@@ -34,6 +34,7 @@ export default function AddEditProjectModal({
   const [createProject, { isLoading: creating }] = useCreateProjectMutation();
   const [updateProject, { isLoading: updating }] = useUpdateProjectMutation();
 
+
   // Normalize incoming (local) file entry to ensure consistent shape
   const normalizeFile = (f) => {
     // If it already has url (remote), keep it
@@ -47,7 +48,9 @@ export default function AddEditProjectModal({
     };
   };
 
-//   console.log('project', project)
+  // console.log('project', project)
+  // console.log('create', create)
+
   // Prefill form and file-lists when editing
   useEffect(() => {
     if (edit && project) {

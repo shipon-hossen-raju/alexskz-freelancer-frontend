@@ -64,7 +64,7 @@ export default function PortfolioPage() {
           }}
         />
       </div>
-      <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
+      <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14 ">
         {projects.map((project) => (
           <PortfolioCard
             key={project.id ?? project._id ?? idx}

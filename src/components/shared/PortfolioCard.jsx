@@ -26,7 +26,7 @@ export default function PortfolioCard({
 }) {
     const [open, setOpen] = useState(false);
     const [deleteProject, { isLoading }] = useDeleteProjectMutation();
-    console.log('project for delte', project)
+    // console.log('project for delte', project)
 
     const handleDeleteProject = () => {
         if (profile) {
@@ -48,23 +48,26 @@ export default function PortfolioCard({
     }
 
     return (
-        <article className="flex flex-col  overflow-hidden">
+        <div className="flex flex-col  overflow-hidden ">
 
 
             {/* image */}
-            <div className='relative ' style={{
-                // background: 'linear-gradient(135deg, rgba(254,99,110,0.85) 0%, rgba(251,140,0,0.85) 100%)',
-
-            }}>
-
+            <div className="relative aspect-[16/9] w-full rounded-[10px] overflow-hidden">
                 {isVideo(project?.thumbnail) ? (
-                    <video src={project?.thumbnail} className="rounded-[10px] w-full" controls poster="" />) : (
-                    <Image src={project?.thumbnail} alt={title} className="rounded-[10px]" width={200} height={100} />
-
+                    <video
+                        src={project?.thumbnail}
+                        className="absolute inset-0 w-full h-full object-cover"
+                        controls
+                        playsInline
+                    />
+                ) : (
+                    <Image
+                        src={project?.thumbnail}
+                        alt={title}
+                        fill
+                        className="object-cover"
+                    />
                 )}
-
-
-
             </div>
 
 
@@ -105,7 +108,7 @@ export default function PortfolioCard({
                 onClose={() => setOpen(false)}
                 project={project}
             />
-        </article>
+        </div>
     )
 }
 

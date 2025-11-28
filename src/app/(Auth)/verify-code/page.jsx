@@ -21,15 +21,16 @@ export default function VerifyCodePage() {
 
 
 
-  const [verifyCode, {isLoading, error}] = useVerifyCodeMutation();
-  const [resendCode, {isLoading: isLoadingResendCode, error: resendCodeError}] = useResendCodeMutation();
+  const [verifyCode, { isLoading, error }] = useVerifyCodeMutation();
+  const [resendCode, { isLoading: isLoadingResendCode, error: resendCodeError }] = useResendCodeMutation();
 
 
   const email = localStorage.getItem('email')
+  const role = localStorage.getItem('role')
 
   const prevPath = localStorage.getItem('previous-pathname')
 
-  
+
   const onChange = text => {
     console.log('onChange:', text);
     setOtp(text)
@@ -44,7 +45,7 @@ export default function VerifyCodePage() {
   };
 
   const onFinish = async () => {
-    
+
     const payload = {
       email: email,
       verificationCode: otp,
@@ -52,47 +53,52 @@ export default function VerifyCodePage() {
 
     verifyCode(payload)
       .unwrap()
-        .then(() =>{
-          toast.success('Code verified successfully.');
-          dispatch(clearStepOne());
-          
-          if(prevPath === '/forgot-password') {
-            localStorage.removeItem('previous-pathname')
-            router.push('/reset-password');
-          }
-          else {
-            localStorage.removeItem('email');
-            router.push('/sign-in')
-          }
-        })
-        .catch((error) => {
-          console.log(error)
-          toast.error(error?.data?.message);
+      .then((res) => {
+        toast.success('Code verified successfully.');
+        dispatch(clearStepOne());
+        console.log('from verify code', res)
 
-        })
-   
+        if (prevPath === '/forgot-password') {
+          localStorage.removeItem('previous-pathname')
+          router.push('/reset-password');
+        }
+        else {
+          localStorage.removeItem('email');
+          if (role === 'FREELANCER') {
+            router.push('/price');
+          } else {
+            router.push('/sign-in');
+          }
+        }
+      })
+      .catch((error) => {
+        console.log(error)
+        toast.error(error?.data?.message);
+
+      })
+
   };
 
-  const handleResendOTP = ()=> {
-     const payload = {
+  const handleResendOTP = () => {
+    const payload = {
       email: email,
-      
+
     }
 
     resendCode(payload)
       .unwrap()
-        .then(() =>{
-          toast.success('Code resent.');
-          
+      .then(() => {
+        toast.success('Code resent.');
 
-          
-        })
-        .catch((error) => {
-          
-          toast.error(error?.data?.message);
 
-        })
-   
+
+      })
+      .catch((error) => {
+
+        toast.error(error?.data?.message);
+
+      })
+
   }
 
 
@@ -101,18 +107,18 @@ export default function VerifyCodePage() {
       title="Verify Code"
       subtitle="Please check your email and enter the code."
 
-      backHref={`${prevPath? "/forgot-password" : "/sign-in"}`}
+      backHref={`${prevPath ? "/forgot-password" : "/sign-in"}`}
     >
       <Form form={form} layout="vertical" requiredMark={false} onFinish={onFinish}>
         <div className="pt-6 otp-wrapper">
-      
+
           <Form.Item
             name="code"
             // rules={[{ required: true, message: 'Please enter the OTP digit' }]}
             className=" text-center"
           >
-            <Input.OTP length={5} {...sharedProps} 
-            
+            <Input.OTP length={5} {...sharedProps}
+
             />
 
           </Form.Item>
@@ -127,15 +133,15 @@ export default function VerifyCodePage() {
           {/* </Link> */}
         </div>
 
-        
+
       </Form>
 
       <p className="mt-4 text-[12px] text-[#9F9C96]">
-          Didn’t receive it? Wait a few minutes or <br />
-          <button onClick={handleResendOTP} className="cursor-pointer !text-[#595D62] text-sm !underline hover:!text-[#144A6C]">
-            resend the code.
-          </button>
-        </p>
+        Didn’t receive it? Wait a few minutes or <br />
+        <button onClick={handleResendOTP} className="cursor-pointer !text-[#595D62] text-sm !underline hover:!text-[#144A6C]">
+          resend the code.
+        </button>
+      </p>
     </AuthShell>
   );
 }

@@ -16,16 +16,17 @@ import { useGetAboutUsQuery } from '@/redux/api/legalApi';
 import Loading from '@/components/shared/Loading';
 
 export default function AboutUsPage() {
-  const {data, isError, error, isLoading} = useGetAboutUsQuery();
+  const { data, isError, error, isLoading } = useGetAboutUsQuery();
 
-  if(isLoading) {
+  if (isLoading) {
     return <Loading />
   }
 
-  if(isError) {
-    throw new Error (error?.data?.message)
+  if (isError) {
+    throw new Error(error?.data?.message)
   }
 
+  const content = data?.data?.content;
   // console.log(data?.data?.content)
   return (
     <CustomContainer>
@@ -93,7 +94,13 @@ export default function AboutUsPage() {
             </div>
 
             {/* <Paragraph text="We believe every professional deserves the opportunity to showcase their talent and connect with the right clients. Our platform bridges the gap between freelancers and businesses, making collaboration seamless, transparent, and rewarding..." /> */}
-            <Paragraph text={data?.data?.content} />
+            
+            <div
+              dangerouslySetInnerHTML={{
+                __html: content || 'No About us available.',
+              }}
+              className="text-justify"
+            ></div>
 
             <div className="mt-6">
               <StatsSection />

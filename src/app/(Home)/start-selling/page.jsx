@@ -22,7 +22,7 @@ export default function BeSellerPage() {
           title="Turn Your Skills Into Opportunities"
           subtitle="Join our network of vetted professionals to showcase your expertise, connect with clients, and collaborate on high-impact projects."
           actionText="Join as a Pro"
-          actionHref="/start-selling"
+          actionHref="/sign-up"
           overlayClass="bg-black/35" 
         />
       </div>
@@ -36,7 +36,7 @@ export default function BeSellerPage() {
 
       {/* Pricing Section */}
       <div>
-        <PricingSection/>
+        <PricingSection BeSeller={true}/>
       </div>
 
     </CustomContainer>

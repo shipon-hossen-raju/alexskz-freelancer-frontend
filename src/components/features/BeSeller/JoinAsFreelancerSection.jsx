@@ -3,6 +3,7 @@
 import Image from 'next/image';
 import TealBtn from '@/components/ui/TealBtn';
 import freelancerImg from '@/assets/image/freelancer2.jpg'; // <-- your image
+import Link from 'node_modules/next/link';
 
 export default function JoinAsFreelancerSection() {
   const items = [
@@ -67,7 +68,9 @@ export default function JoinAsFreelancerSection() {
             {/* CTA button */}
             <div className="mt-10 ">
               <div className="">
-                <TealBtn text="Join as a Pro" />
+                <Link href="/sign-up">
+                  <TealBtn text="Join as a Pro" />
+                </Link>
               </div>
             </div>
            </div>

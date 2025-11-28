@@ -18,6 +18,8 @@ import PortfolioCard from '../shared/PortfolioCard'
 import Heading from '../ui/Heading'
 import Link from 'node_modules/next/link'
 import { useGetUserProfileQuery } from '@/redux/auth/authApi'
+import Loading from '../shared/Loading'
+import { useGetMyProjectsQuery } from '@/redux/api/portfolioApi'
 
 
 const items = [
@@ -66,6 +68,16 @@ export default function ProfessionalHome() {
     const [createModal, setCreateModal] = useState(false);
     const [editModal, setEditModal] = useState(false);
     const [heading, setHeading] = useState('');
+    const [selectedProject, setSelectedProject] = useState(null);
+    const { data: projectData, isLoading } = useGetMyProjectsQuery();
+
+
+
+    if (isLoading) {
+        return <Loading />
+    }
+
+    const projects = projectData?.data?.projects;
     // const { data: userData, error: userError, isLoading: isUserLoading } = useGetUserProfileQuery();
 
     // useEffect(() =>{
@@ -76,6 +88,9 @@ export default function ProfessionalHome() {
 
     const handleCloseModal = () => {
         setOpenModal(false);
+        setCreateModal(false);
+        setEditModal(false);
+        setSelectedProject(null);
     }
 
 
@@ -178,35 +193,36 @@ export default function ProfessionalHome() {
 
                 {/* portfolios */}
 
-                <div className='flex flex-col md:flex-row justify-between my-10'>
+                <div className='flex flex-col gap-4 md:flex-row justify-between my-10'>
                     {/* heading */}
                     <Heading text="Your Latest Projects" />
-                    <TealBtn text="Manage Portfolio" />
+                    <Link href="/profile/portfolio">
+                        <TealBtn text="Manage Portfolio" />
+                    </Link>
 
 
 
                 </div>
 
                 <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
-                    {list.map((it) => (
-                        <PortfolioCard
-                            key={it.id}
-                            id={it.id}
-                            title={it.title}
-                            description={it.description}
-                            imgSrc={it.imgSrc}
-                            imgAlt={it.title}
-                            showPlay={it.showPlay}
-                            onView={(id) => console.log('view', id)}
-                            onEdit={() => {
-                                setOpenModal(true)
-                                setEditModal(true)
-                                setHeading('Edit Projects')
-                            }}
-                            onDelete={(id) => console.log('delete', id)}
-                            profile={true}
-                        />
-                    ))}
+                    {projects.map((project) => (
+                              <PortfolioCard
+                                key={project.id ?? project._id ?? idx}
+                                project={project}
+                    
+                                onView={(id) => console.log('view', id)}
+                                onEdit={(p) => {
+                                  setOpenModal(true)
+                                  setEditModal(true)
+                                  setCreateModal(false);
+                                  setHeading('Edit Projects')
+                                  setSelectedProject(p);
+                                //   console.log('p-', p)
+                                }}
+                                onDelete={(id) => console.log('delete', id)}
+                                profile={true}
+                              />
+                            ))}
                 </div>
 
                 {/* modal */}
@@ -216,6 +232,7 @@ export default function ProfessionalHome() {
                     create={createModal}
                     edit={editModal}
                     heading={heading}
+                    project={selectedProject}
                 />
 
             </CustomContainer>
@@ -229,9 +246,9 @@ export default function ProfessionalHome() {
                     <p className="text-gray-400 text-opacity-100 text-lg mb-8">
                         Get verified and boost your visibility to attract more clients today.
                     </p>
-                   <Link href="/profile/verify-account">
-                   <TealBtn text="Verify Now"/>
-                   </Link>
+                    <Link href="/profile/verify-account">
+                        <TealBtn text="Verify Now" />
+                    </Link>
                 </div>
             </div>
         </>

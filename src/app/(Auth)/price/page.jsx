@@ -20,7 +20,7 @@ export default function PricePage() {
       {/* close button */}
       <CloseBtn path="/sign-up" />
 
-      <div>
+      <div className='pb-10'>
         <PricingSection />
       </div>
     </div>
