@@ -29,6 +29,8 @@ export default function ConfirmBookingModal({
   const role1 ='For me'
   const role2 = 'For Others'
 
+  console.log('from booking ...', slot)
+
   const submit = async () => {
     try {
       const values = await form.validateFields();
@@ -58,12 +60,12 @@ export default function ConfirmBookingModal({
             Enter your contact info so your freelancer can reach you easily
           </p>
 
-          {/* {slot && (
+          {slot && (
             <p className="mt-2 text-[12px] text-gray-600 ">
               Selected: <span className="font-semibold">{slot.dayLabel}</span>, {slot.date} at{' '}
               <span className="font-semibold">{slot.time}</span>
             </p>
-          )} */}
+          )}
         </div>
 
        <div className='mt-10'>

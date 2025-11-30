@@ -29,8 +29,8 @@ export const MobileMenuItemsForLoginUser = [
   {
     key: '4',
     label: (
-      <Link href="/services">
-        Certified Services
+      <Link href="/explore">
+        Explore
       </Link>
     ),
   },

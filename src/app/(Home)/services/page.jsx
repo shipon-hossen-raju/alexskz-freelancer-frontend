@@ -8,30 +8,27 @@ import SearchWithFilter from '@/components/ui/SearchWithFilter'
 import PopularServiceCard from '@/components/features/explore/PopularServiceCard'
 import img1 from '@/assets/image/popularService.jpg';
 import CustomPagenation from '@/components/shared/CustomPagenation'
+import { useGetCertifiedServicesQuery } from '@/redux/api/serviceApi'
+import Loading from '@/components/shared/Loading'
 // import { Pagination } from 'antd';
 // import '@/styles/Pagination.css'
 
-const services = [
-    { id: 1, title: 'Legal and Justice', priceFrom: "$100", cover: img1, href: '/services/legal' },
-    { id: 2, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 3, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 4, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 5, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 6, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 7, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 8, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 9, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 10, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 11, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 12, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 13, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 14, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-    { id: 15, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-];
+
 
 export default function ServicesPage() {
     const [currentPage, setCurrentPage] = useState(1)
+    const { data: certifiedServicesData, isLoading, isError } = useGetCertifiedServicesQuery();
 
+    if (isLoading) {
+        return <Loading/>
+    }
+    const services = certifiedServicesData?.data?.result || [];
+
+    console.log('certified', certifiedServicesData)
+
+    if( isError || services.length === 0){
+        return <div>No Certified Service Found</div>
+    }
     
     const page_size = 10;
 
@@ -80,7 +77,7 @@ export default function ServicesPage() {
             <div>
                 <div className="grid gap-6 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
                     {pageItems.map((s) => (
-                        <PopularServiceCard key={s.id} {...s} />
+                        <PopularServiceCard key={s.id} service={s} />
                     ))}
                 </div>
 

@@ -1,6 +1,7 @@
 import {combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from './auth/userSlice'
 import chatReducer from './slices/messageSlice'
+import bookingReducer from './slices/bookingSlice'
 import storage from 'redux-persist/lib/storage'
 import { baseApi } from './api/baseApi'
 
@@ -17,6 +18,7 @@ import {
 
 import { createTransform } from 'redux-persist';
 
+
 // Transform: inbound (to storage) => remove initialRole
 const removeInitialRoleTransform = createTransform(
  
@@ -30,7 +32,7 @@ const removeInitialRoleTransform = createTransform(
     
     return { initialRole: null, ...outboundState };
   },
-  { whitelist: ['user'] } 
+  { whitelist: ['user', 'booking'] } 
 );
 
 const persistConfig = {
@@ -44,6 +46,7 @@ const persistConfig = {
 const persistedReducer = persistReducer(persistConfig, combineReducers({
     user: userReducer,
     chat: chatReducer,
+    booking: bookingReducer,
     [baseApi.reducerPath]: baseApi.reducer,
 }))
 

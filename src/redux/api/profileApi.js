@@ -4,13 +4,28 @@ import { baseApi } from "./baseApi";
 const profileApi = baseApi.injectEndpoints({
     endpoints: (builder) => ({
 
+        // get freeLancer home
+        getFreelancerHome: builder.query({
+            query: () => ({
+                url: 'users/freelancer-home',
+                method: 'GET',
+            }),
+            providesTags: ['User'],
+            keepUnusedDataFor: 0,      // delete cached data immediately
+            refetchOnMountOrArgChange: true,
+            refetchOnReconnect: true,
+            refetchOnFocus: true,
+
+        }),
+
         // edit profile
         editProfile: builder.mutation({
             query: (data) => ({
                 url: 'users/profile-update',
                 method: 'PUT',
                 body: data,
-            })
+            }),
+            invalidatesTags: ['User'],
         }),
 
         // Change password
@@ -70,6 +85,7 @@ const profileApi = baseApi.injectEndpoints({
 })
 
 export const {
+    useGetFreelancerHomeQuery,
     useEditProfileMutation,
     useChangePasswordMutation,
     useUploadProfileImageMutation,

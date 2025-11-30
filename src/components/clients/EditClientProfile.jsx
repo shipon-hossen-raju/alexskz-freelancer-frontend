@@ -8,11 +8,13 @@ import { useGetUserProfileQuery } from '@/redux/auth/authApi';
 import Loading from '../shared/Loading';
 import { useEditProfileMutation } from '@/redux/api/profileApi';
 import toast from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
 
 export default function EditClientProfile() {
   const [form] = Form.useForm();
   const {data: userData, error:userError, isLoading: isUserLoading} = useGetUserProfileQuery();
   const [editProfile, {isLoading}] = useEditProfileMutation();
+  const router = useRouter();
 
   if(isUserLoading) {
     return <Loading />
@@ -32,6 +34,7 @@ export default function EditClientProfile() {
       .unwrap()
         .then(()=>{
           toast.success("Profile updated successfully!")
+          router.push('/profile')
           
         })
         .catch((error) =>{

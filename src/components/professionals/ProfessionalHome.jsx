@@ -20,45 +20,8 @@ import Link from 'node_modules/next/link'
 import { useGetUserProfileQuery } from '@/redux/auth/authApi'
 import Loading from '../shared/Loading'
 import { useGetMyProjectsQuery } from '@/redux/api/portfolioApi'
+import { useGetFreelancerHomeQuery } from '@/redux/api/profileApi'
 
-
-const items = [
-    {
-        id: 1,
-        icon: icon2,
-        title: 'Messages',
-        count: 2,
-        status: 'unread',
-    },
-    {
-        id: 2,
-        icon: icon4,
-        title: 'Pending Request',
-        count: 2,
-        status: 'waiting',
-    },
-    {
-        id: 3,
-        icon: icon4,
-        title: 'Active Bookings',
-        count: 2,
-        status: 'Ongoing ',
-    },
-    {
-        id: 4,
-        icon: icon3,
-        title: 'Client Ratings',
-        count: 4.5,
-        status: 'Average Rating',
-    },
-    {
-        id: 5,
-        icon: icon5,
-        title: 'Profile View',
-        count: 150,
-        status: 'This Month',
-    },
-]
 
 
 
@@ -70,21 +33,70 @@ export default function ProfessionalHome() {
     const [heading, setHeading] = useState('');
     const [selectedProject, setSelectedProject] = useState(null);
     const { data: projectData, isLoading } = useGetMyProjectsQuery();
+    const projects = projectData?.data?.projects;
+    const { data: homeData, error: userError, isLoading: isUserHomeLoading } = useGetFreelancerHomeQuery();
+    const home = homeData?.data;
 
 
-
-    if (isLoading) {
+    if (isLoading || isUserHomeLoading) {
         return <Loading />
     }
 
-    const projects = projectData?.data?.projects;
-    // const { data: userData, error: userError, isLoading: isUserLoading } = useGetUserProfileQuery();
 
-    // useEffect(() =>{
-    //     const user = userData?.data;
-    //     if (!user) return;
 
-    // }, [userData])
+    // useEffect(() => {
+
+    //     if (!home) return;
+
+    // }, [homeData])
+
+
+    // console.log('home', home)
+    const firstName = home?.firstName || '';
+    const lastName = home?.lastName || '';
+
+    const items = [
+        {
+            id: 1,
+            icon: icon2,
+            title: 'Messages',
+            count: home?.unReadMessageCount || 0,
+            status: 'unread',
+        },
+        {
+            id: 2,
+            icon: icon4,
+            title: 'Pending Request',
+            count: home?.bookingRequestPending || 0,
+            status: 'waiting',
+        },
+        {
+            id: 3,
+            icon: icon4,
+            title: 'Active Bookings',
+            count: home?.activeBookings || 0,
+            status: 'Ongoing ',
+        },
+        {
+            id: 4,
+            icon: icon3,
+            title: 'Client Ratings',
+            count: home?.ratingAvg || 0,
+            status: 'Average Rating',
+        },
+        {
+            id: 5,
+            icon: icon5,
+            title: 'Profile View',
+            count: home?.profileVisitorCount || 0,
+            status: 'This Month',
+        },
+    ]
+
+
+
+    const name = `${firstName} ${lastName}`.trim();
+
 
     const handleCloseModal = () => {
         setOpenModal(false);
@@ -157,7 +169,7 @@ export default function ProfessionalHome() {
                     {/* Text content */}
                     <div className='space-y-2'>
                         <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-[#333333] font-open-sans">
-                            Welcome back, Sujon!
+                            Welcome back, {name}!
                         </h2>
 
                         <Paragraph text="Here's what's happening in your account today" />
@@ -206,23 +218,23 @@ export default function ProfessionalHome() {
 
                 <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
                     {projects.map((project) => (
-                              <PortfolioCard
-                                key={project.id ?? project._id ?? idx}
-                                project={project}
-                    
-                                onView={(id) => console.log('view', id)}
-                                onEdit={(p) => {
-                                  setOpenModal(true)
-                                  setEditModal(true)
-                                  setCreateModal(false);
-                                  setHeading('Edit Projects')
-                                  setSelectedProject(p);
+                        <PortfolioCard
+                            key={project.id ?? project._id ?? idx}
+                            project={project}
+
+                            onView={(id) => console.log('view', id)}
+                            onEdit={(p) => {
+                                setOpenModal(true)
+                                setEditModal(true)
+                                setCreateModal(false);
+                                setHeading('Edit Projects')
+                                setSelectedProject(p);
                                 //   console.log('p-', p)
-                                }}
-                                onDelete={(id) => console.log('delete', id)}
-                                profile={true}
-                              />
-                            ))}
+                            }}
+                            onDelete={(id) => console.log('delete', id)}
+                            profile={true}
+                        />
+                    ))}
                 </div>
 
                 {/* modal */}

@@ -10,7 +10,9 @@ import Loading from '../shared/Loading';
 import { useGetUserProfileQuery } from '@/redux/auth/authApi';
 import { useEditProfileMutation } from '@/redux/api/profileApi';
 import { useGetAllCategoryQuery } from '@/redux/api/categoryApi';
-import  toast  from 'react-hot-toast'; // if you use react-toastify
+import  toast  from 'react-hot-toast';
+import { useRouter } from 'next/navigation';
+
 
 export default function EditProfessionalProfile() {
   const [form] = Form.useForm();
@@ -18,6 +20,7 @@ export default function EditProfessionalProfile() {
   const { data: userData, error: userError, isLoading: isUserLoading } = useGetUserProfileQuery();
   const [editProfile, { isLoading: isEditing }] = useEditProfileMutation();
   const { data: categoryData, error: categoryError, isLoading: isCategoryLoading } = useGetAllCategoryQuery();
+  const router = useRouter();
 
   // skills state initialized safely from user data when available
   const [skills, setSkills] = useState([]);
@@ -110,7 +113,7 @@ export default function EditProfessionalProfile() {
       .unwrap()
       .then(() => {
         toast.success('Profile updated successfully!'); // safe call if toast not configured
-        // Optionally update local state or refetch queries depending on your RTK setup
+        router.push('/profile')
       })
       .catch((error) => {
         console.log('error',error)

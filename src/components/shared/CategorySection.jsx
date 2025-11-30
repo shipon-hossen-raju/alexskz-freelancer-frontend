@@ -5,17 +5,23 @@ import Heading from '../ui/Heading';
 import CategoryCard from './CategoryCard';
 import financeIcon from '@/assets/icons/Finance.svg'
 import SectionContainer from './SectionContainer';
+import { useGetAllCategoryQuery } from '@/redux/api/categoryApi';
 
-const categories = Array.from({ length: 12 }).map((_, i) => ({
-  id: i + 1,
-  title: 'Finance & Accounting',
-  icon: financeIcon,
- 
-}));
+
 
 
 
 export default function CategoriesSection({heading}) {
+  const {data: categoriesData, isLoading, isError, error} = useGetAllCategoryQuery();
+  if(isLoading){
+    return <p>Loading Categories...</p>
+  }
+  const categories = categoriesData?.data?.categories;
+  if(isError || categories?.length === 0){
+    return <p>No category found</p>
+  }
+
+  // console.log(categories)
   return (
     <section className="">
       

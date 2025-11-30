@@ -44,6 +44,13 @@ const legalApi = baseApi.injectEndpoints({
             })
         }),
 
+        // get faq
+        getFAQ: builder.query({
+            query: () => ({
+                url: 'faq',
+                method: 'GET',
+            })
+        }),
 
     }),
 
@@ -56,5 +63,6 @@ export const {
     useGetPrivacyPolicyQuery,
     useGetContactUsQuery,
     useGetInTouchMutation,
+    useGetFAQQuery,
 
 } = legalApi;

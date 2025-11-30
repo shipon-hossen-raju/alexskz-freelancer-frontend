@@ -3,24 +3,31 @@ import React from 'react'
 
 import img1 from '@/assets/image/popularService.jpg';
 import PopularServiceCard from './PopularServiceCard';
+import { useGetPopularServicesQuery } from '@/redux/api/serviceApi';
 
 
-const services = [
-  { id: 1, title: 'Legal and Justice', priceFrom: "$100", cover: img1, href: '/services/legal' },
-  { id: 2, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-  { id: 3, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-  { id: 4, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-  { id: 5, title: 'Tax Filing Assistance', priceFrom: "$100", cover: img1, href: '/services/tax' },
-];
+
 
 export default function PopularServiceSection() {
+  const { data: popularServices, isLoading, isError } = useGetPopularServicesQuery();
+  if (isLoading) {
+    return <div>Loading Popular Services...</div>
+  }
+
+  const services = popularServices?.data?.result || [];
+
+  // console.log('popular: ', services)
+
+  if (isError || services.length === 0) {
+    return <div>No Popular Service found</div>
+  }
   return (
     <div>
       <SectionContainer heading="Popular Services" title="Services">
 
         <div className="grid gap-6 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
           {services.map((s) => (
-            <PopularServiceCard key={s.id} {...s} />
+            <PopularServiceCard key={s.id} service={s} />
           ))}
         </div>
 

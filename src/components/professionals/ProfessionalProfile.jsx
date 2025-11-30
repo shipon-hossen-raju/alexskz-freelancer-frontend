@@ -27,6 +27,11 @@ import toast from 'react-hot-toast';
 import Avatar from "@mui/material/Avatar";
 import { useDeleteServiceMutation } from '@/redux/api/serviceApi';
 
+import msg2 from '@/assets/icons/messages-2.svg'
+import circleMark from '@/assets/icons/checkmark-circle.svg';
+import location from '@/assets/icons/location.svg';
+import skills from '@/assets/icons/skills.png';
+import VerifiedDot from '../ui/VerifiedDot';
 
 const linkItems = [
     {
@@ -77,7 +82,7 @@ export default function ProfessionalProfile() {
     const { data: myData, error: myError, isLoading: amILoading, refetch } = useGetUserProfileQuery();
     const [uploadProfileImage, { isLoading }] = useUploadProfileImageMutation();
     const [uploadCoverPhoto, { isLoading: isCoverPhotoLoading }] = useUploadCoverPhotoMutation();
-    const [deleteService, {isLoading: isDeleteLoading}] = useDeleteServiceMutation();
+    const [deleteService, { isLoading: isDeleteLoading }] = useDeleteServiceMutation();
 
 
     const me = myData?.data;
@@ -88,12 +93,15 @@ export default function ProfessionalProfile() {
 
     const services = me?.Service;
 
-    console.log('me',me)
+    console.log('me', me)
+
     useEffect(() => {
-        if(!me) {
+        if (!me) {
             return;
         }
     }, [me])
+
+    const isVerified = me?.isVerify || false;
 
 
     useEffect(() => {
@@ -103,10 +111,39 @@ export default function ProfessionalProfile() {
     }, [me?.profileImage]);
 
     useEffect(() => {
-        if(me?.cover) {
+        if (me?.cover) {
             setCoverPhoto(me.cover);
         }
     }, [me?.cover])
+
+    const professionalAboutLists = [
+        {
+            id: 1,
+            icon: clock,
+            text: `Experience: ${me?.experience || 'N/A'}`,
+        },
+        {
+            id: 2,
+            icon: msg2,
+            text: `Language: ${me?.language}  `,
+        },
+        ...(isVerified ? [{
+            id: 3,
+            icon: circleMark,
+            text: 'Verified Pro',
+        }] : []),
+        {
+            id: 4,
+            icon: location,
+            text: `Location: ${me?.address}`,
+        },
+        {
+            id: 5,
+            icon: skills,
+            text: `Skills: ${me?.skills?.join(', ') || 'N/A'}`,
+        }
+    ]
+
 
 
     const handleWhatsApp = () => {
@@ -186,7 +223,7 @@ export default function ProfessionalProfile() {
         return false;
     };
 
-    
+
 
 
     const handleCloseModal = () => {
@@ -254,14 +291,33 @@ export default function ProfessionalProfile() {
 
                     <div className='font-open-sans mt-4'>
                         {/* Name */}
-                        <SubHeadingBlack text={name} />
+                        <div className='flex gap-2 items-center'>
+                            <SubHeadingBlack text={name} />
+                            {isVerified && (
+                                <VerifiedDot />
+                            )}
+                        </div>
 
                         {/* About */}
                         <div className="mt-3">
                             <div className="text-[16px] font-semibold text-[#202020]">About me</div>
 
 
-                            <Paragraph text={about}/>
+                            <Paragraph text={about} />
+                        </div>
+
+                        {/* about lists */}
+                        <div className='mt-4'>
+                            <ul className='space-y-2 lg:space-y-6'>
+                                {
+                                    professionalAboutLists.map((list) => (
+                                        <li className='flex gap-2 items-center'>
+                                            <Image src={list.icon} alt='icon' className="w-7 h-7 object-cover" />
+                                            <Paragraph text={list.text} />
+                                        </li>
+                                    ))
+                                }
+                            </ul>
                         </div>
 
                         {/* Divider */}
@@ -354,13 +410,13 @@ export default function ProfessionalProfile() {
                         services?.map((service) => {
                             // setServiceId(service?.id)
                             return (
-                            <OfferedServicesCard service={service} profile={true} onEdit={() => {
-                                setOpenModal(true)
-                                setEditModal(true)
-                                setHeading('Edit Service')
-                                setServiceToEdit(service)
-                            }} />
-                        )
+                                <OfferedServicesCard service={service} profile={true} onEdit={() => {
+                                    setOpenModal(true)
+                                    setEditModal(true)
+                                    setHeading('Edit Service')
+                                    setServiceToEdit(service)
+                                }} />
+                            )
                         })
                     }
                 </div>
@@ -374,7 +430,7 @@ export default function ProfessionalProfile() {
                 edit={editModal}
                 heading={heading}
                 serviceData={serviceToEdit}
-                // onPublish={() => refetch()}
+            // onPublish={() => refetch()}
 
             />
 

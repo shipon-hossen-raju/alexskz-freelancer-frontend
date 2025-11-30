@@ -35,7 +35,7 @@ export default function FlexibleBanner({
     <section className={`relative w-full overflow-hidden ${radius} ${className}`}>
       <div className={`relative ${height}`}>
         {/* Background */}
-        <Image src={bgSrc} alt="" fill priority={false} className="object-cover"  />
+        <Image src={bgSrc} alt="" fill priority={false} className="object-cover" />
         {/* Overlay */}
         <div className={`absolute inset-0 ${overlayClass}`} />
 
@@ -91,15 +91,22 @@ export default function FlexibleBanner({
                         isCenter ? 'justify-center' : '',
                       ].join(' ')}
                     >
-                      {tags.map((t, i) => (
-                        <Link
-                          key={i}
-                          href={t.href || '#'}
-                          className="shrink-0 inline-flex items-center gap-2 rounded-md bg-[#144A6C1A] px-3 py-1.5 text-[12px] sm:text-[13px] font-medium text-white hover:bg-[#144A6C] focus:outline-none focus:ring-2 focus:ring-white/30"
-                        >
-                          {t.label} <span aria-hidden><MdOutlineArrowOutward /></span>
-                        </Link>
-                      ))}
+                      {tags.map((t, i) => {
+                        const handleSetSlug = () => {
+                          
+                          localStorage.setItem("slug", t.slug)
+                        }
+                        return (
+                          <Link
+                            key={i}
+                            onClick={handleSetSlug}
+                            href={`/category/${t.slug}`}
+                            className="shrink-0 inline-flex items-center gap-2 rounded-md bg-[#144A6C1A] px-3 py-1.5 text-[12px] sm:text-[13px] font-medium text-white hover:bg-[#144A6C] focus:outline-none focus:ring-2 focus:ring-white/30"
+                          >
+                            {t.title} <span aria-hidden><MdOutlineArrowOutward /></span>
+                          </Link>
+                        )
+                      })}
                     </div>
                   )}
                 </>
@@ -119,7 +126,7 @@ export default function FlexibleBanner({
                       {/* <span className="inline-flex h-11 items-center rounded-[10px] bg-[#144A6C] px-6 text-white font-semibold shadow-sm hover:bg-[#0f3a55] focus:outline-none focus:ring-2 focus:ring-white/40">
                         {actionText}
                       </span> */}
-                      <TealBtn text={actionText}/>
+                      <TealBtn text={actionText} />
                     </Link>
                   )}
                 </div>

@@ -28,7 +28,7 @@ export const pros = [
 
 export default  function CategoryPage({ params }) {
     const { slug } =  params;
-    // console.log(slug)
+    console.log(slug)
 
     const savedSlug = localStorage.getItem("slug")
 

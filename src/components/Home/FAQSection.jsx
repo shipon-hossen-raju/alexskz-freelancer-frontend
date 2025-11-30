@@ -2,23 +2,21 @@
 'use client';
 
 import Heading from '@/components/ui/Heading';
+import { useGetFAQQuery } from '@/redux/api/legalApi';
 
 export default function FaqSection() {
-  // simple in-file data; replace as needed
-  const faqs = [
-    {
-      q: 'How I read e book ??',
-      a: 'Sign in, go to your Library, and click “Read”. Your last position is saved automatically across devices.',
-    },
-    {
-      q: 'How I read e book ??',
-      a: 'Open the book page and use the built-in reader. You can adjust font size, theme, and line height.',
-    },
-    {
-      q: 'How I read e book ??',
-      a: 'Download for offline reading from the book page. Your highlights sync when you’re back online.',
-    },
-  ];
+  const {data, isLoading, isError, error} = useGetFAQQuery();
+  if(isLoading){
+    return <p>Loading FAQs...</p>
+  }
+  const faqsData = data?.data?.result;
+
+  // console.log('faq ',faqsData)
+  
+  if(isError || faqsData?.length === 0){
+    return <p>No FAQ found</p>
+  }
+  
 
   return (
     <section className="py-12 md:py-16">
@@ -39,7 +37,7 @@ export default function FaqSection() {
 
         {/* List */}
         <div className="divide-y divide-gray-200">
-          {faqs.map((item, i) => (
+          {faqsData.map((item, i) => (
             <details
               key={i}
               className="group py-2"
@@ -47,7 +45,7 @@ export default function FaqSection() {
               <summary
                 className="flex cursor-pointer select-none items-center justify-between py-4 text-[15px] font-medium text-gray-700 hover:text-gray-900"
               >
-                <span>{item.q}</span>
+                <span>{item.question}</span>
                 {/* chevron */}
                 <svg
                   className="h-5 w-5 text-gray-500 transition-transform duration-200 group-open:rotate-180"
@@ -63,7 +61,7 @@ export default function FaqSection() {
               </summary>
 
               <div className="pb-4 pr-2  leading-6 text-gray-600">
-                {item.a}
+                {item.answer}
               </div>
 
               
