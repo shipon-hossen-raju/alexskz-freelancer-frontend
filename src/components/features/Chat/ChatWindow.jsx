@@ -112,12 +112,12 @@ export default function ChatWindow({ onBack = () => { } }) {
     };
 
     socket.on("getMessages", onGetMessages);
-    // socket.on("receiveMessage", onReceiveMessage);
+    socket.on("receiveMessage", onReceiveMessage);
 
-    socket.on("receiveMessage", (message) => {
-      console.log("[SOCKET] receiveMessage event triggered");
-      console.log("Message data:", message);
-    });
+    // socket.on("receiveMessage", (message) => {
+    //   // console.log("[SOCKET] receiveMessage event triggered");
+    //   // console.log("Message data:", message);
+    // });
     socket.on("error", onError);
 
     return () => {

@@ -6,7 +6,7 @@ import Link from "next/link";
 
 export default function PricingCard({ plan, BeSeller = false }) {
 
-    console.log(plan)
+    // console.log(plan)
     return (
         <div
             className={[

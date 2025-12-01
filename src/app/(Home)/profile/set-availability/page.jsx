@@ -346,7 +346,7 @@ export default function SetAvailabilityPage() {
     }
 
     try {
-      console.log('Upsert payload:', payload);
+      // console.log('Upsert payload:', payload);
       await upsertAvailability(payload).unwrap();
       toast.success('Availability saved successfully.');
     } catch (err) {

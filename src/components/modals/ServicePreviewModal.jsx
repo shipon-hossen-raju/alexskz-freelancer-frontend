@@ -20,7 +20,7 @@ export default function ServicePreviewModal({ open, onClose, service }) {
   const dispatch = useDispatch();
 
   const serviceId = service?.id;
-  //  console.log('id', serviceId)
+  //  console.log('id preview modal', serviceId)
 
   const handleBooking = () => {
     dispatch(serviceIdForBooking(serviceId));

@@ -116,7 +116,7 @@ export default function EditProfessionalProfile() {
         router.push('/profile')
       })
       .catch((error) => {
-        console.log('error',error)
+        // console.log('error',error)
         const message = error?.data?.message || error?.message || 'Something went wrong';
         toast.error(message);
       });

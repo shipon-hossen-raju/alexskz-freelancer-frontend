@@ -316,7 +316,7 @@ export default function CreateEditPackageModal({
 
   const categories = categoryData?.data?.categories || [];
 
-  console.log('service',serviceData)
+  // console.log('service',serviceData)
 
   const getErrorMessage = (err) => {
     try {

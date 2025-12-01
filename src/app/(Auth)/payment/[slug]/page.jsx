@@ -28,7 +28,7 @@ export default function PaymentForm({
 
   const onFinish = (values) => {
     // replace with real submit logic
-    console.log('Payment form submitted:', values);
+    // console.log('Payment form submitted:', values);
   };
 
   return (

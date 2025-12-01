@@ -12,10 +12,10 @@ import { useGetAllCategoryQuery } from '@/redux/api/categoryApi'
 export default function ExplorePage() {
     const {data: categoriesData, isLoading, isError, error} = useGetAllCategoryQuery();
     if(isLoading){
-      return <p>Loading Categories...</p>
+      return ;
     }
     const categories = categoriesData?.data?.categories;
-    console.log(categories)
+    // console.log(categories)
   return (
     <CustomContainer>
 

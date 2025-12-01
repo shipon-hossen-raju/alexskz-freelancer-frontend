@@ -25,7 +25,7 @@ export default function AddWhatsAppModal({ open, onClose }) {
         const phn = (values.phone).trim()
         const dial = (values.dial).trim()
         const phoneNum = `${dial}${phn}`.trim();
-        console.log('whats app', phoneNum)
+        // console.log('whats app', phoneNum)
 
         const payload = {
             whatsappNumber: phoneNum

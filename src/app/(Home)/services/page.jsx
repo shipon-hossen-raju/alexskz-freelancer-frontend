@@ -24,7 +24,7 @@ export default function ServicesPage() {
     }
     const services = certifiedServicesData?.data?.result || [];
 
-    console.log('certified', certifiedServicesData)
+    // console.log('certified', certifiedServicesData)
 
     if( isError || services.length === 0){
         return <div>No Certified Service Found</div>
@@ -42,7 +42,7 @@ export default function ServicesPage() {
     const pageItems = services.slice(start, end)
 
     const onSearch = (q) => {
-        console.log('search:', q);
+        // console.log('search:', q);
         
     };
 

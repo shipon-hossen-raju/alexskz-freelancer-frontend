@@ -15,6 +15,15 @@ const bookingApi = baseApi.injectEndpoints({
                 method: 'GET',
             }),
         }),
+
+        createBooking: builder.mutation({
+            query: (data) => ({
+                url: 'booking',
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['User'],
+        }),
     
 
         
@@ -24,5 +33,6 @@ const bookingApi = baseApi.injectEndpoints({
 export const {
    
     useGetAvailableSlotsQuery,
+    useCreateBookingMutation,
     
 } = bookingApi;

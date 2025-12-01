@@ -17,7 +17,7 @@ export default function ChangePassword() {
     
 
     const onFinish = (values) => {
-        console.log('Save Changes:', values);
+        // console.log('Save Changes:', values);
         const payload = {
             newPassword: values.password,
             confirmNewPassword: values.confirm,

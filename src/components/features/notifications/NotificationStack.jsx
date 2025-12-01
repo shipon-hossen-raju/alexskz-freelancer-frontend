@@ -145,7 +145,7 @@ export default function NotificationStack() {
   const markAllRead = () => setItems([]);
   const onView = (id) => {
     // navigate or open details
-    console.log('view', id);
+    // console.log('view', id);
   };
 
   return (

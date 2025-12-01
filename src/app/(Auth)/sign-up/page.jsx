@@ -34,7 +34,7 @@ export default function RegisterPage() {
     const role = savedRole || values.role
 
     // console.log("saved role: ", role)
-    console.log('sign up', values)
+    // console.log('sign up', values)
 
 
 
@@ -48,7 +48,7 @@ export default function RegisterPage() {
         role: "USER",
 
       }
-      console.log(payload)
+      // console.log(payload)
 
       signupForClient(payload)
         .unwrap()

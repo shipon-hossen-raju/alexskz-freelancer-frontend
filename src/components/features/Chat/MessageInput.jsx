@@ -44,16 +44,16 @@ export default function MessageInput({ chatRoomId }) {
       form.resetFields();
     }
 
-    console.log('Send:', {
-      text: values.text,
-      images: images,
-    });
+    // console.log('Send:', {
+    //   text: values.text,
+    //   images: images,
+    // });
 
 
   };
 
   const onFinishFailed = errorInfo => {
-    console.log('Failed:', errorInfo);
+    // console.log('Failed:', errorInfo);
   };
 
   const uploadProps = {

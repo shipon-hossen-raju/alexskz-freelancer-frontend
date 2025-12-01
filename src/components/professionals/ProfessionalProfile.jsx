@@ -32,6 +32,7 @@ import circleMark from '@/assets/icons/checkmark-circle.svg';
 import location from '@/assets/icons/location.svg';
 import skills from '@/assets/icons/skills.png';
 import VerifiedDot from '../ui/VerifiedDot';
+import Reviews from '../features/Professiona-details/Reviews';
 
 const linkItems = [
     {
@@ -85,21 +86,26 @@ export default function ProfessionalProfile() {
     const [deleteService, { isLoading: isDeleteLoading }] = useDeleteServiceMutation();
 
 
+
     const me = myData?.data;
-    const firstName = me?.firstName || "";
-    const lastName = me?.lastName || "";
-    const name = `${firstName} ${lastName}`.trim();
-    const about = me?.about || "";
-
-    const services = me?.Service;
-
-    console.log('me', me)
 
     useEffect(() => {
         if (!me) {
             return;
         }
     }, [me])
+
+    const firstName = me?.firstName || "";
+    const lastName = me?.lastName || "";
+    const name = `${firstName} ${lastName}`.trim();
+    const about = me?.about || "";
+
+    const services = me?.Service;
+    const reviews = me?.reviews || [];
+
+    console.log('me', me?.reviews)
+
+    
 
     const isVerified = me?.isVerify || false;
 
@@ -233,47 +239,15 @@ export default function ProfessionalProfile() {
     }
 
     return (
-        <div className="flex flex-col gap-8 lg:flex-row">
-            <div className="lg:w-4/7 p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)] overflow-hidden">
-                {/* Cover */}
-                <div className="relative h-[140px] lg:h-[190px] w-full">
-                    <Image src={coverPhoto} alt="cover" fill className="object-cover rounded-[12px]" />
-                    <div className="absolute bottom-1 right-1">
-                        {/* upload cover photo */}
-                        <Upload accept="image/*" showUploadList={false} beforeUpload={beforeUploadCoverPhoto}>
-                            <button
-                                type="button"
-                                aria-label="Upload avatar"
-                                className="cursor-pointer w-7 h-7 rounded-full bg-white border border-[#8BCF9A] grid place-items-center shadow-sm"
-                            >
-                                {/* camera icon */}
-                                <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                                    <path d="M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="#8BCF9A" strokeWidth="2" />
-                                    <path d="M4 8h3l2-3h6l2 3h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z" stroke="#8BCF9A" strokeWidth="2" />
-                                </svg>
-                            </button>
-                        </Upload>
-                    </div>
-                </div>
-
-                {/* Body */}
-                <div className=" pt-4 pb-5">
-                    {/* Avatar + camera */}
-                    <div className="relative -mt-12 lg:-mt-15 mb-2 w-[72px] h-[72px] lg:w-[102px] lg:h-[102px]">
-                        <div className="relative w-full h-full rounded-full ring-2 ring-[#8BCF9A] overflow-hidden bg-gray-100">
-                            {avatar ? (
-
-                                <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
-                            ) : (
-                                <div className="w-full h-full bg-gray-200 grid place-items-center">
-                                    <Avatar sx={{ width: '100%', height: '100%' }} />
-                                </div>
-                            )}
-                        </div>
-
-                        {/* camera upload */}
-                        <div className="absolute -bottom-1 -right-1">
-                            <Upload accept="image/*" showUploadList={false} beforeUpload={beforeUpload}>
+        <div>
+            <div className="flex flex-col gap-8 lg:flex-row">
+                <div className="lg:w-4/7 p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)] overflow-hidden">
+                    {/* Cover */}
+                    <div className="relative h-[140px] lg:h-[190px] w-full">
+                        <Image src={coverPhoto} alt="cover" fill className="object-cover rounded-[12px]" />
+                        <div className="absolute bottom-1 right-1">
+                            {/* upload cover photo */}
+                            <Upload accept="image/*" showUploadList={false} beforeUpload={beforeUploadCoverPhoto}>
                                 <button
                                     type="button"
                                     aria-label="Upload avatar"
@@ -289,139 +263,191 @@ export default function ProfessionalProfile() {
                         </div>
                     </div>
 
-                    <div className='font-open-sans mt-4'>
-                        {/* Name */}
-                        <div className='flex gap-2 items-center'>
-                            <SubHeadingBlack text={name} />
-                            {isVerified && (
-                                <VerifiedDot />
-                            )}
+                    {/* Body */}
+                    <div className=" pt-4 pb-5">
+                        {/* Avatar + camera */}
+                        <div className="relative -mt-12 lg:-mt-15 mb-2 w-[72px] h-[72px] lg:w-[102px] lg:h-[102px]">
+                            <div className="relative w-full h-full rounded-full ring-2 ring-[#8BCF9A] overflow-hidden bg-gray-100">
+                                {avatar ? (
+
+                                    <img src={avatar} alt="Profile" className="w-full h-full object-cover" />
+                                ) : (
+                                    <div className="w-full h-full bg-gray-200 grid place-items-center">
+                                        <Avatar sx={{ width: '100%', height: '100%' }} />
+                                    </div>
+                                )}
+                            </div>
+
+                            {/* camera upload */}
+                            <div className="absolute -bottom-1 -right-1">
+                                <Upload accept="image/*" showUploadList={false} beforeUpload={beforeUpload}>
+                                    <button
+                                        type="button"
+                                        aria-label="Upload avatar"
+                                        className="cursor-pointer w-7 h-7 rounded-full bg-white border border-[#8BCF9A] grid place-items-center shadow-sm"
+                                    >
+                                        {/* camera icon */}
+                                        <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
+                                            <path d="M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z" stroke="#8BCF9A" strokeWidth="2" />
+                                            <path d="M4 8h3l2-3h6l2 3h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z" stroke="#8BCF9A" strokeWidth="2" />
+                                        </svg>
+                                    </button>
+                                </Upload>
+                            </div>
                         </div>
 
-                        {/* About */}
-                        <div className="mt-3">
-                            <div className="text-[16px] font-semibold text-[#202020]">About me</div>
+                        <div className='font-open-sans mt-4'>
+                            {/* Name */}
+                            <div className='flex gap-2 items-center'>
+                                <SubHeadingBlack text={name} />
+                                {isVerified && (
+                                    <VerifiedDot />
+                                )}
+                            </div>
+
+                            {/* About */}
+                            <div className="mt-3">
+                                <div className="text-[16px] font-semibold text-[#202020]">About me</div>
 
 
-                            <Paragraph text={about} />
-                        </div>
+                                <Paragraph text={about} />
+                            </div>
 
-                        {/* about lists */}
-                        <div className='mt-4'>
-                            <ul className='space-y-2 lg:space-y-6'>
-                                {
-                                    professionalAboutLists.map((list) => (
-                                        <li className='flex gap-2 items-center'>
-                                            <Image src={list.icon} alt='icon' className="w-7 h-7 object-cover" />
-                                            <Paragraph text={list.text} />
-                                        </li>
-                                    ))
-                                }
-                            </ul>
-                        </div>
-
-                        {/* Divider */}
-                        <div className="mt-6 h-px w-full bg-[#E9E9E9]" />
-
-                        {/* Menu list */}
-                        <ul className="mt-2 space-y-1">
-                            {
-                                linkItems.map((item) => {
-                                    if (item.id === 3) {
-                                        return (
-                                            <li key={item.id} className=' mb-4 cursor-pointer' onClick={handleWhatsApp}>
-
-                                                <div className='flex justify-between items-center'>
-                                                    <div className='flex gap-2 mb-4'>
-
-
-                                                        <Image src={item.icon} alt="icon" />
-                                                        {item.text}
-                                                    </div>
-                                                    <IoIosArrowForward className="text-xl" />
-                                                </div>
-
-                                                <hr className='text-[#E9E9E9] ' />
+                            {/* about lists */}
+                            <div className='mt-4'>
+                                <ul className='space-y-2 lg:space-y-6'>
+                                    {
+                                        professionalAboutLists.map((list) => (
+                                            <li className='flex gap-2 items-center'>
+                                                <Image src={list.icon} alt='icon' className="w-7 h-7 object-cover" />
+                                                <Paragraph text={list.text} />
                                             </li>
+                                        ))
+                                    }
+                                </ul>
+                            </div>
+
+                            {/* Divider */}
+                            <div className="mt-6 h-px w-full bg-[#E9E9E9]" />
+
+                            {/* Menu list */}
+                            <ul className="mt-2 space-y-1">
+                                {
+                                    linkItems.map((item) => {
+                                        if (item.id === 3) {
+                                            return (
+                                                <li key={item.id} className=' mb-4 cursor-pointer' onClick={handleWhatsApp}>
+
+                                                    <div className='flex justify-between items-center'>
+                                                        <div className='flex gap-2 mb-4'>
+
+
+                                                            <Image src={item.icon} alt="icon" />
+                                                            {item.text}
+                                                        </div>
+                                                        <IoIosArrowForward className="text-xl" />
+                                                    </div>
+
+                                                    <hr className='text-[#E9E9E9] ' />
+                                                </li>
+                                            )
+                                        }
+
+                                        return (
+                                            <Link href={item.path} >
+                                                <li key={item.id} className=' mb-4'>
+                                                    <div className='flex justify-between items-center'>
+                                                        <div className='flex gap-2 mb-4'>
+
+
+                                                            <Image src={item.icon} alt="icon" />
+                                                            {item.text}
+                                                        </div>
+                                                        <IoIosArrowForward className="text-xl" />
+                                                    </div>
+                                                    <hr className='text-[#E9E9E9] ' />
+                                                </li>
+                                            </Link>
                                         )
                                     }
 
-                                    return (
-                                        <Link href={item.path} >
-                                            <li key={item.id} className=' mb-4'>
-                                                <div className='flex justify-between items-center'>
-                                                    <div className='flex gap-2 mb-4'>
-
-
-                                                        <Image src={item.icon} alt="icon" />
-                                                        {item.text}
-                                                    </div>
-                                                    <IoIosArrowForward className="text-xl" />
-                                                </div>
-                                                <hr className='text-[#E9E9E9] ' />
-                                            </li>
-                                        </Link>
                                     )
                                 }
+                            </ul>
 
-                                )
-                            }
-                        </ul>
+                            {/* Verify + Change Password pills */}
+                            <div className="mt-10 space-y-4">
+                                {/* Verify your account */}
+                                <Link href="/profile/verify-account" className="w-full rounded-[10px] bg-[#E9F4EE] border border-[#D6EAD9] flex items-center justify-between px-4 py-3">
+                                    <span className="text-[14px] text-[#202020]">Verify your account</span>
+                                    <div className="">
+                                        <IoIosArrowForward className="text-[#8BCF9A]" />
+                                    </div>
+                                </Link>
 
-                        {/* Verify + Change Password pills */}
-                        <div className="mt-10 space-y-4">
-                            {/* Verify your account */}
-                            <Link href="/profile/verify-account" className="w-full rounded-[10px] bg-[#E9F4EE] border border-[#D6EAD9] flex items-center justify-between px-4 py-3">
-                                <span className="text-[14px] text-[#202020]">Verify your account</span>
-                                <div className="">
-                                    <IoIosArrowForward className="text-[#8BCF9A]" />
-                                </div>
-                            </Link>
-
-                            {/* Change Password */}
-                            <Link href="/profile/change-password" className="w-full rounded-[10px] bg-[#E5E5E5] border border-[#D9D9D9] flex items-center justify-between px-4 py-3">
-                                <span className="text-[14px] text-[#6F6F6F]">Change Password</span>
-                                <div className=" ">
-                                    <IoIosArrowForward />
-                                </div>
-                            </Link>
+                                {/* Change Password */}
+                                <Link href="/profile/change-password" className="w-full rounded-[10px] bg-[#E5E5E5] border border-[#D9D9D9] flex items-center justify-between px-4 py-3">
+                                    <span className="text-[14px] text-[#6F6F6F]">Change Password</span>
+                                    <div className=" ">
+                                        <IoIosArrowForward />
+                                    </div>
+                                </Link>
+                            </div>
                         </div>
                     </div>
                 </div>
-            </div>
 
-            {/* Packages */}
-            <div className=' p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)] overflow-hidden'>
-                {/* text + button */}
-                <div className='flex flex-col gap-4 md:flex-row  justify-between items-center'>
-                    <SubHeadingBlack text="Offered Services" />
-                    <TealBtn text="Add Service"
-                        onClick={() => {
-                            setOpenModal(true)
-                            setCreateModal(true)
-                            setHeading('Create Service')
-                        }} />
+                {/* Packages */}
+                <div className=' p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)] overflow-hidden'>
+                    {/* text + button */}
+                    <div className='flex flex-col gap-4 md:flex-row  justify-between items-center'>
+                        <SubHeadingBlack text="Offered Services" />
+                        <TealBtn text="Add Service"
+                            onClick={() => {
+                                setOpenModal(true)
+                                setCreateModal(true)
+                                setHeading('Create Service')
+                            }} />
+                    </div>
+
+
+                    {/* services */}
+                    <div className='space-y-8 mt-10'>
+                        {
+                            services?.map((service) => {
+                                // setServiceId(service?.id)
+                                return (
+                                    <OfferedServicesCard service={service} profile={true} onEdit={() => {
+                                        setOpenModal(true)
+                                        setEditModal(true)
+                                        setHeading('Edit Service')
+                                        setServiceToEdit(service)
+                                    }} />
+                                )
+                            })
+                        }
+                    </div>
+
                 </div>
 
 
-                {/* services */}
-                <div className='space-y-8 mt-10'>
-                    {
-                        services?.map((service) => {
-                            // setServiceId(service?.id)
-                            return (
-                                <OfferedServicesCard service={service} profile={true} onEdit={() => {
-                                    setOpenModal(true)
-                                    setEditModal(true)
-                                    setHeading('Edit Service')
-                                    setServiceToEdit(service)
-                                }} />
-                            )
-                        })
-                    }
-                </div>
-
             </div>
+
+            {/* reviews */}
+            <div className='mt-8  p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)] overflow-hidden'>
+                {/* heading */}
+                <div className='mb-4'>
+                    <SubHeadingBlack text="Ratings & Reviews" />
+                </div>
+                <div className="grid grid-cols-1  gap-4 md:gap-5">
+                    {reviews.map((review, i) => (
+                                    <div key={review.id} >
+                                        <Reviews review={review} />
+                                    </div>
+                                ))}
+                </div>
+            </div>
+
 
             <CreateEditPackageModal
                 open={openModal}

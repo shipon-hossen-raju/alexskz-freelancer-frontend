@@ -50,7 +50,7 @@ export default function ClientProfile() {
       // call the RTK mutation and wait for the response
       
       const res = await uploadProfileImage(fd).unwrap();
-      console.log("upload response:", res);
+      // console.log("upload response:", res);
 
       // if server returns the final image URL, use it
       const returnedUrl = res?.data?.profileImage || res?.profileImage || null;

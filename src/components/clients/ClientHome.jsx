@@ -11,6 +11,8 @@ import BookingCard from '../shared/BookingCard'
 import img from '@/assets/image/freelancer/user.jpg'
 import { useGetUserProfileQuery } from '@/redux/auth/authApi'
 import CustomSearch from '../ui/CustomSearch'
+import { useGetClientHomeQuery, useGetFreelancerHomeQuery } from '@/redux/api/profileApi'
+import Loading from '../shared/Loading'
 
 const bookings = [
     { id: 1, name: "Mr. Lee", image: img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "confirmed" },
@@ -20,51 +22,60 @@ const bookings = [
 ]
 
 export default function ClientHome() {
-    const { data: myData, error: myError, isLoading: amILoading, refetch } = useGetUserProfileQuery();
-    const me = myData?.data;
-    const firstName = me?.firstName || "";
-    const lastName = me?.lastName || "";
+   
+    const { data: homeData, error: userError, isLoading: isUserHomeLoading } = useGetClientHomeQuery();
+    if(isUserHomeLoading){
+        return <div> <Loading /> </div>
+    }
+    const home = homeData?.data;
+
+    // console.log('home', home)
+
+    
+    const firstName = home?.firstName || "";
+    const lastName = home?.lastName || "";
     const name = `${firstName} ${lastName}`.trim();
-    const role = me?.role
+    const upComingBookings = home?.UpcomingBookings;
+   
 
     const items = [
         {
             id: 1,
             icon: icon1,
             title: 'Upcoming Appointments',
-            count: 2,
+            count: home?.upComingBookings || 0,
             status: 'This week',
         },
         {
             id: 2,
             icon: icon2,
             title: 'Messages',
-            count: 2,
+            count: home?.unReadMessageCount || 0,
             status: 'unread ',
         },
         {
             id: 3,
             icon: icon3,
             title: 'Reviews  Given',
-            count: 2,
+            count: home?.givenRatingsCount || 0,
             status: 'Total reviews',
         },
         {
             id: 4,
             icon: icon4,
             title: 'Active Bookings',
-            count: 2,
+            count: home?.activeBookings || 0,
             status: 'Ongoing',
         },
     ]
 
     return (
         <div>
-            {role === 'USER' && (
-                    <div className="pb-6 md:hidden ">
-                        <CustomSearch />
-                    </div>
-                )}
+
+            <div className="pb-6 md:hidden ">
+                <CustomSearch />
+            </div>
+
             {/* Heading */}
             <div
                 className="flex w-full items-center gap-4 rounded-2xl p-6 shadow-sm border border-transparent"
@@ -77,7 +88,7 @@ export default function ClientHome() {
                 }}
             >
 
-                
+
                 {/* Waving hand emoji */}
                 <span className="text-3xl">👋</span>
 
@@ -107,12 +118,12 @@ export default function ClientHome() {
                     <div className='flex-1'>
                         <Heading text="Upcoming Bookings" />
                     </div>
-                    <p className=' text-[#030213] font-open-sans bg-[#ECEEF2] p-1 rounded-[8px]'>3 Total</p>
+                    <p className=' text-[#030213] font-open-sans bg-[#ECEEF2] p-1 rounded-[8px]'>{upComingBookings?.length || 0} Total</p>
                 </div>
 
                 {/* booking card */}
                 <div className='grid grid-cols-1 gap-4 mt-10'>
-                    {bookings.map((booking) => (
+                    {upComingBookings.map((booking) => (
                         <BookingCard booking={booking} key={booking.id} />
                     ))}
                 </div>

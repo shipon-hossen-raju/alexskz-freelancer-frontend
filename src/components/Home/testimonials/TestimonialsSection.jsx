@@ -10,6 +10,7 @@ import bgWaves2 from '@/assets/image/bgVec1.svg'; // <-- second SVG
 
 import p1 from '@/assets/image/Reviewer.png';
 import Heading from '@/components/ui/Heading';
+import { useGetReviewsForPublicQuery } from '@/redux/api/publicApi';
 
 const testimonials = [
     { id: 1, photo: p1, rating: 5, author: 'Adam Goni', role: 'CEO of khai dai .com', quote: 'The freelancer I hired exceeded my expectations. Communication was smooth, and the project was delivered!' },
@@ -23,6 +24,17 @@ const testimonials = [
 ];
 
 export default function TestimonialsSection({ heading }) {
+    const {data, isLoading, isError} = useGetReviewsForPublicQuery();
+    if(isLoading){
+        return <div>Loading Testimonials...</div>
+    }
+    const reviews = data?.data || [];
+
+    // console.log(reviews)
+
+    if(isError || reviews.length === 0){
+        return <div> No Testimonials Found </div>
+    }
     return (
         // <SectionContainer heading={heading} title="Testimonial">
 
@@ -66,9 +78,9 @@ export default function TestimonialsSection({ heading }) {
 
             <div className="mx-auto  px-4 container">
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 md:gap-5">
-                    {testimonials.map((t, i) => (
-                        <div key={t.id} >
-                            <TestimonialCard {...t} />
+                    {reviews.map((review, i) => (
+                        <div key={review.id} >
+                            <TestimonialCard review={review} />
                         </div>
                     ))}
                 </div>

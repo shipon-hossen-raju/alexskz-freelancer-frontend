@@ -1,3 +1,4 @@
+'use client'
 import CustomContainer from '@/components/ui/CustomContainer'
 import React from 'react'
 import coverPhoto from '@/assets/image/freelancer/coverPhoto.jpg'
@@ -23,6 +24,8 @@ import Link from 'node_modules/next/link'
 import VerifiedDot from '@/components/ui/VerifiedDot'
 import { Divider } from 'node_modules/antd/es/index'
 import skills from '@/assets/icons/skills.png'
+import { useGetProfileForPublicViewQuery } from '@/redux/api/publicApi'
+import Loading from '@/components/shared/Loading'
 
 
 
@@ -57,7 +60,21 @@ const lists = [
 
 export default function FreelancerDetailsPage({ params }) {
     const { slug } = params;
-    console.log('slug', slug)
+
+    const {data, isLoading, isError, error} = useGetProfileForPublicViewQuery("69268d0a138c715af045c2a6");
+
+    if(isLoading) {
+        return <Loading />
+    }
+
+    if(isError) {
+        throw new Error(error?.data?.message || error?.message || "Failed to load data");
+    }
+
+    console.log('data details', data?.data)
+
+    const profileData = data?.data;
+
 
     return (
         <CustomContainer>
@@ -72,11 +89,13 @@ export default function FreelancerDetailsPage({ params }) {
 
             <div className=' '>
                 {/* cover photo */}
-                <Image src={coverPhoto} alt='photo' className='rounded-[8px] lg:h-[60vh] object-cover' />
+                <div className='relative h-[60vh]'>
+                    <Image src={profileData?.cover} alt='cover-photo' className='rounded-[8px] lg:h-[60vh] object-cover' fill/>
+                </div>
 
                 {/* user image */}
-                <div className=' transform -translate-y-2/4 border border-[#8BCF9A] h-24 w-24 md:h-44 md:w-44 lg:h-64 lg:w-64 xl:h-74 xl:w-74  rounded-full'>
-                    <Image src={userImg} alt='photo' className='rounded-full w-full h-full object-cover' />
+                <div className=' transform -translate-y-2/4 border border-[#8BCF9A] h-24 w-24 md:h-44 md:w-44 lg:h-64 lg:w-64 xl:h-74 xl:w-74  rounded-full relative'>
+                    <Image src={profileData?.profileImage} alt='profile-photo' className='rounded-full w-full h-full object-cover' fill />
 
                 </div>
 
@@ -91,18 +110,20 @@ export default function FreelancerDetailsPage({ params }) {
                 <div className='space-y-4 lg:space-y-8 md:w-3/5'>
                     <div className='flex justify-between items-center'>
                         <div className='flex  items-center gap-4 '>
-                            <Heading text='Mr. Lee' />
-                            <VerifiedDot />
+                            <Heading text={`${profileData?.firstName} ${profileData?.lastName}`} />
+                            {
+                                profileData?.isVerify && <VerifiedDot />
+                            }
 
                         </div>
 
                         <div className='flex  gap-1 items-center'>
                             <Image src={star} alt="icon " className='lg:w-5' />
-                            <p className='text-[#333333] font-open-sans text-sm lg:text-xl'>4.5</p>
-                            <Paragraph text="(500)" />
+                            <p className='text-[#333333] font-open-sans text-sm lg:text-xl'>{profileData?.rating?.ratingAvg || 0}</p>
+                            <Paragraph text={`(${profileData?.rating?.reviews?.length})`} />
                         </div>
                     </div>
-                    <SubHeading text='Certified Finance & Account Expert' />
+                    <SubHeading text={profileData?.category} />
 
                     <ul className='space-y-2 lg:space-y-6'>
                         {

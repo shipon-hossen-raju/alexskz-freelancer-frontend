@@ -60,9 +60,9 @@ export default function PortfolioSection({ items = [] }) {
                         imgSrc={it.imgSrc}
                         imgAlt={it.title}
                         showPlay={it.showPlay}
-                        onView={(id) => console.log('view', id)}
-                        onEdit={(id) => console.log('edit', id)}
-                        onDelete={(id) => console.log('delete', id)}
+                        // onView={(id) => console.log('view', id)}
+                        // onEdit={(id) => console.log('edit', id)}
+                        // onDelete={(id) => console.log('delete', id)}
                     />
                 ))}
             </div>

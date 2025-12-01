@@ -7,6 +7,8 @@ import { useState } from 'react';
 import '@/styles/Auth.css'
 import RoleToggleMUI from '../auth/RoleToggle';
 import { useSelector } from 'react-redux';
+import { useCreateBookingMutation } from '@/redux/api/bookingApi';
+import toast from 'react-hot-toast';
 
 const countryOpts = [
   { value: '+880', label: '🇧🇩  +880' },
@@ -20,26 +22,46 @@ export default function ConfirmBookingModal({
   onClose,
   onConfirm, // (payload) => void
   slot,      // optional: { dayLabel, date, time }
+  serviceId,
 }) {
   const [form] = Form.useForm();
   const [loading, setLoading] = useState(false);
 
-  const savedRole = useSelector((state) => state.user.initialRole ?? null)
+  const savedRole = useSelector((state) => state.user?.initialRole ?? null)
+  // const serviceId = useSelector((state) => state.booking?.serviceIdForBooking ?? null)
+  const [createBooking, {isLoading, }] = useCreateBookingMutation();
 
   const role1 ='For me'
   const role2 = 'For Others'
 
-  console.log('from booking ...', slot)
+  // console.log('from booking ...', slot)
+  // console.log('from booking ... role', savedRole)
+  // console.log('from booking service ...', serviceId)
 
-  const submit = async () => {
-    try {
-      const values = await form.validateFields();
-      setLoading(true);
-      onConfirm?.({ ...values, slot }); // send phone + dial + slot back up
-    } finally {
-      setLoading(false);
+  const onFinish = async (values) => {
+    
+    const payload = {
+      serviceId: serviceId,
+      availabilityTimeId: slot?.dayId,
+      dateTime: slot?.datetime,
+      bookingContactType: values.role  === role1 ? 'ME' : 'OTHERS',
+      contactName: values.name || '',
+      whatsappNumber: values.dial + (values.phone).trim(),
     }
-  };
+
+    // console.log('values', payload)
+
+    createBooking(payload) 
+      .unwrap()
+      .then((response) => {
+        toast.success('Booking confirmed successfully');
+        form.resetFields();
+        onClose();
+      })
+      .catch((error) => {
+        toast.error(error?.data?.message || error?.message || 'Booking failed');
+      })
+  }
 
   return (
     <Modal
@@ -62,7 +84,7 @@ export default function ConfirmBookingModal({
 
           {slot && (
             <p className="mt-2 text-[12px] text-gray-600 ">
-              Selected: <span className="font-semibold">{slot.dayLabel}</span>, {slot.date} at{' '}
+              Selected: <span className="font-semibold">{slot.display}</span>, at{' '}
               <span className="font-semibold">{slot.time}</span>
             </p>
           )}
@@ -75,6 +97,7 @@ export default function ConfirmBookingModal({
           requiredMark={false}
           className="mt-6"
           initialValues={{ dial: '+880', phone: '', role: role1}}
+          onFinish={onFinish}
         >
 
            {/* Toggle button for buyer & seller */}
@@ -107,6 +130,7 @@ export default function ConfirmBookingModal({
                 <Select
                 className="wa-select"
                   style={{ width: 120 }}
+                  size="large"
                   options={countryOpts}
                   dropdownStyle={{ fontFamily: 'var(--font-open-sans-src)' }}
                 />
@@ -122,6 +146,7 @@ export default function ConfirmBookingModal({
               >
                 <Input
                   style={{ width: 'calc(100% - 120px)' }}
+                  size="large"
                   placeholder="+1 111 467 378 399"
                 />
               </Form.Item>
@@ -129,7 +154,9 @@ export default function ConfirmBookingModal({
           </Form.Item>
 
           <div className="mt-6 flex justify-center">
-            <TealBtn text={loading ? 'Submitting…' : 'Confirm Booking'} onClick={submit} />
+            <Form.Item>
+              <TealBtn text={isLoading ? 'Submitting…' : 'Confirm Booking'} />
+            </Form.Item>
           </div>
         </Form>
        </div>

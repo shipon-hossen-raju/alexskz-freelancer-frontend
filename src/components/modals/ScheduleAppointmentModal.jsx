@@ -1,7 +1,7 @@
 'use client';
 
 import { Modal } from 'antd';
-import React, { useMemo, useState } from 'react';
+import React, { useEffect, useMemo, useState } from 'react';
 import ConfirmBookingModal from './ConfirmBookingModal';
 import { useGetAvailableSlotsQuery } from '@/redux/api/bookingApi';
 
@@ -71,6 +71,14 @@ export default function ScheduleAppointmentModal({
       skip: !serviceId,
     });
 
+    useEffect(() => {
+    if (openBookingModal && serviceId) {
+      
+      refetch();
+    }
+   
+  }, [openBookingModal, serviceId]);
+
   // normalize server response
   const apiSlotsArray = useMemo(() => {
     if (!rawResp) return [];
@@ -93,7 +101,7 @@ export default function ScheduleAppointmentModal({
     return map;
   }, [apiSlotsArray]);
 
-  console.log('api slot array', apiSlotsArray)
+  // console.log('api slot array', apiSlotsArray)
 
   const days = useMemo(() => getNext7Days(), []);
   const times = useMemo(() => generateHourlyTimes(), []);
@@ -194,8 +202,9 @@ export default function ScheduleAppointmentModal({
         open={confirmOpen}
         onClose={() => setConfirmOpen(false)}
         slot={selectedSlot}
+        serviceId={serviceId}
         onConfirm={(payload) => {
-          console.log('Booking payload:', payload);
+          // console.log('Booking payload:', payload);
           setConfirmOpen(false);
         }}
       />

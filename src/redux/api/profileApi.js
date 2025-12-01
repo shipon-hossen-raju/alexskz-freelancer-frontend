@@ -17,6 +17,19 @@ const profileApi = baseApi.injectEndpoints({
             refetchOnFocus: true,
 
         }),
+        // get freeLancer home
+        getClientHome: builder.query({
+            query: () => ({
+                url: 'users/user-home',
+                method: 'GET',
+            }),
+            providesTags: ['User'],
+            keepUnusedDataFor: 0,      // delete cached data immediately
+            refetchOnMountOrArgChange: true,
+            refetchOnReconnect: true,
+            refetchOnFocus: true,
+
+        }),
 
         // edit profile
         editProfile: builder.mutation({
@@ -86,6 +99,7 @@ const profileApi = baseApi.injectEndpoints({
 
 export const {
     useGetFreelancerHomeQuery,
+    useGetClientHomeQuery,
     useEditProfileMutation,
     useChangePasswordMutation,
     useUploadProfileImageMutation,

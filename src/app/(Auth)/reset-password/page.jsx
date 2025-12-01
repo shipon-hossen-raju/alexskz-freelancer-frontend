@@ -36,7 +36,7 @@ export default function ResetPasswordPage() {
           router.push('/sign-in')
         })
         .catch((error) =>{
-          console.log(error)
+          // console.log(error)
           toast.error(error?.data?.message || "Something went wrong!");
         })
 

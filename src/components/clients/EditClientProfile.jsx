@@ -20,10 +20,10 @@ export default function EditClientProfile() {
     return <Loading />
   }
 
-  console.log(userData)
+  // console.log(userData)
 
   const onFinish = (values) => {
-    console.log('Save Changes:', values);
+    // console.log('Save Changes:', values);
     const payload = {
       firstName: values.firstName,
       lastName: values.lastName,

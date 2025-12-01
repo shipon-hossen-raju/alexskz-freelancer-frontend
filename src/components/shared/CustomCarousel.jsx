@@ -141,7 +141,7 @@ export default function CustomCarousel({ items = [] }) {
               className="flex-shrink-0"
               style={{ width: `${slideWidth}px`, flex: `0 0 ${slideWidth}px` }}
             >
-              <FreelancerCard {...p} />
+              <FreelancerCard professional={p} />
             </div>
           ))}
         </div>

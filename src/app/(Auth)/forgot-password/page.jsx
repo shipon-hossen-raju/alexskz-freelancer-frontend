@@ -33,7 +33,7 @@ export default function ForgotPasswordPage() {
           router.push("/verify-code");
         })
         .catch((error) => {
-          console.log(error)
+          // console.log(error)
           toast.error(error?.data?.message);
 
         })

@@ -28,7 +28,7 @@ export const pros = [
 
 export default  function CategoryPage({ params }) {
     const { slug } =  params;
-    console.log(slug)
+    // console.log(slug)
 
     const savedSlug = localStorage.getItem("slug")
 
@@ -37,7 +37,7 @@ export default  function CategoryPage({ params }) {
         notFound();
     }
 
-    console.log(savedSlug)
+    // console.log(savedSlug)
 
     const [currentPage, setCurrentPage] = useState(1)
 
@@ -55,7 +55,7 @@ export default  function CategoryPage({ params }) {
 
     
     const onSearch = (q) => {
-        console.log('search:', q);
+        // console.log('search:', q);
         
     };
 

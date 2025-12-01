@@ -28,7 +28,7 @@ export default function HomePage() {
 
   const handleSearch = (query) => {
 
-    console.log('search:', query);
+    // console.log('search:', query);
   };
 
   // throw new Error ("")

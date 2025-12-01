@@ -32,7 +32,7 @@ export default function VerifyCodePage() {
 
 
   const onChange = text => {
-    console.log('onChange:', text);
+    // console.log('onChange:', text);
     setOtp(text)
   };
   const onInput = value => {
@@ -56,7 +56,7 @@ export default function VerifyCodePage() {
       .then((res) => {
         toast.success('Code verified successfully.');
         dispatch(clearStepOne());
-        console.log('from verify code', res)
+        // console.log('from verify code', res)
 
         if (prevPath === '/forgot-password') {
           localStorage.removeItem('previous-pathname')
@@ -72,7 +72,7 @@ export default function VerifyCodePage() {
         }
       })
       .catch((error) => {
-        console.log(error)
+        // console.log(error)
         toast.error(error?.data?.message);
 
       })

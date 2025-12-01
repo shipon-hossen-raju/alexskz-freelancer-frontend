@@ -7,14 +7,8 @@ import Link from 'next/link';
 import { TiTick } from "react-icons/ti";
 import VerifiedDot from '../ui/VerifiedDot';
 
-export default function FreelancerCard({
-  imgSrc,
-  name = 'Mr.Lee',
-  category = 'Finance & Accounting',
-  rating = 4.5,
-  reviews = 500,
-  onHire,
-}) {
+export default function FreelancerCard({professional}) {
+  
   return (
     <div
       className="
@@ -25,8 +19,8 @@ export default function FreelancerCard({
       {/* Cover */}
       <div className="relative h-48">
         <Image
-          src={imgSrc}
-          alt={name}
+          src={professional?.profileImage }
+          alt="Professional Image"
           fill
           className="object-cover"
           sizes="(min-width:1024px) 25vw, (min-width:640px) 50vw, 100vw"
@@ -39,15 +33,15 @@ export default function FreelancerCard({
         {/* Top row: name + verified + rating */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-[16px] font-semibold text-[#202020] font-open-sans">{name}</span>
+            <span className="text-[16px] font-semibold text-[#202020] font-open-sans">{professional?.firstName} {professional?.lastName}</span>
           
            <VerifiedDot />
           </div>
 
           <div className="flex items-center gap-1 text-[16px] text-gray-600">
             <span className="text-[#FFA726] ">★</span>
-            <span className="font-medium">{rating}</span>
-            <span className="text-gray-400">({reviews})</span>
+            <span className="font-medium">{professional?.rating}</span>
+            <span className="text-gray-400">({professional?.ratingCount})</span>
           </div>
         </div>
 
@@ -57,19 +51,19 @@ export default function FreelancerCard({
             type="button"
             className="text-[14px] text-[#1e863a] bg-[#e7f3e9] underline decoration-transparent hover:decoration-[#1e863a] px-2 rounded font-medium"
           >
-            {category}
+            {professional?.category?.title}
           </button>
         </div>
 
         {/* Short description */}
         <p className="mt-2 text-[14px]  font-open-sans leading-5 text-[#9F9C96] line-clamp-2">
-          Experienced HR freelancer specializing in recruitment, employee relations, and talent
+         {professional?.about}
         </p>
 
         {/* Footer action */}
         <div className="mt-3">
           <Link
-            href={`/details/${name}`}
+            href={`/details/${professional?.id}`}
             className="inline-flex font-open-sans items-center  text-[16px] font-medium text-gray-700 hover:text-[#144A6C]"
           >
             Hire Now <span aria-hidden><Image src={arrow} alt="icon"/></span>
