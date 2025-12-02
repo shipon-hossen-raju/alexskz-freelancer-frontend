@@ -5,7 +5,7 @@ import { Dropdown, Divider } from 'antd';
 import { DownOutlined, StarFilled } from '@ant-design/icons';
 import SubHeadingBlack from '@/components/ui/SubHeadingBlack';
 
-function RatingsHeader({ total = 500, rating = 4.5, defaultSortKey = 'recent', onSortChange }) {
+function RatingsHeader({ total = 0, rating = 0, defaultSortKey = 'recent', onSortChange }) {
   const items = [
     { key: 'recent', label: 'Most Recent' },
     { key: 'relevant', label: 'Most Relevant' },
@@ -25,7 +25,7 @@ function RatingsHeader({ total = 500, rating = 4.5, defaultSortKey = 'recent', o
     <section className="w-full bg-gray-50">
       <div className="py-4">
         {/* Title */}
-       <SubHeadingBlack text="Ratings & Review"/>
+        <SubHeadingBlack text="Ratings & Review" />
 
         {/* Meta row */}
         <div className="mt-4 flex items-center justify-between">
@@ -42,19 +42,23 @@ function RatingsHeader({ total = 500, rating = 4.5, defaultSortKey = 'recent', o
           </div>
 
           {/* Right: dropdown */}
-          <Dropdown
-            trigger={['click']}
-            menu={{ items, onClick: handleMenuClick }}
-            placement="bottomRight"
-          >
-            <button
-              className="cursor-pointer inline-flex items-center gap-2 font-medium text-gray-800 hover:text-gray-900"
-              aria-label="Sort reviews"
-            >
-              {selectedLabel}
-              <DownOutlined className="text-xs font-medium" />
-            </button>
-          </Dropdown>
+          {
+            total > 0 && (
+              <Dropdown
+                trigger={['click']}
+                menu={{ items, onClick: handleMenuClick }}
+                placement="bottomRight"
+              >
+                <button
+                  className="cursor-pointer inline-flex items-center gap-2 font-medium text-gray-800 hover:text-gray-900"
+                  aria-label="Sort reviews"
+                >
+                  {selectedLabel}
+                  <DownOutlined className="text-xs font-medium" />
+                </button>
+              </Dropdown>
+            )
+          }
         </div>
 
         {/* Divider */}

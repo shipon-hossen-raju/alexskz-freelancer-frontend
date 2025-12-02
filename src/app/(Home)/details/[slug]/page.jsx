@@ -28,52 +28,53 @@ import { useGetProfileForPublicViewQuery } from '@/redux/api/publicApi'
 import Loading from '@/components/shared/Loading'
 
 
-
-const lists = [
-    {
-        id: 1,
-        icon: clock,
-        text: 'Experience: 5+years in financial auditing and advisory',
-    },
-    {
-        id: 2,
-        icon: msg,
-        text: 'Language: English , Bangla  ',
-    },
-    {
-        id: 3,
-        icon: circleMark,
-        text: 'Verified Pro',
-    },
-    {
-        id: 4,
-        icon: location,
-        text: 'Bangladesh',
-    },
-    {
-        id: 5,
-        icon: skills,
-        text: 'Skills: Taxs, Accounting , Financial Analysis',
-    }
-]
-
-
 export default function FreelancerDetailsPage({ params }) {
     const { slug } = params;
 
-    const {data, isLoading, isError, error} = useGetProfileForPublicViewQuery("69268d0a138c715af045c2a6");
+    const { data, isLoading, isError, error } = useGetProfileForPublicViewQuery("69268d0a138c715af045c2a6");
+    // const {data, isLoading, isError, error} = useGetProfileForPublicViewQuery(slug);
 
-    if(isLoading) {
+    if (isLoading) {
         return <Loading />
     }
 
-    if(isError) {
+    if (isError) {
+        // console.log('error', error)
         throw new Error(error?.data?.message || error?.message || "Failed to load data");
     }
 
     console.log('data details', data?.data)
 
     const profileData = data?.data;
+
+    const lists = [
+        {
+            id: 1,
+            icon: clock,
+            text: `Experience: ${profileData?.experience}`,
+        },
+        {
+            id: 2,
+            icon: msg,
+            text: `Language: ${profileData?.language}  `,
+        },
+        {
+            id: 3,
+            icon: circleMark,
+            text: 'Verified Pro',
+        },
+        {
+            id: 4,
+            icon: location,
+            text: `Location: ${profileData?.address}`,
+        },
+        {
+            id: 5,
+            icon: skills,
+            text: `Skills: ${profileData?.skills?.join(', ') || 'N/A'}`,
+        }
+    ]
+
 
 
     return (
@@ -90,7 +91,7 @@ export default function FreelancerDetailsPage({ params }) {
             <div className=' '>
                 {/* cover photo */}
                 <div className='relative h-[60vh]'>
-                    <Image src={profileData?.cover} alt='cover-photo' className='rounded-[8px] lg:h-[60vh] object-cover' fill/>
+                    <Image src={profileData?.cover} alt='cover-photo' className='rounded-[8px] lg:h-[60vh] object-cover' fill />
                 </div>
 
                 {/* user image */}
@@ -123,16 +124,19 @@ export default function FreelancerDetailsPage({ params }) {
                             <Paragraph text={`(${profileData?.rating?.reviews?.length})`} />
                         </div>
                     </div>
-                    <SubHeading text={profileData?.category} />
+                    <SubHeading text={profileData?.category?.title} />
 
                     <ul className='space-y-2 lg:space-y-6'>
                         {
-                            lists.map((list) => (
-                                <li className='flex gap-2 items-center'>
-                                    <Image src={list.icon} alt='icon' className="w-7 h-7 object-cover"/>
-                                    <Paragraph text={list.text} />
-                                </li>
-                            ))
+                            lists.map((list) => {
+                                if (list.id === 3 && !profileData?.isVerify) return null;
+                                return (
+                                    <li key={list.id} className='flex gap-2 items-center'>
+                                        <Image src={list.icon} alt='icon' className="w-7 h-7 object-cover" />
+                                        <Paragraph text={list.text} />
+                                    </li>
+                                )
+                            })
                         }
                     </ul>
 
@@ -140,8 +144,8 @@ export default function FreelancerDetailsPage({ params }) {
                         <SubHeadingBlack text="About me" />
                     </div>
 
-                    <Paragraph text="Experienced HR freelancer specializing in recruitment, employee relations, and talent Experienced HR freelancer specializing in recruitment, employee relations, and talent Experienced HR freelancer specializing in recruitment, employee relations, and talent Experienced HR freelancer specializing in recruitment, employee relations, and">
-                        <GreenPara text="Read more....." />
+                    <Paragraph text={profileData?.about}>
+                        {/* <GreenPara text="Read more....." /> */}
                     </Paragraph>
 
                 </div>
@@ -154,7 +158,7 @@ export default function FreelancerDetailsPage({ params }) {
                             <div className="flex-shrink-0 mx-auto sm:mx-0">
                                 <div className="w-20 h-20 rounded-full overflow-hidden ring-1 ring-[#8BCF9A] ">
                                     <img
-                                        src={userImg.src}
+                                        src={profileData?.profileImage}
                                         alt="user"
                                         className="w-full h-full object-cover"
                                     />
@@ -163,11 +167,11 @@ export default function FreelancerDetailsPage({ params }) {
 
 
                             <div className="text-center sm:text-left flex-1 font-open-sans">
-                                <div className="text-lg font-semibold text-gray-800">Mr. Lee</div>
+                                <div className="text-lg font-semibold text-gray-800">{`${profileData?.firstName} ${profileData?.lastName}`}</div>
                                 <div className="mt-1 text-sm text-gray-500">
-                                    <span className="font-medium text-gray-600">Offline</span>
+                                    <span className="font-medium text-gray-600">{profileData?.isOnline ? 'Online' : 'Offline'}</span>
                                     <span className="mx-2 text-xs text-gray-300">•</span>
-                                    <span className="text-gray-400">5:18 pm local time</span>
+                                    <span className="text-gray-400">{profileData?.lastActive ? `${profileData?.lastActive} Local time` : ''}</span>
                                 </div>
                             </div>
                         </div>
@@ -175,7 +179,9 @@ export default function FreelancerDetailsPage({ params }) {
 
                         {/* Button area - matches the full-width outline button in the image */}
                         <div className="mt-6 lg:mt-10 text-center ">
-                            <TealOutLineBtn text="Message Now" block="block" />
+                            <Link href='/inbox'>
+                                <TealOutLineBtn text="Message Now" block="block" />
+                            </Link>
                         </div>
                     </div>
                 </div>
@@ -183,26 +189,30 @@ export default function FreelancerDetailsPage({ params }) {
 
             {/* Portfolio Section */}
             <div className='mt-10 lg:mt-20 bg-white px-4 py-8 rounded-[8px]'>
-                <PortfolioSection />
+                <PortfolioSection items={profileData?.portfolio?.slice(0,4)}/>
 
                 <div className=" lg:my-6">
-                    <Link href={`/details/${params}/portfolios`}
-                        className="block text-center w-full rounded-[10px] py-3 md:py-4 px-6 bg-gradient-to-r from-[#92D5FF] via-teal-100 to-[#A7FFBB] text-gray-800  text-sm md:text-base shadow-sm hover:shadow-md focus:outline-none  transition-shadow cursor-pointer font-open-sans font-semibold"
-                        aria-label="20+ Projects"
-                    >
-                        20+ Projects
-                    </Link>
+                    {
+                        profileData?.portfolio && profileData?.portfolio?.length > 4 && (
+                            <Link href={`/details/${slug}/portfolios`}
+                                className="block text-center w-full rounded-[10px] py-3 md:py-4 px-6 bg-gradient-to-r from-[#92D5FF] via-teal-100 to-[#A7FFBB] text-gray-800  text-sm md:text-base shadow-sm hover:shadow-md focus:outline-none  transition-shadow cursor-pointer font-open-sans font-semibold"
+                                aria-label="View more Projects"
+                            >
+                                View more Projects
+                            </Link>
+                        )
+                    }
                 </div>
             </div>
 
             {/* Offered Services */}
             <div className='mt-10 lg:mt-20'>
-                <OfferedServices />
+                <OfferedServices services={profileData?.service} availability={profileData?.availability}/>
             </div>
 
             {/* ratings & reviews section */}
             <div className='mt-10 lg:mt-20'>
-                <RatingReviewsSection />
+                <RatingReviewsSection rating={profileData?.rating}/>
             </div>
 
 

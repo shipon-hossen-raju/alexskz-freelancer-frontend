@@ -9,6 +9,9 @@ import edit from '@/assets/icons/edit.svg'
 import trash from '@/assets/icons/trash.svg'
 import { useDeleteServiceMutation } from '@/redux/api/serviceApi'
 import toast from 'react-hot-toast'
+import { useDispatch } from 'node_modules/react-redux/dist/react-redux'
+import { serviceIdForBooking } from '@/redux/slices/bookingSlice'
+import { useGetUserProfileQuery } from '@/redux/auth/authApi'
 
 export default function OfferedServicesCard({
     service,
@@ -19,8 +22,14 @@ export default function OfferedServicesCard({
 }) {
     const [bookingModal, setBookingModal] = useState(false)
     const [deleteService, { isLoading: isDeleteLoading }] = useDeleteServiceMutation();
+    const dispatch = useDispatch();
+    const { data: userData, error, isLoading } = useGetUserProfileQuery();
+    if (isLoading) {
+        return;
+    }
 
     // console.log('services', service?.id)
+    const serviceId = service?.id;
 
     const handleDeleteService = () => {
         if (profile) {
@@ -41,10 +50,16 @@ export default function OfferedServicesCard({
 
 
     const handleBooking = () => {
+        if (!userData) {
+            return toast.error("Please login to book a service");
+        }
+        dispatch(serviceIdForBooking(serviceId));
         setBookingModal(true);
 
 
     }
+
+   
     return (
         <div className='flex flex-col md:flex-row gap-4 justify-between items-center md:items-start   bg-white border border-[#E5E5E5] rounded-[10px] p-2'>
             <div className='flex flex-col md:flex-row gap-4 '>
@@ -91,6 +106,8 @@ export default function OfferedServicesCard({
             <ScheduleAppointmentModal
                 openBookingModal={bookingModal}
                 onCloseBookingModal={() => setBookingModal(false)}
+                serviceId={serviceId}
+
 
             />
         </div>

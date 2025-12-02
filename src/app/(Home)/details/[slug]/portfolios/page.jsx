@@ -8,15 +8,34 @@ import CustomContainer from '@/components/ui/CustomContainer';
 import avatarSrc from '@/assets/image/freelancer/user.jpg'
 import PortfolioSection from '@/components/features/Professiona-details/PortfolioSection';
 import VerifiedDot from '@/components/ui/VerifiedDot';
+import { useGetProfileForPublicViewQuery } from '@/redux/api/publicApi';
+import Loading from '@/components/shared/Loading';
 
 export default function ProfessionalPortfolioesPage({
-  name = 'Mr. Lee',
-  subtitle = 'Certified Finance & Account Expert',
-  rating = 4.5,
-  reviewCount = 500,
+ params,
  
   onMessage,
 }) {
+
+  const { slug } = params;
+  // console.log('slug', slug)
+
+  // const { data, isLoading, isError, error } = useGetProfileForPublicViewQuery("69268d0a138c715af045c2a6");
+      const {data, isLoading, isError, error} = useGetProfileForPublicViewQuery(slug);
+  
+      if (isLoading) {
+          return <Loading />
+      }
+  
+      if (isError) {
+          // console.log('error', error)
+          throw new Error(error?.data?.message || error?.message || "Failed to load data");
+      }
+  
+      // console.log('data details', data?.data)
+  
+      const profileData = data?.data;
+  
   return (
     <CustomContainer >
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 py-4">
@@ -25,8 +44,8 @@ export default function ProfessionalPortfolioesPage({
           {/* Avatar */}
           <div className="relative h-24 w-24 ring-1 ring-[#8BCF9A] rounded-full  shrink-0">
             <Image
-              src={avatarSrc}
-              alt={`${name} avatar`}
+              src={profileData?.profileImage}
+              alt={`avatar`}
               fill
               
               className="rounded-full object-cover"
@@ -39,11 +58,13 @@ export default function ProfessionalPortfolioesPage({
             {/* Name + verified + rating */}
             <div className="flex items-center flex-wrap gap-x-2 gap-y-1">
               <h3 className="text-base sm:text-lg font-bold text-gray-900 font-open-sans">
-                {name}
+                {profileData?.firstName} {profileData?.lastName}
               </h3>
 
               {/* Verified dot */}
-              <VerifiedDot />
+              {
+                profileData?.isVerify && <VerifiedDot />
+              }
 
               {/* Rating */}
               <span className="flex items-center text-sm text-gray-600 gap-1">
@@ -55,14 +76,14 @@ export default function ProfessionalPortfolioesPage({
                 >
                   <path d="M10 1.6l2.47 5.01 5.53.8-4 3.9.94 5.49L10 14.95 5.06 16.8l.94-5.49-4-3.9 5.53-.8L10 1.6z" />
                 </svg>
-                <span className="font-medium">{rating}</span>
-                <span className="text-gray-400">({reviewCount})</span>
+                <span className="font-medium">{profileData?.rating?.ratingAvg || 0}</span>
+                <span className="text-gray-400">{`(${profileData?.rating?.reviews?.length})`}</span>
               </span>
             </div>
 
             {/* Subtitle */}
             <p className="mt-0.5 text-sm text-gray-500 ">
-              {subtitle}
+              {/* {subtitle} */}
             </p>
           </div>
         </div>
@@ -77,7 +98,7 @@ export default function ProfessionalPortfolioesPage({
       </div>
 
       <div className='mt-10 lg:mt-20'>
-        <PortfolioSection />
+        <PortfolioSection items={profileData?.portfolio}/>
       </div>
     </CustomContainer>
   );

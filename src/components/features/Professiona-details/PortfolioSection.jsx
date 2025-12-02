@@ -7,43 +7,12 @@ import img from '@/assets/image/freelancer/portfolio.jpg'
 import Heading from '@/components/ui/Heading'
 import Link from 'node_modules/next/link'
 
-export default function PortfolioSection({ items = [] }) {
-    const demo = [
-        {
-            id: 1,
-            title: 'Legal Consultancy Website Design',
-            description:
-                'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-            imgSrc: img,
-            showPlay: false,
-        },
-        {
-            id: 2,
-            title: 'Legal Consultancy Website Design',
-            description:
-                'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-            imgSrc: img,
-            showPlay: false,
-        },
-        {
-            id: 3,
-            title: 'Legal Consultancy Website Design',
-            description:
-                'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-            imgSrc: img,
-            showPlay: false,
-        },
-        {
-            id: 4,
-            title: 'Legal Consultancy Website Design',
-            description:
-                'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-            imgSrc: img,
-            showPlay: true,
-        },
-    ]
-
-    const list = items.length ? items : demo
+export default function PortfolioSection({ items  }) {
+   
+    const list = items.length > 0 ? items : []
+    if(list.length === 0){
+        return <div>No portfolio projects found</div>
+    }
 
     return (
         <section className=" ">
@@ -54,15 +23,8 @@ export default function PortfolioSection({ items = [] }) {
                 {list.map((it) => (
                     <PortfolioCard
                         key={it.id}
-                        id={it.id}
-                        title={it.title}
-                        description={it.description}
-                        imgSrc={it.imgSrc}
-                        imgAlt={it.title}
-                        showPlay={it.showPlay}
-                        // onView={(id) => console.log('view', id)}
-                        // onEdit={(id) => console.log('edit', id)}
-                        // onDelete={(id) => console.log('delete', id)}
+                        project={it}
+                        
                     />
                 ))}
             </div>
