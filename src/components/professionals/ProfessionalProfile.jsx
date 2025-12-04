@@ -33,6 +33,7 @@ import location from '@/assets/icons/location.svg';
 import skills from '@/assets/icons/skills.png';
 import VerifiedDot from '../ui/VerifiedDot';
 import Reviews from '../features/Professiona-details/Reviews';
+import ScheduleSection from '../features/Professiona-details/ScheduleSection';
 
 const linkItems = [
     {
@@ -103,7 +104,7 @@ export default function ProfessionalProfile() {
     const services = me?.Service;
     const reviews = me?.reviews || [];
 
-    console.log('me', me?.reviews)
+    console.log('me', me)
 
     
 
@@ -431,6 +432,13 @@ export default function ProfessionalProfile() {
                 </div>
 
 
+            </div>
+
+            {/* availability */}
+            <div className='mt-8  p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)] overflow-hidden'>
+               <div className=''>
+                 <ScheduleSection availability={me?.AvailabilityTime}/>
+               </div>
             </div>
 
             {/* reviews */}

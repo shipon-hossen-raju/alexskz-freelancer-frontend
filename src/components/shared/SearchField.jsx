@@ -5,6 +5,7 @@
 import React, { useState } from 'react';
 import TealBtn from '../ui/TealBtn';
 import { SearchOutlined, SlidersOutlined } from '@ant-design/icons';
+import CustomSearch from '../ui/CustomSearch';
 
 export default function SearchField({ onSearch, className = '' }) {
   const [q, setQ] = useState('');
@@ -15,12 +16,17 @@ export default function SearchField({ onSearch, className = '' }) {
   };
 
   return (
-    <form
+
+    <div className={`mt-4 sm:mt-6 flex flex-col gap-4 md:gap-2 sm:flex-row sm:items-center ${className}`}>
+      <div >
+        <CustomSearch />
+      </div>
+      <form
       onSubmit={submit}
-      className={`mt-4 sm:mt-6 flex flex-col gap-4 md:gap-2 sm:flex-row sm:items-center ${className}`}
+      
     >
       {/* Input shell */}
-      <label className="sr-only" htmlFor="global-search">Search Any Service</label>
+      {/* <label className="sr-only" htmlFor="global-search">Search Any Service</label>
       <div className="flex items-center bg-white rounded-[8px] shadow ring-1 ring-black/5 w-full h-10 md:h-12 ">
         <span className="pl-3 sm:pl-4 pr-2 text-gray-500 text-[16px] sm:text-[18px]">
           <SearchOutlined />
@@ -42,7 +48,7 @@ export default function SearchField({ onSearch, className = '' }) {
         >
           <SlidersOutlined className="text-[16px]" />
         </button>
-      </div>
+      </div> */}
 
       {/* Find expert button */}
       <div className="sm:ml-2 w-full sm:w-auto">
@@ -54,5 +60,6 @@ export default function SearchField({ onSearch, className = '' }) {
         />
       </div>
     </form>
+    </div>
   );
 }

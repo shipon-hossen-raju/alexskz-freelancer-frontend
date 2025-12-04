@@ -194,7 +194,7 @@ export default function ScheduleSection({ availability = [], daysToShow = 7 }) {
       <div className="overflow-auto max-w-full h-100 ">
         {/* Title */}
         <div className=" text-[15px] font-semibold text-gray-900 mb-4 text-center">
-          Schedule (view-only)
+          Schedule 
         </div>
 
         {/* Grid */}

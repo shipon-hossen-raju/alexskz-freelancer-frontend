@@ -21,7 +21,7 @@ export default function PricingCard({ plan, BeSeller = false }) {
            <div>
              {/* Header */}
             <h3 className="text-[18px] sm:text-[24px] font-semibold text-gray-900">{plan.title}</h3>
-            <p className="mt-1 text-[13px] text-gray-500 leading-5">{plan.blurb}</p>
+            <p className="mt-1 text-[13px] text-gray-500 leading-5">{plan.description}</p>
 
            
 
@@ -55,9 +55,9 @@ export default function PricingCard({ plan, BeSeller = false }) {
                  {/* Price */}
             <div className="mt-4 flex items-baseline gap-2">
                 <div className="text-[28px] sm:text-[30px] font-bold text-gray-900">
-                    {plan.price} {plan.currency}
+                    {plan.price} EUR
                 </div>
-                <span className="text-[13px] text-gray-600">/ {plan.period}</span>
+                <span className="text-[13px] text-gray-600">/ {plan.type}</span>
             </div>
 
             {/* Billed note */}
@@ -70,7 +70,7 @@ export default function PricingCard({ plan, BeSeller = false }) {
             className="block bg-[#144A6C] text-white font-open-sans font-semibold !w-full py-2 text-center 2xl:text-[18px] rounded-[6px]"
             >
                 
-                {plan.ctaText}
+                {plan?.title === 'Launch — Get started' ? 'Get Started Free' : plan?.title === 'Scale -- Operate smarter' ? 'Upgrade to Scale' : 'Upgrade to Pro'}
             </Link>
             </div>
             </div>

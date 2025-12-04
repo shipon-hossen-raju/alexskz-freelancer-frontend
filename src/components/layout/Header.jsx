@@ -25,7 +25,7 @@ import { MenuItemsForLargeDevices } from '@/lib/MenuItemsForLargeDevices';
 export default function Header() {
   // 1) All hooks at the very top, no conditions around them
   const [dropdownOpen, setDropDownOpen] = useState(false);
-  const [isNotMobile, setIsNotMobile] = useState(false); 
+  const [isNotMobile, setIsNotMobile] = useState(false);
 
   const dispatch = useDispatch();
   const router = useRouter();
@@ -76,7 +76,7 @@ export default function Header() {
     );
   }
 
-  const items = user ? MobileMenuItemsForLoginUser : (isNotMobile? MenuItemsForLargeDevices : MobileMenuItems);
+  const items = user ? MobileMenuItemsForLoginUser : (isNotMobile ? MenuItemsForLargeDevices : MobileMenuItems);
   const activeBtn =
     'bg-[#144A6C] text-white rounded-[8px] px-4 py-1 ';
 
@@ -107,36 +107,37 @@ export default function Header() {
             <ul className="font-open-sans lg:text-[16px] xl:text-[22px] flex items-center gap-8">
               <Link href="/">
                 <li
-                  className={` cursor-pointer ${
-                    pathname === '/'
+                  className={` cursor-pointer ${pathname === '/'
                       ? activeBtn
                       : 'hover:font-semibold hover:text-[#144A6C] '
-                  }`}
+                    }`}
                 >
                   Home
                 </li>
               </Link>
 
-              <Link href="/explore">
-                <li
-                  className={` cursor-pointer ${
-                    pathname === '/explore'
-                      ? activeBtn
-                      : 'hover:font-semibold hover:text-[#144A6C] '
-                  }`}
-                >
-                  Explore
-                </li>
-              </Link>
+              {
+                !user && (
+                  <Link href="/explore">
+                    <li
+                      className={` cursor-pointer ${pathname === '/explore'
+                          ? activeBtn
+                          : 'hover:font-semibold hover:text-[#144A6C] '
+                        }`}
+                    >
+                      Explore
+                    </li>
+                  </Link>
+                )
+              }
 
               {!user && (
                 <Link href="/start-selling">
                   <li
-                    className={` cursor-pointer ${
-                      pathname === '/start-selling'
+                    className={` cursor-pointer ${pathname === '/start-selling'
                         ? activeBtn
                         : ' hover:font-semibold hover:text-[#144A6C]'
-                    }`}
+                      }`}
                   >
                     Join as a Pro
                   </li>
@@ -146,11 +147,10 @@ export default function Header() {
               {user && (
                 <Link href="/inbox">
                   <li
-                    className={` cursor-pointer ${
-                      pathname === '/inbox'
+                    className={` cursor-pointer ${pathname === '/inbox'
                         ? activeBtn
                         : 'hover:font-semibold hover:text-[#144A6C] '
-                    }`}
+                      }`}
                   >
                     Messages
                   </li>
@@ -160,25 +160,23 @@ export default function Header() {
               {user && (
                 <Link href="/bookings">
                   <li
-                    className={` cursor-pointer ${
-                      pathname === '/bookings'
+                    className={` cursor-pointer ${pathname === '/bookings'
                         ? activeBtn
                         : 'hover:font-semibold hover:text-[#144A6C] '
-                    }`}
+                      }`}
                   >
                     Bookings
                   </li>
                 </Link>
               )}
 
-              {!user && (
+              {(
                 <Link href="/services">
                   <li
-                    className={` cursor-pointer ${
-                      pathname === '/services'
+                    className={` cursor-pointer ${pathname === '/services'
                         ? activeBtn
                         : 'hover:font-semibold hover:text-[#144A6C] '
-                    }`}
+                      }`}
                   >
                     Certified Services
                   </li>
@@ -188,11 +186,10 @@ export default function Header() {
               {!user && (
                 <Link href="/about-us">
                   <li
-                    className={` cursor-pointer ${
-                      pathname === '/about-us'
+                    className={` cursor-pointer ${pathname === '/about-us'
                         ? activeBtn
                         : ' hover:font-semibold hover:text-[#144A6C]'
-                    }`}
+                      }`}
                   >
                     About us
                   </li>

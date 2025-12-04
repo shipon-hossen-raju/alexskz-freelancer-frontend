@@ -5,6 +5,7 @@
 import { useState } from 'react';
 import { SearchOutlined, SlidersOutlined } from '@ant-design/icons';
 import FiltersModal from '../modals/FiltersModal';
+import CustomSearch from './CustomSearch';
 
 export default function SearchWithFilter({ onSearch }) {
   const [q, setQ] = useState('');
@@ -16,14 +17,14 @@ export default function SearchWithFilter({ onSearch }) {
   };
 
   return (
-    <>
+    <div div className="font-open-sans flex flex-col gap-4 md:flex-row items-center md:gap-2 w-full">
+    <CustomSearch />
       <form
         onSubmit={submit}
-        className="font-open-sans flex flex-col gap-4 md:flex-row items-center md:gap-2 w-full"
       >
 
 
-        <div className="flex items-center bg-white rounded-[8px] shadow ring-1 ring-black/5 w-full h-10 lg:h-12">
+        {/* <div className="flex items-center bg-white rounded-[8px] shadow ring-1 ring-black/5 w-full h-10 lg:h-12">
            <span className="pl-4 pr-2 text-gray-500">
              <SearchOutlined />
         </span>
@@ -44,7 +45,8 @@ export default function SearchWithFilter({ onSearch }) {
           >
             <SlidersOutlined className="text-[16px]" />
           </button>
-        </div>
+        </div> */}
+        
 
 
         {/* Separate Filter button (opens modal) */}
@@ -74,6 +76,6 @@ export default function SearchWithFilter({ onSearch }) {
         onClose={() => setOpen(false)}
         onApply={() => setOpen(false)}
       />
-    </>
+    </div>
   );
 }

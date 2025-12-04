@@ -25,6 +25,7 @@ export default function PaymentForm({
   },
 }) {
   const [form] = Form.useForm();
+const today = new Date().toISOString().split('T')[0];
 
   const onFinish = (values) => {
     // replace with real submit logic
@@ -113,12 +114,12 @@ export default function PaymentForm({
 
               <div className="flex justify-between font-nunito">
                 <span>Start date :</span>
-                <span className="text-gray-500">{plan.startDate}</span>
+                <span className="text-gray-500">{today}</span>
               </div>
 
               <div className="flex justify-between font-nunito">
                 <span>Renewal date :</span>
-                <span className="text-gray-500">{plan.renewalDate}</span>
+                <span className="text-gray-500">{today}</span>
               </div>
             </div>
 

@@ -5,13 +5,25 @@
 import React, { useState } from 'react';
 
 import { SearchOutlined, SlidersOutlined } from '@ant-design/icons';
+import { useRouter } from 'node_modules/next/navigation';
 
 export default function CustomSearch({ onSearch,  }) {
   const [q, setQ] = useState('');
+  const router = useRouter();
 
   const submit = (e) => {
+
+    console.log('custom search', q)
     e?.preventDefault();
-    onSearch?.(q.trim());
+    const term = q.trim();
+    onSearch?.(term);
+
+    if (term) {
+      router.push(`/services?searchTerm=${encodeURIComponent(term)}`);
+    } else {
+      // if empty, go to services without param (optional)
+      router.push('/services');
+    }
   };
 
   return (
@@ -21,7 +33,7 @@ export default function CustomSearch({ onSearch,  }) {
     >
       {/* Input shell */}
       <label className="sr-only" htmlFor="global-search">Search</label>
-      <div className="flex items-center bg-white rounded-[16px] shadow ring-1 ring-black/5 w-full h-10 md:h-12 ">
+      <div className="flex items-center bg-white rounded-[8px] shadow ring-1 ring-black/5 w-full h-10 md:h-12 ">
         <span className="pl-3 sm:pl-4 pr-2 text-gray-500 text-[16px] sm:text-[18px]">
           <SearchOutlined />
         </span>

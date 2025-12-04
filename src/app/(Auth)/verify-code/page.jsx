@@ -45,11 +45,13 @@ export default function VerifyCodePage() {
   };
 
   const onFinish = async () => {
+    const num = parseInt(otp, 10);
 
     const payload = {
       email: email,
-      verificationCode: otp,
+      verificationCode: num,
     }
+    // console.log('otp', num)
 
     verifyCode(payload)
       .unwrap()
