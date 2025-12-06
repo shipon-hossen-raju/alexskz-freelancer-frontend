@@ -12,6 +12,8 @@ const loadInitialState = () => {
     token,
     isAuthenticated: false,
     stepOne: null,
+    userId: null,
+    paymentId: null,
   }
 }
 
@@ -52,9 +54,16 @@ export const userSlice = createSlice({
       localStorage.removeItem('user-id');
 
     },
+    setUserId: (state, action) => {
+      state.userId = action.payload;
+
+    },
+    setPaymentId: (state, action) => {
+      state.paymentId = action.payload;
+    },
   },
 });
 
 
-export const { initiateRole,clearInitialRole, createUserStepOne, clearStepOne, setUser, clearUser } = userSlice.actions;
+export const { initiateRole,clearInitialRole, createUserStepOne, clearStepOne, setUser, clearUser, setUserId, setPaymentId } = userSlice.actions;
 export default userSlice.reducer;

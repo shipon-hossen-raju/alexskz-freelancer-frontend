@@ -14,7 +14,7 @@ import { useGetAllCategoryQuery } from '@/redux/api/categoryApi';
 import Loading from '@/components/shared/Loading';
 import { useDispatch, useSelector } from 'react-redux';
 import { useSignUpForProfessionalMutation } from '@/redux/auth/authApi';
-import { clearInitialRole, clearStepOne } from '@/redux/auth/userSlice';
+import { clearInitialRole, clearStepOne, setUserId } from '@/redux/auth/userSlice';
 
 
 
@@ -62,6 +62,8 @@ export default function RegisterPageStep2({  }) {
         signUpForProfessional(payload)
         .unwrap()
         .then((res) => {
+          console.log('res: ',res)
+          dispatch(setUserId(res?.data?.id));
           toast.success('Account created successfully');
           localStorage.setItem('email', payload.email)
           localStorage.setItem('role', payload.role)

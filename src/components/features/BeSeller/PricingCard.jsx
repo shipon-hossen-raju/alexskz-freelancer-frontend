@@ -2,11 +2,50 @@
 
 import AuthButton from "@/components/ui/AuthButton";
 import TealBtn from "@/components/ui/TealBtn";
+import { useCreateSubscriptionMutation } from "@/redux/api/subscriptionApi";
 import Link from "next/link";
+import toast from "react-hot-toast";
+import { useDispatch, useSelector } from "node_modules/react-redux/dist/react-redux";
+import { useRouter } from "next/navigation";
+import { setPaymentId } from "@/redux/auth/userSlice";
 
 export default function PricingCard({ plan, BeSeller = false }) {
+        const userId = useSelector((state) => state.user.userId ?? null)
+        const subscriptionId =plan?.id
+        const [createSubscription, {isLoading}] = useCreateSubscriptionMutation()
+        const router = useRouter();
+        const dispatch = useDispatch();
 
-    // console.log(plan)
+        const handleSubscribe = () => {
+            if(BeSeller){
+                router.push('/sign-up');
+            }
+            else if(!BeSeller && plan?.title === 'Launch — Get started'){
+                router.push('/sign-in');
+            }
+
+          else{
+              const payload = {
+                userId: userId,
+                subscriptionId: subscriptionId,
+            }
+            createSubscription(payload)
+            .unwrap()
+            .then((res) => {
+                // console.log('subscription res', res)
+                dispatch(setPaymentId(res?.data?.paymentId));
+                router.push(`${res?.data?.sessionId}`);
+            })
+            .catch((err) => 
+            {
+                console.log('subscription err', err)
+                toast.error(err?.data?.message || "Subscription failed")
+            })
+          }
+        }
+
+    // console.log('userId in pricing card', userId)
+    // console.log('plan in pricing card', plan?.id)
     return (
         <div
             className={[
@@ -65,13 +104,14 @@ export default function PricingCard({ plan, BeSeller = false }) {
 
             {/* CTA */}
             <div className=" mt-4">
-                <Link
-            href={BeSeller? 'sign-up' : `/payment/${plan.id}`}
-            className="block bg-[#144A6C] text-white font-open-sans font-semibold !w-full py-2 text-center 2xl:text-[18px] rounded-[6px]"
+                <button
+                onClick={handleSubscribe}
+            // href={BeSeller? 'sign-up' : plan?.title === 'Launch — Get started'? '/sign-in' : `/payment/${plan.id}`}
+            className="block cursor-pointer bg-[#144A6C] text-white font-open-sans font-semibold !w-full py-2 text-center 2xl:text-[18px] rounded-[6px]"
             >
                 
                 {plan?.title === 'Launch — Get started' ? 'Get Started Free' : plan?.title === 'Scale -- Operate smarter' ? 'Upgrade to Scale' : 'Upgrade to Pro'}
-            </Link>
+            </button>
             </div>
             </div>
         </div>

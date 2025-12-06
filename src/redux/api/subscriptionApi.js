@@ -16,12 +16,19 @@ const subscriptionApi = baseApi.injectEndpoints({
         })
     }),
 
-        
-}),
+    createSubscription: builder.mutation({
+        query: (data) => ({
+            url: 'subscriptions/get-subscription',
+            method: 'POST',
+            body: data,
+        })
+    }),
+    }),
 });
 
 export const {
    
     useGetAllSubscriptionQuery, 
+    useCreateSubscriptionMutation,
     
 } = subscriptionApi;
