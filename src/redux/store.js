@@ -2,6 +2,7 @@ import {combineReducers, configureStore } from '@reduxjs/toolkit'
 import userReducer from './auth/userSlice'
 import chatReducer from './slices/messageSlice'
 import bookingReducer from './slices/bookingSlice'
+import filterReducer from './slices/filterSlice'
 import storage from 'redux-persist/lib/storage'
 import { baseApi } from './api/baseApi'
 
@@ -40,13 +41,14 @@ const persistConfig = {
     version: 1,
     storage,
     transforms: [removeInitialRoleTransform],
-    blacklist: [baseApi.reducerPath, 'chat'],
+    blacklist: [baseApi.reducerPath, 'chat', 'filter'],
 }
 
 const persistedReducer = persistReducer(persistConfig, combineReducers({
     user: userReducer,
     chat: chatReducer,
     booking: bookingReducer,
+    filter: filterReducer,
     [baseApi.reducerPath]: baseApi.reducer,
 }))
 

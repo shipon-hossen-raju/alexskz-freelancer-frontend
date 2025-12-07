@@ -22,30 +22,6 @@ export default function SearchWithFilter({ onSearch }) {
       <form
         onSubmit={submit}
       >
-
-
-        {/* <div className="flex items-center bg-white rounded-[8px] shadow ring-1 ring-black/5 w-full h-10 lg:h-12">
-           <span className="pl-4 pr-2 text-gray-500">
-             <SearchOutlined />
-        </span>
-
-           <input
-            value={q}
-            onChange={(e) => setQ(e.target.value)}
-            placeholder="Search Any Service..."
-            aria-label="Search Any Service"
-            className="flex-1 bg-transparent outline-none text-[14px] sm:text-[15px] text-gray-800 placeholder:text-gray-400"
-          />
-
-          <button
-            type="button"
-            aria-label="Open filters"
-           
-            className="shrink-0 mx-2 h-8 w-8 grid place-items-center  text-gray-500 "
-          >
-            <SlidersOutlined className="text-[16px]" />
-          </button>
-        </div> */}
         
 
 

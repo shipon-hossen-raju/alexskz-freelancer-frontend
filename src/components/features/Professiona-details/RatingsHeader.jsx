@@ -22,7 +22,7 @@ function RatingsHeader({ total = 0, rating = 0, defaultSortKey = 'recent', onSor
   };
 
   return (
-    <section className="w-full bg-gray-50">
+    <section className="w-full ">
       <div className="py-4">
         {/* Title */}
         <SubHeadingBlack text="Ratings & Review" />

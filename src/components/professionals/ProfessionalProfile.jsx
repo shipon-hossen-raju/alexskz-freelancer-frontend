@@ -26,6 +26,7 @@ import { useUploadCoverPhotoMutation, useUploadProfileImageMutation } from '@/re
 import toast from 'react-hot-toast';
 import Avatar from "@mui/material/Avatar";
 import { useDeleteServiceMutation } from '@/redux/api/serviceApi';
+import star from '@/assets/icons/star.svg'
 
 import msg2 from '@/assets/icons/messages-2.svg'
 import circleMark from '@/assets/icons/checkmark-circle.svg';
@@ -34,6 +35,12 @@ import skills from '@/assets/icons/skills.png';
 import VerifiedDot from '../ui/VerifiedDot';
 import Reviews from '../features/Professiona-details/Reviews';
 import ScheduleSection from '../features/Professiona-details/ScheduleSection';
+import SubHeading from '../ui/SubHeading';
+import Heading from '../ui/Heading';
+import RatingsHeader from '../features/Professiona-details/RatingsHeader';
+import AddEditProjectModal from '../modals/AddEditProjectModal';
+import PortfolioCard from '../shared/PortfolioCard';
+import { useGetMyProjectsQuery } from '@/redux/api/portfolioApi';
 
 const linkItems = [
     {
@@ -81,11 +88,17 @@ export default function ProfessionalProfile() {
     const [openWhatsAppModal, setopenWhatsAppModal] = useState(false);
     const [avatar, setAvatar] = useState("");
     const [coverPhoto, setCoverPhoto] = useState("");
+    const [selectedProject, setSelectedProject] = useState(null);
+    const [openProjectModal, setOpenProjectModal] = useState(false);
+    const [createProjectModal, setCreateProjectModal] = useState(false);
+    const [editProjectModal, setEditProjectModal] = useState(false);
+    
     const { data: myData, error: myError, isLoading: amILoading, refetch } = useGetUserProfileQuery();
     const [uploadProfileImage, { isLoading }] = useUploadProfileImageMutation();
     const [uploadCoverPhoto, { isLoading: isCoverPhotoLoading }] = useUploadCoverPhotoMutation();
     const [deleteService, { isLoading: isDeleteLoading }] = useDeleteServiceMutation();
-
+    const { data: projectData, isLoading: isProjectsLoading } = useGetMyProjectsQuery();
+    const projects = projectData?.data?.projects || [];
 
 
     const me = myData?.data;
@@ -239,6 +252,13 @@ export default function ProfessionalProfile() {
         setEditModal(false);
     }
 
+    const handleCloseProjectModal = () => {
+        setOpenProjectModal(false);
+        setCreateProjectModal(false);
+        setEditProjectModal(false);
+        setSelectedProject(null);
+    }
+
     return (
         <div>
             <div className=" p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)] overflow-hidden">
@@ -297,21 +317,29 @@ export default function ProfessionalProfile() {
                     </div>
 
                     <div className='font-open-sans mt-4'>
-                        {/* Name */}
+                       {/* name + rating */}
+                        <div className='flex justify-between items-center'>
+                            {/* Name */}
                         <div className='flex gap-2 items-center'>
-                            <SubHeadingBlack text={name} />
+                            <Heading text={name} />
                             {isVerified && (
                                 <VerifiedDot />
                             )}
                         </div>
 
-                        {/* About */}
-                        <div className="mt-3">
-                            <div className="text-[16px] font-semibold text-[#202020]">About me</div>
-
-
-                            <Paragraph text={about} />
+                        {/* rating */}
+                        <div className='flex  gap-1 items-center'>
+                            <Image src={star} alt="icon " className='lg:w-5' />
+                            <p className='text-[#333333] font-open-sans text-sm lg:text-xl'>{me?.rating?.ratingAvg || 0}</p>
+                            <Paragraph text={`(${me?.rating?.reviews?.length || 0})`} />
                         </div>
+                        </div>
+
+                        <div className='mt-3'>
+                            <SubHeading text={me?.category?.title} />
+                        </div>
+
+                        
 
                         {/* about lists */}
                         <div className='mt-4'>
@@ -325,6 +353,14 @@ export default function ProfessionalProfile() {
                                     ))
                                 }
                             </ul>
+                        </div>
+
+                        {/* About */}
+                        <div className="mt-4">
+                            <div className="text-[16px] font-semibold text-[#202020]">About me</div>
+
+
+                            <Paragraph text={about} />
                         </div>
 
                         {/* Divider */}
@@ -396,6 +432,43 @@ export default function ProfessionalProfile() {
                     </div>
                 </div>
             </div>
+
+            {/* portfolios */}
+
+               <div className='my-20 '>
+                 <div className='flex flex-col gap-4 md:flex-row justify-between my-10'>
+                    {/* heading */}
+                    <Heading text="My Latest Projects" />
+                    
+
+
+
+                </div>
+
+                <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
+                    {projects?.slice(0,4).map((project) => (
+                        <PortfolioCard
+                            key={project.id ?? project._id ?? idx}
+                            project={project}
+
+                            onView={(id) => console.log('view', id)}
+                            onEdit={(p) => {
+                                setOpenProjectModal(true)
+                                setEditProjectModal(true)
+                                setCreateProjectModal(false);
+                                setHeading('Edit Projects')
+                                setSelectedProject(p);
+                                //   console.log('p-', p)
+                            }}
+                            onDelete={(id) => console.log('delete', id)}
+                            profile={true}
+                        />
+                    ))}
+                </div>
+               </div>
+
+                
+
             <div className="mt-8 flex flex-col gap-8 xl:flex-row ">
 
 
@@ -446,7 +519,8 @@ export default function ProfessionalProfile() {
             <div className='mt-8  p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)] overflow-hidden'>
                 {/* heading */}
                 <div className='mb-4'>
-                    <SubHeadingBlack text="Ratings & Reviews" />
+                    
+                    <RatingsHeader rating={me?.rating?.ratingAvg || 0} total={me?.rating?.reviews?.length || 0}/>
                 </div>
                 <div className="grid grid-cols-1  gap-4 md:gap-5">
                     {reviews.map((review, i) => (
@@ -474,6 +548,16 @@ export default function ProfessionalProfile() {
                 open={openWhatsAppModal}
                 onClose={handleCloseWhatsAppModal}
             />
+
+            {/* modal */}
+                <AddEditProjectModal
+                    open={openProjectModal}
+                    onClose={handleCloseProjectModal}
+                    create={createProjectModal}
+                    edit={editProjectModal}
+                    heading={heading}
+                    project={selectedProject}
+                />
         </div>
     );
 }

@@ -22,7 +22,7 @@ export default function RatingReviewsSection({rating}) {
 
   return (
     <div>
-        <RatingsHeader rating={rating?.ratingAvg || 0} total={rating?.reviews?.length}/>
+        <RatingsHeader rating={rating?.ratingAvg || 0} total={rating?.reviews?.length || 0}/>
 
 
         {/* reviews */}

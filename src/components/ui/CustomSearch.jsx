@@ -7,7 +7,7 @@ import React, { useState } from 'react';
 import { SearchOutlined, SlidersOutlined } from '@ant-design/icons';
 import { useRouter } from 'node_modules/next/navigation';
 
-export default function CustomSearch({ onSearch,  }) {
+export default function CustomSearch({   }) {
   const [q, setQ] = useState('');
   const router = useRouter();
 

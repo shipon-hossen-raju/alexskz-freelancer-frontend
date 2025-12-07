@@ -11,6 +11,7 @@ import { useGetCertifiedServicesQuery } from '@/redux/api/serviceApi'
 import Loading from '@/components/shared/Loading'
 import { useSearchParams } from 'next/navigation'          // correct import
 import { useGetAllCategoryQuery } from '@/redux/api/categoryApi'
+import { useSelector } from 'node_modules/react-redux/dist/react-redux'
 
 export default function ServicesPage() {
   const [currentPage, setCurrentPage] = useState(1)
@@ -18,6 +19,15 @@ export default function ServicesPage() {
 
   const searchParams = useSearchParams()
   const searchTerm = (searchParams.get('searchTerm') || '').trim()
+
+  const categoryIds = useSelector((state) => state.filter?.categoryIds );
+  const minPrice = useSelector((state) => state.filter?.minPrice );
+  const maxPrice = useSelector((state) => state.filter?.maxPrice );
+  const isOnline = useSelector((state) => state.filter?.isOnline );
+  const topRated = useSelector((state) => state.filter?.topRated );
+  const isCertified = useSelector((state) => state.filter?.isCertified );
+
+  // console.log('filters: ', categoryIds, minPrice, maxPrice, isOnline, topRated, isCertified) ;
 
 
   // Hooks MUST be top-level. Use `skip` option to prevent fetching when not needed.
@@ -28,12 +38,22 @@ export default function ServicesPage() {
     isError: isCertifiedError,
   } = useGetCertifiedServicesQuery(undefined, { skip: !!searchTerm })
 
+ 
+
   // Only run category search when we have a searchTerm
-  const {
-    data: searchedCategoriesData,
-    isLoading: isSearchLoading,
-    isError: isSearchError,
-  } = useGetAllCategoryQuery({ searchTerm }, { skip: !searchTerm })
+  // const {
+  //   data: searchedCategoriesData,
+  //   isLoading: isSearchLoading,
+  //   isError: isSearchError,
+  // } = useGetAllCategoryQuery({categoryIds, searchTerm , minPrice, maxPrice, isOnline, topRated, isCertified}, {skip: !categoryIds, skip: !searchTerm , skip: !minPrice, skip: !maxPrice})
+  // } = useGetAllCategoryQuery({ searchTerm }, { skip: !searchTerm })
+
+ 
+const filtersApplied = searchTerm || categoryIds.length > 0 || minPrice || maxPrice || isOnline || topRated || isCertified;
+const queryParams = { searchTerm, categoryIds, minPrice, maxPrice, isOnline, topRated, isCertified };
+
+const { data: searchedCategoriesData, isLoading: isSearchLoading, isError: isSearchError } = useGetAllCategoryQuery(queryParams, { skip: !filtersApplied });
+
 
 
 
@@ -68,6 +88,7 @@ export default function ServicesPage() {
     isCertifiedLoading,
     isSearchError,
     isCertifiedError,
+    categoryIds, minPrice, maxPrice, isOnline, topRated, isCertified,
   ])
 
   // Loading UX: show search loading if searching, otherwise show certified loading

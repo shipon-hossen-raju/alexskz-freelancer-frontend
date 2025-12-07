@@ -228,7 +228,7 @@ export default function Header() {
                 {/* Notifications */}
                 <div className="hidden md:block">
                   <Badge
-                    count={5}
+                    // count={5}
                     color="#8BCF9A"
                     className="
                       [&_.ant-badge-count]:!shadow-none
