@@ -61,9 +61,15 @@ export const userSlice = createSlice({
     setPaymentId: (state, action) => {
       state.paymentId = action.payload;
     },
+    clearUserId: (state) => {
+      state.userId = null;
+    },
+    clearPaymentId: (state) => {
+      state.paymentId = null;
+    }
   },
 });
 
 
-export const { initiateRole,clearInitialRole, createUserStepOne, clearStepOne, setUser, clearUser, setUserId, setPaymentId } = userSlice.actions;
+export const { initiateRole,clearInitialRole, createUserStepOne, clearStepOne, setUser, clearUser, setUserId, setPaymentId, clearUserId, clearPaymentId } = userSlice.actions;
 export default userSlice.reducer;

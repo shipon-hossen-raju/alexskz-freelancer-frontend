@@ -23,6 +23,16 @@ const subscriptionApi = baseApi.injectEndpoints({
             body: data,
         })
     }),
+
+    verifyPayment: builder.mutation({
+        query: (data) => ({
+            url: 'subscriptions/verify-checkout-session',
+            method: 'PUT',
+            body: data,
+        }),
+    }),
+
+
     }),
 });
 
@@ -30,5 +40,6 @@ export const {
    
     useGetAllSubscriptionQuery, 
     useCreateSubscriptionMutation,
+    useVerifyPaymentMutation,
     
 } = subscriptionApi;

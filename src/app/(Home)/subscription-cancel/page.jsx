@@ -8,7 +8,7 @@ export default function page() {
         <div>
             <CustomContainer>
                 <div className='flex flex-col gap-8 justify-center items-center'>
-                    <div className='text-8xl'>
+                    <div className='text-8xl text-red-600'>
                         <AiOutlineCloseCircle />
                     </div>
 

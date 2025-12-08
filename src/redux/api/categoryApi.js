@@ -4,10 +4,10 @@
 
 
 // const categoryApi = baseApi.injectEndpoints({
-    
+
 //     endpoints: (builder) => ({
 
-    
+
 //     //get all categories
 //     getAllCategory: builder.query({
 //         query: () => ({
@@ -16,14 +16,14 @@
 //         })
 //     }),
 
-        
+
 // }),
 // });
 
 // export const {
-   
+
 //     useGetAllCategoryQuery, 
-    
+
 // } = categoryApi;
 
 // categoryApi.js
@@ -53,12 +53,26 @@ const categoryApi = baseApi.injectEndpoints({
           params: filtered,
         };
       },
-      // optional: cache tags etc
-      // providesTags: (result) => [...]
+
     }),
+
+    // get services by category Id
+    getServicesByCategoryId: builder.query({
+      query: (ids) => ({
+        url: 'categories/',
+        method: 'GET',
+       
+        params: {
+          categoryIds: JSON.stringify(Array.isArray(ids) ? ids : [ids]),
+        },
+      }),
+    })
+
+
   }),
 });
 
 export const {
   useGetAllCategoryQuery,
+  useGetServicesByCategoryIdQuery,
 } = categoryApi;

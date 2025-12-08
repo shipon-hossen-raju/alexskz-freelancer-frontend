@@ -35,7 +35,7 @@ export default function CategoriesSection({heading}) {
           "
         >
           {categories.map((c) => (
-            <CategoryCard key={c.id} title={c.title} icon={c.icon} />
+            <CategoryCard key={c.id} title={c.title} icon={c.icon} id={c.id}/>
           ))}
         </div>
         </SectionContainer>

@@ -9,7 +9,7 @@ export default function GreenBtn({ text, onClick = () => {}, icon = null, htmlTy
         onClick={onClick}
         htmlType={htmlType}
         className="
-          !bg-[#8BCF9A] !text-white !font-open-sans !border-none
+          !bg-[#4fc468] !text-white !font-open-sans !border-none
           !rounded-[8px] !font-semibold
           !px-5 sm:!px-8   /* narrower padding on mobile */
           w-full sm:w-auto /* optional: full width on mobile */

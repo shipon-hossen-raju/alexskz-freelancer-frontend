@@ -8,6 +8,10 @@ import { TiTick } from "react-icons/ti";
 import VerifiedDot from '../ui/VerifiedDot';
 
 export default function FreelancerCard({professional}) {
+
+  // console.log('profe: ', professional)
+
+  const isVerify = professional?.isVerify || professional?.user?.isVerify || false;
   
   return (
     <div
@@ -17,9 +21,9 @@ export default function FreelancerCard({professional}) {
       "
     >
       {/* Cover */}
-      <div className="relative h-48">
+      <div className="relative h-48 ">
         <Image
-          src={professional?.profileImage }
+          src={professional?.profileImage || professional?.user?.profileImage}
           alt="Professional Image"
           fill
           className="object-cover"
@@ -33,15 +37,19 @@ export default function FreelancerCard({professional}) {
         {/* Top row: name + verified + rating */}
         <div className="flex items-center justify-between">
           <div className="flex items-center gap-2">
-            <span className="text-[16px] font-semibold text-[#202020] font-open-sans">{professional?.firstName} {professional?.lastName}</span>
+            <span className="text-[16px] font-semibold text-[#202020] font-open-sans">{professional?.firstName || professional?.user?.firstName} {professional?.lastName || professional?.user?.lastName}</span>
           
-           <VerifiedDot />
+          {
+            isVerify && (
+               <VerifiedDot />
+            )
+          }
           </div>
 
           <div className="flex items-center gap-1 text-[16px] text-gray-600">
             <span className="text-[#FFA726] ">★</span>
-            <span className="font-medium">{professional?.rating}</span>
-            <span className="text-gray-400">({professional?.ratingCount})</span>
+            <span className="font-medium">{professional?.rating || professional?.user?.rating || 0}</span>
+            <span className="text-gray-400">({professional?.ratingCount || professional?.rateReviews?.length || 0})</span>
           </div>
         </div>
 
@@ -51,19 +59,19 @@ export default function FreelancerCard({professional}) {
             type="button"
             className="text-[14px] text-[#1e863a] bg-[#e7f3e9] underline decoration-transparent hover:decoration-[#1e863a] px-2 rounded font-medium"
           >
-            {professional?.category?.title}
+            {professional?.category?.title || professional?.title}
           </button>
         </div>
 
         {/* Short description */}
         <p className="mt-2 text-[14px]  font-open-sans leading-5 text-[#9F9C96] line-clamp-2">
-         {professional?.about}
+         {professional?.about || professional?.user?.about}
         </p>
 
         {/* Footer action */}
         <div className="mt-3">
           <Link
-            href={`/details/${professional?.id}`}
+            href={`/details/${professional?.id || professional?.user?.id}`}
             className="inline-flex font-open-sans items-center  text-[16px] font-medium text-gray-700 hover:text-[#144A6C]"
           >
             Hire Now <span aria-hidden><Image src={arrow} alt="icon"/></span>

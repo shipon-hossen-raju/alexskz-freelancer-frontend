@@ -34,7 +34,7 @@ export default function ConfirmBookingModal({
   const role1 ='For me'
   const role2 = 'For Others'
 
-  // console.log('from booking ...', slot)
+  console.log('from booking ...', slot)
   // console.log('from booking ... role', savedRole)
   // console.log('from booking service ...', serviceId)
 
@@ -42,11 +42,16 @@ export default function ConfirmBookingModal({
     
     const payload = {
       serviceId: serviceId,
-      availabilityTimeId: slot?.dayId,
+      // availabilityTimeId: slot?.dayId,
       dateTime: slot?.datetime,
       bookingContactType: values.role  === role1 ? 'ME' : 'OTHERS',
       contactName: values.name || '',
       whatsappNumber: values.dial + (values.phone).trim(),
+    }
+
+    if (slot?.dayId !== null) {
+      
+      payload.availabilityTimeId = slot.dayId;
     }
 
     // console.log('values', payload)

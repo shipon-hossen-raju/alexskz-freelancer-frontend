@@ -57,7 +57,7 @@ export default function LoginPage() {
           router.push('/');
         })
         .catch((error) =>{
-          toast.error(error?.data?.message);
+          toast.error(error?.data?.message || 'Login failed!');
         })
     
     

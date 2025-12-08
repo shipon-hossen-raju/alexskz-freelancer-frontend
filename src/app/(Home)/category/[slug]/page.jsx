@@ -10,34 +10,32 @@ import SearchWithFilter from '@/components/ui/SearchWithFilter';
 import { Divider } from 'antd'
 import Link from 'next/link';
 import { notFound } from 'next/navigation';
+import { useGetServicesByCategoryIdQuery } from '@/redux/api/categoryApi';
+import Loading from '@/components/shared/Loading';
  
-export const pros = [
-    { id: 1, imgSrc: p1, name: 'Mr. Lee', category: 'Finance & Accounting', rating: 4.5, reviews: 500 },
-    { id: 2, imgSrc: p1, name: 'Ava Kim', category: 'Marketing Strategy', rating: 4.8, reviews: 320 },
-    { id: 3, imgSrc: p1, name: 'Noah Diaz', category: 'UI/UX Design', rating: 4.6, reviews: 210 },
-    { id: 4, imgSrc: p1, name: 'Sara Ali', category: 'Web Development', rating: 4.7, reviews: 430 },
-    { id: 5, imgSrc: p1, name: 'Ken Ito', category: 'Data Analytics', rating: 4.9, reviews: 190 },
-    { id: 6, imgSrc: p1, name: 'Emma Roy', category: 'HR & Recruiting', rating: 4.4, reviews: 275 },
-    { id: 7, imgSrc: p1, name: 'Emma Roy', category: 'HR & Recruiting', rating: 4.4, reviews: 275 },
-    { id: 8, imgSrc: p1, name: 'Emma Roy', category: 'HR & Recruiting', rating: 4.4, reviews: 275 },
-    { id: 9, imgSrc: p1, name: 'Emma Roy', category: 'HR & Recruiting', rating: 4.4, reviews: 275 },
-    { id: 10, imgSrc: p1, name: 'Emma Roy', category: 'HR & Recruiting', rating: 4.4, reviews: 275 },
-    { id: 11, imgSrc: p1, name: 'Emma Roy', category: 'HR & Recruiting', rating: 4.4, reviews: 275 },
-    { id: 12, imgSrc: p1, name: 'Emma Roy', category: 'HR & Recruiting', rating: 4.4, reviews: 275 },
-];
-
 export default  function CategoryPage({ params }) {
     const { slug } =  params;
-    // console.log(slug)
+    // console.log('s',slug)
+
 
     const savedSlug = localStorage.getItem("slug")
+    const {data: categoryServices, isLoading: isCategoryServiceLoading, error: categoryServiceError} = useGetServicesByCategoryIdQuery(slug);
 
     if(slug !== savedSlug)
     {
-        notFound();
+       return notFound();
     }
 
-    // console.log(savedSlug)
+    else if(isCategoryServiceLoading){
+        return <Loading />
+    }
+
+    // console.log('category services: ', categoryServices)
+
+    const total =categoryServices?.data?.categories[0].service?.length || 0;
+    const categoryTitle = categoryServices?.data?.categories[0].title;
+
+    const pros = categoryServices?.data?.categories[0].service || [];
 
     const [currentPage, setCurrentPage] = useState(1)
 
@@ -48,7 +46,7 @@ export default  function CategoryPage({ params }) {
         setCurrentPage(page)
     }
 
-    const total = pros.length;
+    // const total = pros.length;
     const start = (currentPage - 1) * page_size
     const end = start + page_size
     const pageItems = pros.slice(start, end)
@@ -72,11 +70,12 @@ export default  function CategoryPage({ params }) {
 
             <div className='flex flex-col md:flex-row gap-4 justify-between items-center mt-10 lg:mt-12'>
                             <div>
-                               <Paragraph text="5000+ Results"/>
+                               <Paragraph text={`${total} results`}/>
                             </div>
             
                             <div className="max-w-3xl">
-                                <SearchWithFilter onSearch={onSearch} />
+                                {/* <SearchWithFilter onSearch={onSearch} /> */}
+                                <SearchWithFilter />
                             </div>
                         </div>
             
@@ -84,13 +83,13 @@ export default  function CategoryPage({ params }) {
 
             {/* Heading */}
             <div>
-                <Heading text="Finance & Accounting" />
+                <Heading text={categoryTitle} />
             </div>
 
             {/*  */}
             <div className='mt-10'>
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
-                    {pageItems.map((p) => (<FreelancerCard key={p.id} {...p} />))}
+                    {pageItems.map((p) => (<FreelancerCard key={p.id} professional={p} />))}
                 </div>
 
                 {/* Pagenation */}

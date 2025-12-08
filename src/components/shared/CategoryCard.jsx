@@ -4,18 +4,18 @@ import Image from "node_modules/next/image";
 import Link from "next/link";
 import GenerateSlug from "../ui/GenerateSlug";
 
-export default function CategoryCard({ title, icon }) {
+export default function CategoryCard({ title, icon , id}) {
 
   const slug = GenerateSlug(title)
   // console.log('slug', slug)
 
   const handleSetSlug = () => {
-    localStorage.setItem("slug", slug)
+    localStorage.setItem("slug", id)
   }
 
   return (
     <Link
-      href={`/category/${slug}`}
+      href={`/category/${id}`}
       onClick={handleSetSlug}
       className="
         group w-full
