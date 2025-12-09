@@ -117,7 +117,7 @@ export default function ProfessionalProfile() {
     const services = me?.Service;
     const reviews = me?.reviews || [];
 
-    console.log('me', me)
+    // console.log('me', me)
 
 
 
@@ -199,7 +199,7 @@ export default function ProfessionalProfile() {
             }
             toast.success("Successfully uploaded!");
         } catch (err) {
-            console.error("Upload failed:", err);
+            // console.error("Upload failed:", err);
             toast.error("Upload failed. Try again.");
             // optionally revert preview
             if (me?.profileImage) setAvatar(me.profileImage);
@@ -233,7 +233,7 @@ export default function ProfessionalProfile() {
             }
             toast.success("Successfully uploaded!");
         } catch (err) {
-            console.error("Upload failed:", err);
+            // console.error("Upload failed:", err);
             toast.error("Upload failed. Try again.");
             // optionally revert preview
             if (me?.cover) setCoverPhoto(me.cover);

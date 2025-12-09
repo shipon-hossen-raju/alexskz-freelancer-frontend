@@ -34,7 +34,7 @@ export default function ConfirmBookingModal({
   const role1 ='For me'
   const role2 = 'For Others'
 
-  console.log('from booking ...', slot)
+  // console.log('from booking ...', slot)
   // console.log('from booking ... role', savedRole)
   // console.log('from booking service ...', serviceId)
 

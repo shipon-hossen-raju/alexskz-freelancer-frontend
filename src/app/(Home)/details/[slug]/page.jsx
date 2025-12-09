@@ -43,7 +43,7 @@ export default function FreelancerDetailsPage({ params }) {
         throw new Error(error?.data?.message || error?.message || "Failed to load data");
     }
 
-    console.log('data details', data?.data)
+    // console.log('data details', data?.data)
 
     const profileData = data?.data;
 

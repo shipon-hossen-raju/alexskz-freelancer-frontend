@@ -62,7 +62,7 @@ export default function RegisterPageStep2({  }) {
         signUpForProfessional(payload)
         .unwrap()
         .then((res) => {
-          console.log('res: ',res)
+        //   console.log('res: ',res)
           dispatch(setUserId(res?.data?.id));
           toast.success('Account created successfully');
           localStorage.setItem('email', payload.email)

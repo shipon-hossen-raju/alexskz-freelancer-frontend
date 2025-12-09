@@ -13,10 +13,12 @@ export default function CustomSearch({   }) {
 
   const submit = (e) => {
 
-    console.log('custom search', q)
+    // console.log('custom search', q)
     e?.preventDefault();
     const term = q.trim();
-    onSearch?.(term);
+    // onSearch?.(term);
+
+    // console.log('term-', term)
 
     if (term) {
       router.push(`/services?searchTerm=${encodeURIComponent(term)}`);

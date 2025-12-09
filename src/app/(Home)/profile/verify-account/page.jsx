@@ -125,7 +125,7 @@ export default function VerifyAccountUpload() {
       toast.success('File uploaded successfully');
       setFile(null);
     } catch (err) {
-      console.error('upload error', err);
+      // console.error('upload error', err);
       toast.error(err?.data?.message || err?.message || 'Upload failed');
     }
   };

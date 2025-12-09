@@ -9,7 +9,7 @@ import VerifiedDot from '../ui/VerifiedDot';
 
 export default function FreelancerCard({professional}) {
 
-  // console.log('profe: ', professional)
+  console.log('profe: ', professional)
 
   const isVerify = professional?.isVerify || professional?.user?.isVerify || false;
   
@@ -48,8 +48,9 @@ export default function FreelancerCard({professional}) {
 
           <div className="flex items-center gap-1 text-[16px] text-gray-600">
             <span className="text-[#FFA726] ">★</span>
-            <span className="font-medium">{professional?.rating || professional?.user?.rating || 0}</span>
-            <span className="text-gray-400">({professional?.ratingCount || professional?.rateReviews?.length || 0})</span>
+            <span className="font-medium">{professional?.rating || professional?.averageRating || 0}</span>
+            {/* <span className="text-gray-400">({professional?.ratingCount || professional?.rateReviews?.length || 0})</span> */}
+            <span className="text-gray-400">({professional?.ratingCount || 0})</span>
           </div>
         </div>
 

@@ -6,9 +6,9 @@ const initialState = {
     categoryIds :[],
     minPrice: null,
     maxPrice: null,
-    isOnline: false,
-    topRated: false,
-    isCertified: false,
+    isOnline: null,
+    topRated: null,
+    isCertified: null,
 
   }
 

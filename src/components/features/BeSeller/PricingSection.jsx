@@ -19,7 +19,7 @@ export default function PricingSection({BeSeller = false}) {
     return <div>No subscription plans found</div>
   }
   const pricingPlans = subscriptionData?.data ;
-  console.log('plans', subscriptionData)
+  // console.log('plans', subscriptionData)
   return (
     <div>
         <SectionContainer heading="Plans for every Professional" title="Pricing">

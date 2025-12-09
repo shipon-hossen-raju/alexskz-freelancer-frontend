@@ -37,7 +37,7 @@ export default function PortfolioCard({
                     toast.success("Successfully deleted!")
                 })
                 .catch((err) => {
-                    console.log('delete error', err)
+                    // console.log('delete error', err)
                     toast.error(err?.data?.message || err?.message || 'Failed')
                 })
         }

@@ -65,7 +65,7 @@ export default function ClientProfile() {
 
       toast.success("Successfully uploaded!");
     } catch (err) {
-      console.error("Upload failed:", err);
+      // console.error("Upload failed:", err);
       toast.error("Upload failed. Try again.");
       // optionally revert preview
       if (me?.profileImage) setAvatar(me.profileImage);

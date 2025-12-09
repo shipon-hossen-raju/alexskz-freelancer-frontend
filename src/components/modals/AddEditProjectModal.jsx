@@ -206,7 +206,7 @@ export default function AddEditProjectModal({
         return;
       }
     } catch (err) {
-      console.error(err);
+      // console.error(err);
       toast.error('Something went wrong. Please try again.');
     }
   };

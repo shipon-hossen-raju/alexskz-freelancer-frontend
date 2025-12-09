@@ -56,6 +56,14 @@ const categoryApi = baseApi.injectEndpoints({
 
     }),
 
+    getSearchedServices: builder.query({
+      query: (params) => ({
+        url: 'categories/',
+        method: 'GET',
+        params: {searchTerm: params},
+      })
+    }),
+
     // get services by category Id
     getServicesByCategoryId: builder.query({
       query: (ids) => ({
@@ -74,5 +82,6 @@ const categoryApi = baseApi.injectEndpoints({
 
 export const {
   useGetAllCategoryQuery,
+  useGetSearchedServicesQuery,
   useGetServicesByCategoryIdQuery,
 } = categoryApi;

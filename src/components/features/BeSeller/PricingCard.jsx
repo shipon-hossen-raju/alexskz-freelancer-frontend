@@ -38,7 +38,7 @@ export default function PricingCard({ plan, BeSeller = false }) {
             })
             .catch((err) => 
             {
-                console.log('subscription err', err)
+                // console.log('subscription err', err)
                 toast.error(err?.data?.message || "Subscription failed")
             })
           }

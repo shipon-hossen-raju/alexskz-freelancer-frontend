@@ -438,7 +438,7 @@ export default function CreateEditPackageModal({
         const normalized = normalizeFileListForForm(incomingList);
         form.setFieldsValue({ image: normalized });
       } catch (e) {
-        console.error('upload onChange error', e);
+        // console.error('upload onChange error', e);
         toast.error('Failed to process the selected file. Try again.');
       }
     },
@@ -451,7 +451,7 @@ export default function CreateEditPackageModal({
         form.setFieldsValue({ image: next });
         return true;
       } catch (e) {
-        console.error('onRemove error', e);
+        // console.error('onRemove error', e);
         // still allow removal
         return true;
       }
@@ -532,7 +532,7 @@ export default function CreateEditPackageModal({
       if (typeof onClose === 'function') onClose();
     } catch (err) {
       const msg = getErrorMessage(err);
-      console.error('service error', err);
+      // console.error('service error', err);
       toast.error(msg);
     }
   };
