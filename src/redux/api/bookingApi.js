@@ -16,15 +16,33 @@ const bookingApi = baseApi.injectEndpoints({
             }),
         }),
 
+
         createBooking: builder.mutation({
             query: (data) => ({
                 url: 'booking',
                 method: 'POST',
                 body: data,
             }),
-            invalidatesTags: ['User'],
+            invalidatesTags: ['User', 'Bookings'],
+        }),
+
+        getAllBookings: builder.query({
+            query: () => ({
+                url: 'booking',
+                method: 'GET',
+            }),
+
+            providesTags: ['Bookings'],
         }),
     
+        createBookingStatusForProfessional: builder.mutation({
+            query: (data) => ({
+                url: 'booking/booking-status',
+                method: 'POST',
+                body: data,
+            }),
+            invalidatesTags: ['Bookings'],
+        }),
 
         
 }),
@@ -34,5 +52,7 @@ export const {
    
     useGetAvailableSlotsQuery,
     useCreateBookingMutation,
+    useGetAllBookingsQuery,
+    useCreateBookingStatusForProfessionalMutation,
     
 } = bookingApi;

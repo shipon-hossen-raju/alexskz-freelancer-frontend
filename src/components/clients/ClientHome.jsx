@@ -123,7 +123,7 @@ export default function ClientHome() {
 
                 {/* booking card */}
                 <div className='grid grid-cols-1 gap-4 mt-10'>
-                    {upComingBookings.map((booking) => (
+                    {upComingBookings?.slice(0,4).map((booking) => (
                         <BookingCard booking={booking} key={booking.id} />
                     ))}
                 </div>

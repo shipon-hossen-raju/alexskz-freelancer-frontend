@@ -67,14 +67,14 @@ export default function Header() {
     return () => window.removeEventListener('drawer:open', onDrawerOpen);
   }, []);
 
-  if (isLoading) {
-    // Hooks are already called above, so this early return is safe
-    return (
-      <div>
-        <p>Loading...</p>
-      </div>
-    );
-  }
+  // if (isLoading) {
+  //   // Hooks are already called above, so this early return is safe
+  //   return (
+  //     <div>
+  //       <p>Loading...</p>
+  //     </div>
+  //   );
+  // }
 
   const items = user ? MobileMenuItemsForLoginUser : (isNotMobile ? MenuItemsForLargeDevices : MobileMenuItems);
   const activeBtn =
