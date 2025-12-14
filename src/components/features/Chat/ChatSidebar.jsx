@@ -3,6 +3,7 @@ import React, { useEffect, useState } from "react";
 import { Search } from "lucide-react";
 import { useSocket } from "@/hooks/useSocket";
 import { useDispatch } from "react-redux";
+import { useSelector } from 'react-redux'
 import { setChatData } from "@/redux/slices/messageSlice";
 
 export default function ChatSidebar() {
@@ -24,6 +25,29 @@ export default function ChatSidebar() {
     return arr || [];
   };
 
+  const dedupeUsers = (arr) => {
+    if (!Array.isArray(arr)) return [];
+    const map = new Map();
+    for (const item of arr) {
+      const uid = String(item.user?.id ?? item.roomId ?? item._id ?? "");
+      if (!uid) continue;
+      if (!map.has(uid)) {
+        map.set(uid, item);
+      } else {
+        const existing = map.get(uid);
+        map.set(uid, {
+          ...existing,
+          ...item,
+          lastMessage: item.lastMessage || existing.lastMessage,
+          unreadMessageCount: item.unreadMessageCount ?? existing.unreadMessageCount,
+        });
+      }
+    }
+    return Array.from(map.values());
+  };
+
+  const { receiver: reduxReceiver, chatRoomId: reduxRoomId } = useSelector((state) => state.chat ?? {});
+
   useEffect(() => {
     if (!socket) return;
     setLoading(true);
@@ -35,7 +59,9 @@ export default function ChatSidebar() {
 
     const onChatUsers = (usersList) => {
       // console.log("[CHAT] getChatUsers event:", usersList);
-      setUsers(normalizeChatUsers(usersList));
+      const normalized = normalizeChatUsers(usersList);
+      const unique = dedupeUsers(normalized);
+      setUsers(unique);
       setLoading(false);
       setError(null);
     };
@@ -145,6 +171,8 @@ export default function ChatSidebar() {
     const unreadMessage = selectedUser?.unreadMessageCount;
     const receiver = selectedUser?.user;
 
+    console.log('receiver: ', receiver)
+
     useEffect(() => {
       
       if(selectedUser) {
@@ -157,6 +185,45 @@ export default function ChatSidebar() {
         );
       }
     }, [selectedUser, dispatch])
+
+  // Auto-select a conversation when Redux `receiver` is set (e.g., from details page)
+  useEffect(() => {
+    if (!reduxReceiver) return;
+    if (!users || users.length === 0) return;
+
+    // try to find matching user by id or by roomId
+    const match = users.find((item) => {
+      const uid = String(item.user?.id ?? item.roomId ?? "");
+      if (!uid) return false;
+      if (String(item.user?.id) === String(reduxReceiver.id)) return true;
+      if (String(item.roomId) === String(reduxRoomId)) return true;
+      return false;
+    });
+
+    if (match) {
+      setSelectedUser(match);
+      const id = String(match.user?.id ?? match.roomId ?? "");
+      setSelectedUserId(id);
+    } else {
+      // if no existing conversation found, optionally create a temporary item to show selected state
+      const temp = {
+        user: reduxReceiver,
+        roomId: reduxRoomId ?? null,
+        lastMessage: null,
+        unreadMessageCount: 0,
+        isOnline: reduxReceiver?.isOnline ?? false,
+      };
+      setSelectedUser(temp);
+      const id = String(reduxReceiver.id ?? "");
+      setSelectedUserId(id);
+      // also prepend to users so it appears in sidebar (avoid duplicates thanks to dedupe)
+      setUsers((prev) => {
+        const merged = [temp, ...(prev || [])];
+        return dedupeUsers(merged);
+      });
+    }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [reduxReceiver, reduxRoomId, users]);
 
     
 

@@ -26,13 +26,18 @@ import { Divider } from 'node_modules/antd/es/index'
 import skills from '@/assets/icons/skills.png'
 import { useGetProfileForPublicViewQuery } from '@/redux/api/publicApi'
 import Loading from '@/components/shared/Loading'
+import { useDispatch } from 'react-redux';
+import { setChatData } from '@/redux/slices/messageSlice';
+import { useRouter } from 'node_modules/next/navigation'
 
 
 export default function FreelancerDetailsPage({ params }) {
     const { slug } = params;
+    const dispatch = useDispatch();
+    const router = useRouter();
 
-    const { data, isLoading, isError, error } = useGetProfileForPublicViewQuery("69268d0a138c715af045c2a6");
-    // const {data, isLoading, isError, error} = useGetProfileForPublicViewQuery(slug);
+    // const { data, isLoading, isError, error } = useGetProfileForPublicViewQuery("69268d0a138c715af045c2a6");
+    const {data, isLoading, isError, error} = useGetProfileForPublicViewQuery(slug);
 
     if (isLoading) {
         return <Loading />
@@ -43,7 +48,7 @@ export default function FreelancerDetailsPage({ params }) {
         throw new Error(error?.data?.message || error?.message || "Failed to load data");
     }
 
-    // console.log('data details', data?.data)
+    console.log('data details', data?.data)
 
     const profileData = data?.data;
 
@@ -75,6 +80,33 @@ export default function FreelancerDetailsPage({ params }) {
         }
     ]
 
+    // for date time conversion
+    const formatLastActive = (dateString) => {
+        if (!dateString) return '';
+
+        const date = new Date(dateString);
+
+        return date.toLocaleString('en-GB', {
+            day: '2-digit',
+            month: 'short',
+            year: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit',
+            hour12: true,
+        });
+    };
+
+
+    // for messaging
+    const handleMessageClick = () => {
+  dispatch(setChatData({
+    receiver: profileData,
+    chatRoomId: null, 
+    unreadMessage: 0,
+  }));
+  // Navigate to inbox
+  router.push('/inbox');
+};
 
 
     return (
@@ -171,7 +203,13 @@ export default function FreelancerDetailsPage({ params }) {
                                 <div className="mt-1 text-sm text-gray-500">
                                     <span className="font-medium text-gray-600">{profileData?.isOnline ? 'Online' : 'Offline'}</span>
                                     <span className="mx-2 text-xs text-gray-300">•</span>
-                                    <span className="text-gray-400">{profileData?.lastActive ? `${profileData?.lastActive} Local time` : ''}</span>
+                                    {/* <span className="text-gray-400">{profileData?.lastActive ? `${profileData?.lastActive} Local time` : ''}</span> */}
+                                    <span className="text-gray-400">
+                                        {profileData?.lastActive && !(profileData?.isOnline)
+                                            ? `Last active: ${formatLastActive(profileData.lastActive)} Local time`
+                                            : ''}
+                                    </span>
+
                                 </div>
                             </div>
                         </div>
@@ -179,9 +217,9 @@ export default function FreelancerDetailsPage({ params }) {
 
                         {/* Button area - matches the full-width outline button in the image */}
                         <div className="mt-6 lg:mt-10 text-center ">
-                            <Link href='/inbox'>
-                                <TealOutLineBtn text="Message Now" block="block" />
-                            </Link>
+                            {/* <Link href='/inbox'> */}
+                                <TealOutLineBtn onClick={handleMessageClick} text="Message Now" block="block" />
+                            {/* </Link> */}
                         </div>
                     </div>
                 </div>
@@ -189,7 +227,7 @@ export default function FreelancerDetailsPage({ params }) {
 
             {/* Portfolio Section */}
             <div className='mt-10 lg:mt-20 bg-white px-4 py-8 rounded-[8px]'>
-                <PortfolioSection items={profileData?.portfolio?.slice(0,4)}/>
+                <PortfolioSection items={profileData?.portfolio?.slice(0, 4)} />
 
                 <div className=" lg:my-6">
                     {
@@ -207,12 +245,12 @@ export default function FreelancerDetailsPage({ params }) {
 
             {/* Offered Services */}
             <div className='mt-10 lg:mt-20'>
-                <OfferedServices services={profileData?.service} availability={profileData?.availability}/>
+                <OfferedServices services={profileData?.service} availability={profileData?.availability} />
             </div>
 
             {/* ratings & reviews section */}
             <div className='mt-10 lg:mt-20'>
-                <RatingReviewsSection rating={profileData?.rating}/>
+                <RatingReviewsSection rating={profileData?.rating} />
             </div>
 
 

@@ -5,7 +5,8 @@
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const BACKEND_URL = "http://10.10.20.2:5005"; // keep your URL
+// const BACKEND_URL = "http://10.10.20.2:5005"; 
+const BACKEND_URL = "https://karl-aftermost-belkis.ngrok-free.dev/"; 
 
 // singleton socket so HMR/dev doesn't create duplicates
 let singletonSocket = null;
