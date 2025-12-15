@@ -1,54 +1,71 @@
 import React, { useState } from 'react'
 import { Search, Video, Paperclip, Send, Download, Play, ChevronLeft } from "lucide-react"
+import { useGetUserProfileQuery } from '@/redux/auth/authApi'
+import Loading from '@/components/shared/Loading';
+import TealBtn from '@/components/ui/TealBtn';
+import Link from 'node_modules/next/link';
 
-export default function RightSidebar() {
+export default function RightSidebar({ receiver }) {
+  const {data: userData, isLoading: isUserLoading, error: isUserError} = useGetUserProfileQuery();
 
+  if(isUserLoading){
+    return <Loading />
+  }
+
+  console.log('receiver', receiver)
+  const role = userData?.data?.role;
   
-      const [visible, setVisible] = useState(false);
   
-      const [mobileView, setMobileView] = useState("sidebar")
+    //   const [visible, setVisible] = useState(false);
   
-    const openModal = () => setVisible(true);
-    const closeModal = () => setVisible(false);
+    //   const [mobileView, setMobileView] = useState("sidebar")
   
-    const handleConversationClick = () => {
-      setMobileView("chat")
-    }
+    // const openModal = () => setVisible(true);
+    // const closeModal = () => setVisible(false);
   
-    const handleAvatarClick = () => {
-      setMobileView("profile")
-    }
+    // const handleConversationClick = () => {
+    //   setMobileView("chat")
+    // }
   
-    const handleBackToChat = () => {
-      setMobileView("chat")
-    }
+    // const handleAvatarClick = () => {
+    //   setMobileView("profile")
+    // }
   
-    const handleBackToSidebar = () => {
-      setMobileView("sidebar")
-    }
+    // const handleBackToChat = () => {
+    //   setMobileView("chat")
+    // }
+  
+    // const handleBackToSidebar = () => {
+    //   setMobileView("sidebar")
+    // }
   
   return (
     <div>
        
+        {/* <div
+          className={`w-full lg:w-80 border-l border-gray-200 flex flex-col 
+            ${mobileView === "profile" ? "flex" : "hidden"} 
+          lg:flex`}
+        > */}
         <div
-          className={`w-full lg:w-80 border-l border-gray-200 flex flex-col ${
-            mobileView === "profile" ? "flex" : "hidden"
-          } lg:flex`}
+          className={`w-full lg:w-80 border-l border-gray-200 flex flex-col 
+          lg:flex`}
         >
           <div className="p-6 text-center border-b border-gray-200">
-            <button onClick={handleBackToChat} className="lg:hidden mb-4 p-2 hover:bg-gray-100 rounded-lg">
+            {/* <button onClick={handleBackToChat} className="lg:hidden mb-4 p-2 hover:bg-gray-100 rounded-lg"> */}
+            {/* <button  className="lg:hidden mb-4 p-2 hover:bg-gray-100 rounded-lg">
               <ChevronLeft className="w-6 h-6 text-gray-600" />
-            </button>
+            </button> */}
             <img
-              src="https://api.dicebear.com/7.x/avataaars/svg?seed=ahamad1"
-              alt="Ahamad musa"
+            src={receiver?.profileImage}
+              alt="User"
               className="w-24 h-24 rounded-full mx-auto mb-3"
             />
-            <h2 className="text-xl font-bold text-gray-900">Ahamad musa</h2>
-            <p className="text-sm text-gray-500 mb-4">Online</p>
-            <button className="w-full border border-[#144A6C] text-[#144A6C] font-semibold font-open-sans py-2 rounded-lg hover:bg-blue-50 cursor-pointer">
+            <h2 className="text-xl font-bold text-gray-900 mb-4">{receiver?.firstName} {receiver?.lastName}</h2>
+            {/* <p className="text-sm text-gray-500 mb-4">Online</p> */}
+            <Link href={`/details/${receiver?.id}`} className="w-full border !border-[#144A6C] !text-[#144A6C] font-semibold font-open-sans py-2 rounded-lg hover:bg-blue-50 cursor-pointer px-4">
               View Profile
-            </button>
+            </Link>
           </div>
 
           {/* Media File */}
@@ -107,13 +124,14 @@ export default function RightSidebar() {
           </div>
 
           {/* Deliver Button */}
-          {/* <div className="p-6 flex justify-center">
-            {role === "Client" ? (
-              <TealBtn text="Accept Delivery" onClick={openModal} />
+          <div className="p-6 flex justify-center">
+            {role === "USER" ? (
+              // <TealBtn text="Accept Delivery" onClick={openModal} />
+              <TealBtn text="Accept Delivery"  />
             ) : (
               <TealBtn text="Deliver the project" />
             )}
-          </div> */}
+          </div>
         </div>
     </div>
   )

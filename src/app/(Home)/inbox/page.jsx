@@ -45,7 +45,7 @@ const MessagingInterface = () => {
   <CustomContainer>
       <div className="flex min-h-screen bg-white rounded-md font-poppins ">
         {/* Left Sidebar - Inbox */}
-        <div>
+        <div className="">
           <ChatSidebar />
         </div>
 

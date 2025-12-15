@@ -8,6 +8,8 @@ import { useGetUserProfileQuery } from "@/redux/auth/authApi";
 import Image from "node_modules/next/image";
 import { ZoomTitleInputModal } from "@/components/modals/ZoomTitleInputModal";
 import { format } from "date-fns";
+import {  Drawer } from 'antd';
+import RightSidebar from "./RightSidebar";
 
 export default function ChatWindow({ onBack = () => { } }) {
   // --- hooks (declare at top) ---
@@ -16,7 +18,7 @@ export default function ChatWindow({ onBack = () => { } }) {
   const [messages, setMessages] = useState([]); // ascending oldest -> newest
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
-
+  const [open, setOpen] = useState(false);
   const messagesRef = useRef(null);
   const pageRef = useRef(1);
   const limit = 50;
@@ -114,10 +116,10 @@ export default function ChatWindow({ onBack = () => { } }) {
     socket.on("getMessages", onGetMessages);
     socket.on("receiveMessage", onReceiveMessage);
 
-    // socket.on("receiveMessage", (message) => {
-    //   // console.log("[SOCKET] receiveMessage event triggered");
-    //   // console.log("Message data:", message);
-    // });
+    socket.on("receiveMessage", (message) => {
+      console.log("[SOCKET] receiveMessage event triggered");
+      console.log("Message data:", message);
+    });
     socket.on("error", onError);
 
     return () => {
@@ -152,6 +154,14 @@ export default function ChatWindow({ onBack = () => { } }) {
 
   // console.log('messages from chat: ', messages)
 
+  //for right sidebar
+  const showDrawer = () => {
+    setOpen(true);
+  };
+  const onClose = () => {
+    setOpen(false);
+  };
+
   // --- UI render ---
   return (
     <div className="h-screen flex flex-col lg:flex">
@@ -164,7 +174,7 @@ export default function ChatWindow({ onBack = () => { } }) {
 
           {
             receiver && (
-              <div className="flex items-center gap-3">
+              <div className="flex items-center gap-3 cursor-pointer" onClick={showDrawer}>
                 {receiver?.profileImage ? (
                   <img src={receiver.profileImage} alt={receiver.firstName} className="w-12 h-12 rounded-full" />
                 ) : (
@@ -328,6 +338,18 @@ export default function ChatWindow({ onBack = () => { } }) {
             </div>
           );
         })}
+      </div>
+
+      {/* drawer */}
+      <div>
+        <Drawer
+        title="Settings"
+        closable={{ 'aria-label': 'Close Button' }}
+        onClose={onClose}
+        open={open}
+      >
+       <RightSidebar receiver={receiver}/>
+      </Drawer>
       </div>
 
       {/* read-only input area (UI only) */}

@@ -171,7 +171,7 @@ export default function ChatSidebar() {
     const unreadMessage = selectedUser?.unreadMessageCount;
     const receiver = selectedUser?.user;
 
-    console.log('receiver: ', receiver)
+    // console.log('receiver: ', receiver)
 
     useEffect(() => {
       
