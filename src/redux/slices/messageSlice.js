@@ -16,7 +16,6 @@ const chatSlice = createSlice({
       state.chatRoomId = chatRoomId;
       // state.chatRoomId = '6916bb63e3037d8e0f3550d5';
       state.unreadMessage = unreadMessage;
-
     //   console.log("from slice", receiver)
     },
     

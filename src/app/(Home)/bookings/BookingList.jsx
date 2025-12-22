@@ -1,12 +1,37 @@
 import TealBtn from "@/components/ui/TealBtn";
 import TealOutLineBtn from "@/components/ui/TealOutLineBtn";
+import { useSocket } from "@/hooks/useSocket";
 import { useCreateBookingStatusForProfessionalMutation } from "@/redux/api/bookingApi";
 import { Image } from "antd";
+import { useRouter } from "next/navigation";
+import { useEffect, useState } from "react";
 import { CiClock2 } from "react-icons/ci";
 import { useSelector } from "react-redux";
 
-export default function BookingList({ rawBookings = [] }) {
+export default function BookingList({ rawBookings = [], isLoading = false }) {
+  const { socket, authenticate } = useSocket();
+  const [messageUserId, setMessageUserId] = useState(null);
+  const router = useRouter();
   const role = useSelector((state) => state.user?.role || null);
+
+  // socket event handlers
+  useEffect(() => {
+    if (!socket) return;
+    if (messageUserId) {
+      console.log("useEffect messageUserId ", messageUserId);
+
+      socket.emit("joinRoom", {
+        receiverId: messageUserId,
+      });
+
+      socket.on("joinRoom", (data) => {
+        console.log("joined room", data);
+      });
+
+      // router.push(`/inbox`);
+    }
+  }, [socket, messageUserId]);
+
   if (!rawBookings.length) {
     return (
       <div className="py-10 text-center text-sm text-[#6b7280]">
@@ -14,6 +39,8 @@ export default function BookingList({ rawBookings = [] }) {
       </div>
     );
   }
+
+  console.log("rawBookings ", rawBookings);
 
   const isUser = role === "USER";
   const bookings = rawBookings.map((b) => {
@@ -26,7 +53,7 @@ export default function BookingList({ rawBookings = [] }) {
     return {
       id: b.id,
       userId,
-      name: userName,
+      name: isUser ? b.service?.title : userName,
       category: isUser ? b.service?.category?.title : b.user?.category?.title,
       date: parts[0],
       time: `${parts[1]} ${parts[2]}`,
@@ -38,14 +65,19 @@ export default function BookingList({ rawBookings = [] }) {
   return (
     <div className="space-y-6">
       {bookings.map((b) => (
-        <BookingItem key={b.id} item={b} role={role} />
+        <BookingItem
+          key={b.id}
+          item={b}
+          role={role}
+          setMessageUserId={setMessageUserId}
+        />
       ))}
     </div>
   );
 }
 
 /* -------------------- Booking Item -------------------- */
-function BookingItem({ item, role }) {
+function BookingItem({ item, role, setMessageUserId }) {
   const [
     createBookingStatusForProfessional,
     { isLoading: isBookingStatusLoading },
@@ -84,10 +116,9 @@ function BookingItem({ item, role }) {
   };
 
   const handleMessage = (userId) => {
-    console.log("Message", userId);
+    console.log("handleMessage id ", userId);
     if (userId) {
-      // window.location.href = `/messages/${item.userId}`;
-      console.log("Message => ", userId);
+      setMessageUserId(userId);
     }
   };
 
@@ -158,7 +189,10 @@ function BookingItem({ item, role }) {
           )}
 
           {role === "FREELANCER" && item.status === "confirmed" && (
-            <TealBtn onClick={() => handleMessage(item?.userId)} text="Message Now" />
+            <TealBtn
+              onClick={() => handleMessage(item?.userId)}
+              text="Message Now"
+            />
           )}
         </div>
       </div>

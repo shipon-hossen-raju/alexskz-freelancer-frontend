@@ -1,6 +1,7 @@
 "use client";
 import ChatSidebar from "@/components/features/Chat/ChatSidebar";
 import ChatWindow from "@/components/features/Chat/ChatWindow";
+import RightSidebar from "@/components/features/Chat/RightSidebar";
 import RateReviewModal from "@/components/modals/RateReviewModal";
 import CustomContainer from "@/components/ui/CustomContainer";
 import "@/styles/Auth.css";
@@ -49,9 +50,9 @@ const MessagingInterface = () => {
 
         {/* Right Sidebar - Profile */}
 
-        {/* <div>
+        <div>
           <RightSidebar />
-         </div> */}
+        </div>
       </div>
 
       <RateReviewModal

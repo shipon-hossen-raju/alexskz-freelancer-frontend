@@ -1,15 +1,14 @@
 "use client";
-import BookingList from "@/app/(Home)/bookings/BookingList";
 import icon2 from "@/assets/icons/icon2.svg";
 import icon3 from "@/assets/icons/icon3.svg";
 import icon4 from "@/assets/icons/icon4.svg";
 import icon5 from "@/assets/icons/Profile2.svg";
-import { useGetAllBookingsQuery } from "@/redux/api/bookingApi";
 import { useGetMyProjectsQuery } from "@/redux/api/portfolioApi";
 import { useGetFreelancerHomeQuery } from "@/redux/api/profileApi";
 import Link from "node_modules/next/link";
 import { useState } from "react";
 import { useSelector } from "react-redux";
+import HomeBooking from "../HomeBooking";
 import AddEditProjectModal from "../modals/AddEditProjectModal";
 import Loading from "../shared/Loading";
 import PortfolioCard from "../shared/PortfolioCard";
@@ -21,18 +20,7 @@ import TealBtn from "../ui/TealBtn";
 
 export default function ProfessionalHome() {
   const role = useSelector((state) => state.user?.role || null);
-  const { data: bookingData, isLoading: bookingLoading } =
-    useGetAllBookingsQuery(
-      [
-        { name: "limit", value: 20 },
-        { name: "page", value: 1 },
-        { name: "status", value: "CONFIRMED" },
-        // { name: "searchTerm", value: "" },
-      ],
-      {
-        refetchOnMountOrArgChange: true,
-      }
-    );
+
   const [openModal, setOpenModal] = useState(false);
   const [createModal, setCreateModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -51,7 +39,6 @@ export default function ProfessionalHome() {
     return <Loading />;
   }
 
-  const rawBookings = bookingData?.data?.data || [];
   const firstName = home?.firstName || "";
   const lastName = home?.lastName || "";
 
@@ -136,7 +123,8 @@ export default function ProfessionalHome() {
         </div>
 
         {/* booking card */}
-        <div className="flex justify-between items-center">
+        <HomeBooking />
+        {/* <div className="flex justify-between items-center">
           <div className="flex-1">
             <Heading text="Upcoming Bookings" />
           </div>
@@ -146,11 +134,8 @@ export default function ProfessionalHome() {
         </div>
 
         <div className="grid grid-cols-1 gap-4 mt-10">
-          {/* {bookings.map((booking) => (
-            <BookingCard booking={booking} key={booking.id} />
-          ))} */}
           <BookingList rawBookings={rawBookings} />
-        </div>
+        </div> */}
 
         {/* portfolios */}
 
