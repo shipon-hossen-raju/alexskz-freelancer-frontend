@@ -1,268 +1,213 @@
-'use client'
-import React, { useEffect, useState } from 'react'
-import CustomContainer from '../ui/CustomContainer'
-import Paragraph from '../ui/Paragraph'
-import WhiteBoxCard from '../shared/WhiteBoxCard'
-import icon1 from '@/assets/icons/icon1.svg'
-import icon2 from '@/assets/icons/icon2.svg'
-import icon3 from '@/assets/icons/icon3.svg'
-import icon4 from '@/assets/icons/icon4.svg'
-import icon5 from '@/assets/icons/Profile2.svg'
-import img from '@/assets/image/freelancer/user.jpg'
-import BookingCard from '../shared/BookingCard'
-import SubHeadingBlack from '../ui/SubHeadingBlack'
-import TealBtn from '../ui/TealBtn'
-import AddEditProjectModal from '../modals/AddEditProjectModal'
-import img2 from '@/assets/image/freelancer/portfolio.jpg'
-import PortfolioCard from '../shared/PortfolioCard'
-import Heading from '../ui/Heading'
-import Link from 'node_modules/next/link'
-import { useGetUserProfileQuery } from '@/redux/auth/authApi'
-import Loading from '../shared/Loading'
-import { useGetMyProjectsQuery } from '@/redux/api/portfolioApi'
-import { useGetFreelancerHomeQuery } from '@/redux/api/profileApi'
-
-
-
+"use client";
+import BookingList from "@/app/(Home)/bookings/BookingList";
+import icon2 from "@/assets/icons/icon2.svg";
+import icon3 from "@/assets/icons/icon3.svg";
+import icon4 from "@/assets/icons/icon4.svg";
+import icon5 from "@/assets/icons/Profile2.svg";
+import { useGetAllBookingsQuery } from "@/redux/api/bookingApi";
+import { useGetMyProjectsQuery } from "@/redux/api/portfolioApi";
+import { useGetFreelancerHomeQuery } from "@/redux/api/profileApi";
+import Link from "node_modules/next/link";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import AddEditProjectModal from "../modals/AddEditProjectModal";
+import Loading from "../shared/Loading";
+import PortfolioCard from "../shared/PortfolioCard";
+import WhiteBoxCard from "../shared/WhiteBoxCard";
+import CustomContainer from "../ui/CustomContainer";
+import Heading from "../ui/Heading";
+import Paragraph from "../ui/Paragraph";
+import TealBtn from "../ui/TealBtn";
 
 export default function ProfessionalHome() {
-    // for create and edit project
-    const [openModal, setOpenModal] = useState(false);
-    const [createModal, setCreateModal] = useState(false);
-    const [editModal, setEditModal] = useState(false);
-    const [heading, setHeading] = useState('');
-    const [selectedProject, setSelectedProject] = useState(null);
-    const { data: projectData, isLoading } = useGetMyProjectsQuery();
-    const projects = projectData?.data?.projects;
-    const { data: homeData, error: userError, isLoading: isUserHomeLoading } = useGetFreelancerHomeQuery();
-    const home = homeData?.data;
+  const role = useSelector((state) => state.user?.role || null);
+  const { data: bookingData, isLoading: bookingLoading } =
+    useGetAllBookingsQuery(
+      [
+        { name: "limit", value: 20 },
+        { name: "page", value: 1 },
+        { name: "status", value: "CONFIRMED" },
+        // { name: "searchTerm", value: "" },
+      ],
+      {
+        refetchOnMountOrArgChange: true,
+      }
+    );
+  const [openModal, setOpenModal] = useState(false);
+  const [createModal, setCreateModal] = useState(false);
+  const [editModal, setEditModal] = useState(false);
+  const [heading, setHeading] = useState("");
+  const [selectedProject, setSelectedProject] = useState(null);
+  const { data: projectData, isLoading } = useGetMyProjectsQuery();
+  const projects = projectData?.data?.projects;
+  const {
+    data: homeData,
+    error: userError,
+    isLoading: isUserHomeLoading,
+  } = useGetFreelancerHomeQuery();
+  const home = homeData?.data;
 
+  if (isLoading || isUserHomeLoading) {
+    return <Loading />;
+  }
 
-    if (isLoading || isUserHomeLoading) {
-        return <Loading />
-    }
+  const rawBookings = bookingData?.data?.data || [];
+  const firstName = home?.firstName || "";
+  const lastName = home?.lastName || "";
 
+  const items = [
+    {
+      id: 1,
+      icon: icon2,
+      title: "Messages",
+      count: home?.unReadMessageCount || 0,
+      status: "unread",
+    },
+    {
+      id: 2,
+      icon: icon4,
+      title: "Pending Request",
+      count: home?.bookingRequestPending || 0,
+      status: "waiting",
+    },
+    {
+      id: 3,
+      icon: icon4,
+      title: "Active Bookings",
+      count: home?.activeBookings || 0,
+      status: "Ongoing ",
+    },
+    {
+      id: 4,
+      icon: icon3,
+      title: "Client Ratings",
+      count: home?.ratingAvg || 0,
+      status: "Average Rating",
+    },
+    {
+      id: 5,
+      icon: icon5,
+      title: "Profile View",
+      count: home?.profileVisitorCount || 0,
+      status: "This Month",
+    },
+  ];
 
+  const name = `${firstName} ${lastName}`.trim();
 
-    // useEffect(() => {
+  const handleCloseModal = () => {
+    setOpenModal(false);
+    setCreateModal(false);
+    setEditModal(false);
+    setSelectedProject(null);
+  };
 
-    //     if (!home) return;
-
-    // }, [homeData])
-
-
-    // console.log('home', home)
-    const firstName = home?.firstName || '';
-    const lastName = home?.lastName || '';
-
-    const items = [
-        {
-            id: 1,
-            icon: icon2,
-            title: 'Messages',
-            count: home?.unReadMessageCount || 0,
-            status: 'unread',
-        },
-        {
-            id: 2,
-            icon: icon4,
-            title: 'Pending Request',
-            count: home?.bookingRequestPending || 0,
-            status: 'waiting',
-        },
-        {
-            id: 3,
-            icon: icon4,
-            title: 'Active Bookings',
-            count: home?.activeBookings || 0,
-            status: 'Ongoing ',
-        },
-        {
-            id: 4,
-            icon: icon3,
-            title: 'Client Ratings',
-            count: home?.ratingAvg || 0,
-            status: 'Average Rating',
-        },
-        {
-            id: 5,
-            icon: icon5,
-            title: 'Profile View',
-            count: home?.profileVisitorCount || 0,
-            status: 'This Month',
-        },
-    ]
-
-
-
-    const name = `${firstName} ${lastName}`.trim();
-
-
-    const handleCloseModal = () => {
-        setOpenModal(false);
-        setCreateModal(false);
-        setEditModal(false);
-        setSelectedProject(null);
-    }
-
-
-    const bookings = [
-        { id: 1, name: "Mr. Lee", image: img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "confirmed" },
-        { id: 2, name: "Mr. Lee", image: img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "pending" },
-        { id: 3, name: "Mr. Lee", image: img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "canceled" },
-        { id: 4, name: "Mr. Lee", image: img, category: "Finance & Accounting", date: "Oct 7,2025", time: "10:00 AM", status: "completed" },
-    ]
-
-    const list = [
-        {
-            id: 1,
-            title: 'Legal Consultancy Website Design',
-            description:
-                'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-            imgSrc: img2,
-            showPlay: false,
-        },
-        {
-            id: 2,
-            title: 'Legal Consultancy Website Design',
-            description:
-                'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-            imgSrc: img2,
-            showPlay: false,
-        },
-        {
-            id: 3,
-            title: 'Legal Consultancy Website Design',
-            description:
-                'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-            imgSrc: img2,
-            showPlay: false,
-        },
-        {
-            id: 4,
-            title: 'Legal Consultancy Website Design',
-            description:
-                'Designed a modern, user-friendly website for a law firm, improving user experience and boosting client inquiries.',
-            imgSrc: img2,
-            showPlay: true,
-        },
-    ]
-
-
-    return (
-        <>
-            <CustomContainer>
-                {/* Heading */}
-                <div
-                    className="flex w-full items-center gap-4 rounded-2xl p-6 shadow-sm border border-transparent"
-                    style={{
-                        // base pale blue-gray background with two soft green radial highlights (left small, right large)
-                        backgroundColor: '#EAF3F6',
-                        backgroundImage: `radial-gradient(circle at 6% 50%, rgba(139,207,154,0.08) 0%, rgba(139,207,154,0.02) 25%, transparent 40%),
+  return (
+    <>
+      <CustomContainer>
+        {/* Heading */}
+        <div
+          className="flex w-full items-center gap-4 rounded-2xl p-6 shadow-sm border border-transparent"
+          style={{
+            // base pale blue-gray background with two soft green radial highlights (left small, right large)
+            backgroundColor: "#EAF3F6",
+            backgroundImage: `radial-gradient(circle at 6% 50%, rgba(139,207,154,0.08) 0%, rgba(139,207,154,0.02) 25%, transparent 40%),
                                   radial-gradient(circle at 85% 55%, rgba(139,207,154,0.18) 0%, rgba(139,207,154,0.08) 20%, rgba(139,207,154,0.02) 45%, transparent 65%)`,
-                        backgroundRepeat: 'no-repeat',
-                    }}
-                >
-                    {/* Waving hand emoji */}
-                    <span className="text-3xl">👋</span>
+            backgroundRepeat: "no-repeat",
+          }}
+        >
+          {/* Waving hand emoji */}
+          <span className="text-3xl">👋</span>
 
-                    {/* Text content */}
-                    <div className='space-y-2'>
-                        <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-[#333333] font-open-sans">
-                            Welcome back, {name}!
-                        </h2>
+          {/* Text content */}
+          <div className="space-y-2">
+            <h2 className="text-xl md:text-2xl lg:text-4xl font-bold text-[#333333] font-open-sans">
+              Welcome back, {name}!
+            </h2>
 
-                        <Paragraph text="Here's what's happening in your account today" />
-                    </div>
-                </div>
+            <Paragraph text="Here's what's happening in your account today" />
+          </div>
+        </div>
 
+        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 my-16">
+          {items.map((item) => (
+            <WhiteBoxCard item={item} key={item.id} />
+          ))}
+        </div>
 
-                <div className='grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-8 my-16'>
-                    {
-                        items.map((item) => (
-                            <WhiteBoxCard item={item} key={item.id} />
-                        ))
-                    }
+        {/* booking card */}
+        <div className="flex justify-between items-center">
+          <div className="flex-1">
+            <Heading text="Upcoming Bookings" />
+          </div>
+          <p className=" text-[#030213] font-open-sans bg-[#ECEEF2] p-1 rounded-[8px]">
+            3 Total
+          </p>
+        </div>
 
-                </div>
+        <div className="grid grid-cols-1 gap-4 mt-10">
+          {/* {bookings.map((booking) => (
+            <BookingCard booking={booking} key={booking.id} />
+          ))} */}
+          <BookingList rawBookings={rawBookings} />
+        </div>
 
+        {/* portfolios */}
 
+        <div className="flex flex-col gap-4 md:flex-row justify-between my-10">
+          {/* heading */}
+          <Heading text="Your Latest Projects" />
+          <Link href="/profile/portfolio">
+            <TealBtn text="Manage Portfolio" />
+          </Link>
+        </div>
 
-                {/* booking card */}
-                <div className='flex justify-between items-center'>
-                    <div className='flex-1'>
-                        <Heading text="Upcoming Bookings" />
-                    </div>
-                    <p className=' text-[#030213] font-open-sans bg-[#ECEEF2] p-1 rounded-[8px]'>3 Total</p>
-                </div>
+        <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
+          {projects.map((project) => (
+            <PortfolioCard
+              key={project.id ?? project._id ?? idx}
+              project={project}
+              onView={(id) => console.log("view", id)}
+              onEdit={(p) => {
+                setOpenModal(true);
+                setEditModal(true);
+                setCreateModal(false);
+                setHeading("Edit Projects");
+                setSelectedProject(p);
+                //   console.log('p-', p)
+              }}
+              onDelete={(id) => console.log("delete", id)}
+              profile={true}
+            />
+          ))}
+        </div>
 
-                <div className='grid grid-cols-1 gap-4 mt-10'>
-                    {bookings.map((booking) => (
-                        <BookingCard booking={booking} key={booking.id} />
-                    ))}
-                </div>
+        {/* modal */}
+        <AddEditProjectModal
+          open={openModal}
+          onClose={handleCloseModal}
+          create={createModal}
+          edit={editModal}
+          heading={heading}
+          project={selectedProject}
+        />
+      </CustomContainer>
 
-
-                {/* portfolios */}
-
-                <div className='flex flex-col gap-4 md:flex-row justify-between my-10'>
-                    {/* heading */}
-                    <Heading text="Your Latest Projects" />
-                    <Link href="/profile/portfolio">
-                        <TealBtn text="Manage Portfolio" />
-                    </Link>
-
-
-
-                </div>
-
-                <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
-                    {projects.map((project) => (
-                        <PortfolioCard
-                            key={project.id ?? project._id ?? idx}
-                            project={project}
-
-                            onView={(id) => console.log('view', id)}
-                            onEdit={(p) => {
-                                setOpenModal(true)
-                                setEditModal(true)
-                                setCreateModal(false);
-                                setHeading('Edit Projects')
-                                setSelectedProject(p);
-                                //   console.log('p-', p)
-                            }}
-                            onDelete={(id) => console.log('delete', id)}
-                            profile={true}
-                        />
-                    ))}
-                </div>
-
-                {/* modal */}
-                <AddEditProjectModal
-                    open={openModal}
-                    onClose={handleCloseModal}
-                    create={createModal}
-                    edit={editModal}
-                    heading={heading}
-                    project={selectedProject}
-                />
-
-            </CustomContainer>
-
-            {/* foot */}
-            <div className=" w-full bg-gradient-to-br from-pink-200 via-green-200 to-blue-300 flex items-center justify-center py-8 px-4  md:py-24 md:px-10">
-                <div className="w-full max-w-4xl bg-transparent bg-opacity-40 backdrop-blur-md rounded-2xl shadow-xl p-12 md:p-16 text-center border border-[#0000000D]">
-                    <h1 className="text-3xl md:text-5xl font-bold text-gray-400 mb-4">
-                        Want to reach more clients?
-                    </h1>
-                    <p className="text-gray-400 text-opacity-100 text-lg mb-8">
-                        Get verified and boost your visibility to attract more clients today.
-                    </p>
-                    <Link href="/profile/verify-account">
-                        <TealBtn text="Verify Now" />
-                    </Link>
-                </div>
-            </div>
-        </>
-    )
+      {/* foot */}
+      <div className=" w-full bg-gradient-to-br from-pink-200 via-green-200 to-blue-300 flex items-center justify-center py-8 px-4  md:py-24 md:px-10">
+        <div className="w-full max-w-4xl bg-transparent bg-opacity-40 backdrop-blur-md rounded-2xl shadow-xl p-12 md:p-16 text-center border border-[#0000000D]">
+          <h1 className="text-3xl md:text-5xl font-bold text-gray-400 mb-4">
+            Want to reach more clients?
+          </h1>
+          <p className="text-gray-400 text-opacity-100 text-lg mb-8">
+            Get verified and boost your visibility to attract more clients
+            today.
+          </p>
+          <Link href="/profile/verify-account">
+            <TealBtn text="Verify Now" />
+          </Link>
+        </div>
+      </div>
+    </>
+  );
 }

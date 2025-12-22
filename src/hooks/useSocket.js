@@ -2,11 +2,11 @@
 // hooks/useSocket.js
 "use client";
 
+import { config } from "@/config";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-// const BACKEND_URL = "http://10.10.20.2:5005"; 
-const BACKEND_URL = "https://karl-aftermost-belkis.ngrok-free.dev/"; 
+const BACKEND_URL = config.backend_url
 
 // singleton socket so HMR/dev doesn't create duplicates
 let singletonSocket = null;
@@ -20,8 +20,6 @@ export function useSocket(backendUrl = BACKEND_URL) {
       singletonSocket = io(backendUrl, {
         autoConnect: true,
         transports: ["websocket"],
-        // DON'T pass token here unless you want to use handshake auth.
-        // We'll use an explicit authenticate event instead.
       });
     }
 
@@ -53,7 +51,6 @@ export function useSocket(backendUrl = BACKEND_URL) {
   }, [backendUrl]);
 
   // helper wrappers
-  const socket = () => singletonSocket;
   const emit = (ev, payload, ack) => singletonSocket?.emit(ev, payload, ack);
   const on = (ev, cb) => {
     singletonSocket?.on(ev, cb);

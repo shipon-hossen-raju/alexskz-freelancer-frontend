@@ -1,10 +1,9 @@
 "use client";
-import React, { useEffect, useState } from "react";
-import { Search } from "lucide-react";
 import { useSocket } from "@/hooks/useSocket";
-import { useDispatch } from "react-redux";
-import { useSelector } from 'react-redux'
 import { setChatData } from "@/redux/slices/messageSlice";
+import { Search } from "lucide-react";
+import { useEffect, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 
 export default function ChatSidebar() {
   const { socket, connected, authenticate } = useSocket();
@@ -39,14 +38,17 @@ export default function ChatSidebar() {
           ...existing,
           ...item,
           lastMessage: item.lastMessage || existing.lastMessage,
-          unreadMessageCount: item.unreadMessageCount ?? existing.unreadMessageCount,
+          unreadMessageCount:
+            item.unreadMessageCount ?? existing.unreadMessageCount,
         });
       }
     }
     return Array.from(map.values());
   };
 
-  const { receiver: reduxReceiver, chatRoomId: reduxRoomId } = useSelector((state) => state.chat ?? {});
+  const { receiver: reduxReceiver, chatRoomId: reduxRoomId } = useSelector(
+    (state) => state.chat ?? {}
+  );
 
   useEffect(() => {
     if (!socket) return;
@@ -114,7 +116,9 @@ export default function ChatSidebar() {
             return {
               ...item,
               lastMessage: { message: msg.message, createdAt: msg.createdAt },
-              unreadMessageCount: (item.unreadMessageCount || 0) + (msg.senderId === (item.user?.id ?? "") ? 0 : 1),
+              unreadMessageCount:
+                (item.unreadMessageCount || 0) +
+                (msg.senderId === (item.user?.id ?? "") ? 0 : 1),
             };
           }
           return item;
@@ -151,40 +155,38 @@ export default function ChatSidebar() {
 
   const filtered = users.filter((item) => {
     if (!query) return true;
-    const name = (item.user?.firstName ?? item.user?.name ?? "").toString().toLowerCase();
+    const name = (item.user?.firstName ?? item.user?.name ?? "")
+      .toString()
+      .toLowerCase();
     return name.includes(query.toLowerCase());
   });
 
-  // console.log('chat users: ', users) 
+  // console.log('chat users: ', users)
 
-  const handleSelectChat = (selectedUser) =>{
-
+  const handleSelectChat = (selectedUser) => {
     // console.log('selectedUser', selectedUser?.user)
     const id = selectedUser?.user?.id;
     setSelectedUserId(id);
     setSelectedUser(selectedUser);
-    
-}
+  };
 
+  const roomId = selectedUser?.roomId;
+  const unreadMessage = selectedUser?.unreadMessageCount;
+  const receiver = selectedUser?.user;
 
-    const roomId = selectedUser?.roomId;
-    const unreadMessage = selectedUser?.unreadMessageCount;
-    const receiver = selectedUser?.user;
+  // console.log('receiver: ', receiver)
 
-    // console.log('receiver: ', receiver)
-
-    useEffect(() => {
-      
-      if(selectedUser) {
-        dispatch(
-          setChatData({
-            receiver: receiver,
-            chatRoomId: roomId,
-            unreadMessage: unreadMessage
-          })
-        );
-      }
-    }, [selectedUser, dispatch])
+  useEffect(() => {
+    if (selectedUser) {
+      dispatch(
+        setChatData({
+          receiver: receiver,
+          chatRoomId: roomId,
+          unreadMessage: unreadMessage,
+        })
+      );
+    }
+  }, [selectedUser, dispatch]);
 
   // Auto-select a conversation when Redux `receiver` is set (e.g., from details page)
   useEffect(() => {
@@ -222,10 +224,8 @@ export default function ChatSidebar() {
         return dedupeUsers(merged);
       });
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduxReceiver, reduxRoomId, users]);
-
-    
 
   return (
     <div className="w-full lg:w-80 h-screen border-r border-gray-200 flex flex-col lg:flex">
@@ -244,18 +244,26 @@ export default function ChatSidebar() {
       </div>
 
       <div className="flex-1 overflow-y-auto">
-        {loading && <div className="px-6 py-4 text-sm text-gray-500">Loading users…</div>}
-        {error && !loading && <div className="px-6 py-4 text-sm text-red-500">{error}</div>}
+        {loading && (
+          <div className="px-6 py-4 text-sm text-gray-500">Loading users…</div>
+        )}
+        {error && !loading && (
+          <div className="px-6 py-4 text-sm text-red-500">{error}</div>
+        )}
 
-        {!loading && !error && filtered.length === 0 && <div className="px-6 py-4 text-sm text-gray-500">No users found</div>}
+        {!loading && !error && filtered.length === 0 && (
+          <div className="px-6 py-4 text-sm text-gray-500">No users found</div>
+        )}
 
         {!loading &&
           !error &&
           filtered.map((item) => {
-            
             const userObj = item.user ?? item;
-            const id = userObj.id ?? item.roomId ?? item._id ?? JSON.stringify(item);
-            const name = `${userObj.firstName ?? userObj.name ?? "User"} ${userObj.lastName ?? ""}`.trim();
+            const id =
+              userObj.id ?? item.roomId ?? item._id ?? JSON.stringify(item);
+            const name = `${userObj.firstName ?? userObj.name ?? "User"} ${
+              userObj.lastName ?? ""
+            }`.trim();
             const avatar = userObj.profileImage;
             const lastMessage = item.lastMessage?.message ?? "";
             const unread = item.unreadMessageCount ?? 0;
@@ -264,12 +272,18 @@ export default function ChatSidebar() {
             return (
               <div
                 key={id}
-                className={`flex items-center gap-3 px-6 py-4 hover:bg-gray-50 cursor-pointer ${selectedUserId === id? "bg-gray-100": ""}`}
+                className={`flex items-center gap-3 px-6 py-4 hover:bg-gray-50 cursor-pointer ${
+                  selectedUserId === id ? "bg-gray-100" : ""
+                }`}
                 onClick={() => handleSelectChat(item)}
               >
                 <div className="relative">
                   {avatar ? (
-                    <img src={avatar} alt={name} className="w-12 h-12 rounded-full object-cover" />
+                    <img
+                      src={avatar}
+                      alt={name}
+                      className="w-12 h-12 rounded-full object-cover"
+                    />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-gray-200 flex justify-center items-center">
                       <p className="text-xl font-semibold ">{name[0]}</p>
@@ -284,13 +298,18 @@ export default function ChatSidebar() {
 
                 <div className="flex-1 min-w-0">
                   <div className="flex items-center justify-between">
-                    <h3 className="text-sm font-semibold text-gray-900 truncate">{name}</h3>
+                    <h3 className="text-sm font-semibold text-gray-900 truncate">
+                      {name}
+                    </h3>
                     {unread > 0 && (
-                    <span className="text-xs text-gray-900  px-[5px] py-[1px] bg-[#d8ecdc] rounded-full font-medium">{unread}</span>
-
+                      <span className="text-xs text-gray-900  px-[5px] py-[1px] bg-[#d8ecdc] rounded-full font-medium">
+                        {unread}
+                      </span>
                     )}
                   </div>
-                  <p className="text-xs text-gray-500 truncate">{lastMessage}</p>
+                  <p className="text-xs text-gray-500 truncate">
+                    {lastMessage}
+                  </p>
                 </div>
               </div>
             );
@@ -299,4 +318,3 @@ export default function ChatSidebar() {
     </div>
   );
 }
-

@@ -1,48 +1,41 @@
-'use client'
-import React, { useState } from "react";
-import CustomContainer from "@/components/ui/CustomContainer";
-import TealBtn from "@/components/ui/TealBtn";
-import { useSelector } from "react-redux";
-import RateReviewModal from "@/components/modals/RateReviewModal";
-import { Search, Video, Paperclip, Send, Download, Play, ChevronLeft } from "lucide-react"
-import { Input } from 'antd';
-import '@/styles/Auth.css'
+"use client";
 import ChatSidebar from "@/components/features/Chat/ChatSidebar";
 import ChatWindow from "@/components/features/Chat/ChatWindow";
-import RightSidebar from "@/components/features/Chat/RightSidebar";
+import RateReviewModal from "@/components/modals/RateReviewModal";
+import CustomContainer from "@/components/ui/CustomContainer";
+import "@/styles/Auth.css";
+import { useState } from "react";
+import { useSelector } from "react-redux";
 
 const MessagingInterface = () => {
-    const user = useSelector((state) => state.user.user ?? null);
-    const role = useSelector((state) => state.user.role ?? null);
+  const user = useSelector((state) => state.user.user ?? null);
+  const role = useSelector((state) => state.user.role ?? null);
 
-    const [visible, setVisible] = useState(false);
+  const [visible, setVisible] = useState(false);
 
-    const [mobileView, setMobileView] = useState("sidebar")
+  const [mobileView, setMobileView] = useState("sidebar");
 
   const openModal = () => setVisible(true);
   const closeModal = () => setVisible(false);
 
   const handleConversationClick = () => {
-    setMobileView("chat")
-  }
+    setMobileView("chat");
+  };
 
   const handleAvatarClick = () => {
-    setMobileView("profile")
-  }
+    setMobileView("profile");
+  };
 
   const handleBackToChat = () => {
-    setMobileView("chat")
-  }
+    setMobileView("chat");
+  };
 
   const handleBackToSidebar = () => {
-    setMobileView("sidebar")
-  }
-
+    setMobileView("sidebar");
+  };
 
   return (
-    
-
-  <CustomContainer>
+    <CustomContainer>
       <div className="flex min-h-screen bg-white rounded-md font-poppins ">
         {/* Left Sidebar - Inbox */}
         <div className="">
@@ -50,21 +43,18 @@ const MessagingInterface = () => {
         </div>
 
         {/* Main Chat Area */}
-       <div className="flex-1">
-         <ChatWindow />
-       </div>
+        <div className="flex-1">
+          <ChatWindow />
+        </div>
 
-         {/* Right Sidebar - Profile */}
+        {/* Right Sidebar - Profile */}
 
-         {/* <div>
+        {/* <div>
           <RightSidebar />
          </div> */}
       </div>
-  
-  
-      
-        
-    <RateReviewModal
+
+      <RateReviewModal
         visible={visible}
         onCancel={closeModal}
         // onSubmit={handleSubmit}

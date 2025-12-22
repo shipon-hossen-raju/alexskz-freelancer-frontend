@@ -1,32 +1,13 @@
-// 'use client';
+"use client";
 
-// import { Button } from 'antd';
+import { Button } from "antd";
 
-// export default function TealBtn({ text, onClick = () => {}, icon = null }) {
-//   return (
-//     <div className="gold-btn">
-//       <Button onClick={onClick} 
-//         className="!bg-[#144A6C] !text-white !font-open-sans !border-none !px-8 !rounded-[8px] !font-semibold">
-//         {text} {icon}
-//       </Button>
-
-//       <style jsx>{`
-//         :global(.gold-btn .ant-btn) {
-//           font-size: 16px;
-//           height: 54px;
-//           line-height: 32px;
-//         }
-//       `}</style>
-//     </div>
-//   );
-// }
-
-
-'use client';
-
-import { Button } from 'antd';
-
-export default function TealBtn({ text, onClick = () => {}, icon = null }) {
+export default function TealBtn({
+  text,
+  onClick = () => {},
+  icon = null,
+  isLoading = false,
+}) {
   return (
     <div className="gold-btn">
       <Button
@@ -38,6 +19,7 @@ export default function TealBtn({ text, onClick = () => {}, icon = null }) {
           !px-5 sm:!px-8   /* narrower padding on mobile */
           w-full sm:w-auto /* optional: full width on mobile */
         "
+        loading={isLoading}
       >
         {text} {icon}
       </Button>

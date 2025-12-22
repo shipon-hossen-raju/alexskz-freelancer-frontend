@@ -40,15 +40,18 @@ export default function LoginPage() {
         .then((res) =>{
           // console.log('login res', res?.data?.token)
           const accessToken = res?.data?.token
+          const user = res?.data?.userData;
           if(accessToken) {
             localStorage.setItem("user-token", accessToken)
             authenticate(accessToken);    //for real time chatting
           }
 
-          dispatch(setUser({
-            user: payload,
-            token: accessToken
-          }));
+          dispatch(
+            setUser({
+              user: user,
+              token: accessToken,
+            })
+          );
           
           const userId = res?.data?.userData?.id
           localStorage.setItem('user-id', userId);
