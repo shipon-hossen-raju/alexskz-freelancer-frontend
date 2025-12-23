@@ -3,7 +3,7 @@ import { useGetAllBookingsQuery } from "@/redux/api/bookingApi";
 import Heading from "./ui/Heading";
 
 export default function HomeBooking() {
-  const { data: bookingData, isLoading: bookingLoading } =
+  const { data: bookingData, isLoading: isBookingLoading } =
     useGetAllBookingsQuery(
       [
         { name: "limit", value: 20 },
@@ -32,7 +32,7 @@ export default function HomeBooking() {
       </div>
 
       <div className="grid grid-cols-1 gap-4 mt-10">
-        <BookingList rawBookings={rawBookings} />
+        <BookingList rawBookings={rawBookings} isLoading={isBookingLoading} />
       </div>
     </div>
   );

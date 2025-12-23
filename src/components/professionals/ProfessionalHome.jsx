@@ -124,21 +124,8 @@ export default function ProfessionalHome() {
 
         {/* booking card */}
         <HomeBooking />
-        {/* <div className="flex justify-between items-center">
-          <div className="flex-1">
-            <Heading text="Upcoming Bookings" />
-          </div>
-          <p className=" text-[#030213] font-open-sans bg-[#ECEEF2] p-1 rounded-[8px]">
-            3 Total
-          </p>
-        </div>
-
-        <div className="grid grid-cols-1 gap-4 mt-10">
-          <BookingList rawBookings={rawBookings} />
-        </div> */}
 
         {/* portfolios */}
-
         <div className="flex flex-col gap-4 md:flex-row justify-between my-10">
           {/* heading */}
           <Heading text="Your Latest Projects" />

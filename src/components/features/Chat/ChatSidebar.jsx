@@ -15,6 +15,23 @@ export default function ChatSidebar() {
   const [selectedUserId, setSelectedUserId] = useState(null);
   const dispatch = useDispatch();
 
+  // Get URL parameter `roomId`
+  const getParams = () => {
+    const urlParams = new URLSearchParams(window.location.search);
+    return urlParams.get("roomId");
+  };
+  const userRoomId = getParams();
+
+  useEffect(() => {
+    if (userRoomId) {
+      setSelectedUserId(userRoomId);
+      const findUser = users.find((u) => u.roomId === userRoomId);
+      console.log("useEffect findUser 29 ", findUser);
+      if (findUser) setSelectedUser(findUser);
+    }
+  }, [userRoomId]);
+
+  // Normalize chat users data
   const normalizeChatUsers = (payload) => {
     if (!payload) return [];
     if (Array.isArray(payload)) return payload;
@@ -24,6 +41,7 @@ export default function ChatSidebar() {
     return arr || [];
   };
 
+  // Remove duplicate users and merge chat data (e.g., last message, unread count)
   const dedupeUsers = (arr) => {
     if (!Array.isArray(arr)) return [];
     const map = new Map();
@@ -50,17 +68,17 @@ export default function ChatSidebar() {
     (state) => state.chat ?? {}
   );
 
+  // Socket-related logic to fetch users, update statuses, and handle messages
   useEffect(() => {
     if (!socket) return;
+
     setLoading(true);
 
     const onAuthenticated = () => {
-      // console.log("[CHAT] authenticated by server");
       socket.emit("getChatUsers");
     };
 
     const onChatUsers = (usersList) => {
-      // console.log("[CHAT] getChatUsers event:", usersList);
       const normalized = normalizeChatUsers(usersList);
       const unique = dedupeUsers(normalized);
       setUsers(unique);
@@ -69,12 +87,10 @@ export default function ChatSidebar() {
     };
 
     const onError = (err) => {
-      // console.error("[CHAT] error:", err);
       setError(err?.message || "Something went wrong");
       setLoading(false);
     };
 
-    // NEW: update online/offline status for a single user
     const onUserStatus = (data) => {
       if (!data) return;
       const userId = String(data.userId ?? data.id ?? "");
@@ -82,7 +98,6 @@ export default function ChatSidebar() {
       if (!userId) return;
 
       setUsers((prev) => {
-        // update matching item(s)
         const updated = prev.map((item) => {
           const uid = String(item.user?.id ?? item.roomId ?? "");
           if (uid === userId) {
@@ -90,22 +105,10 @@ export default function ChatSidebar() {
           }
           return item;
         });
-
-        // optional: move that conversation to top when user comes online
-        // uncomment to enable:
-        // if (isOnline) {
-        //   const idx = updated.findIndex(it => String(it.user?.id ?? it.roomId ?? "") === userId);
-        //   if (idx > -1) {
-        //     const [item] = updated.splice(idx, 1);
-        //     updated.unshift(item);
-        //   }
-        // }
-
         return updated;
       });
     };
 
-    // update last message + unread (existing behavior)
     const onReceiveMessage = (payload) => {
       const msg = payload?.message ?? payload;
       if (!msg) return;
@@ -123,7 +126,6 @@ export default function ChatSidebar() {
           }
           return item;
         });
-        // keep same order
         return copy;
       });
     };
@@ -134,7 +136,7 @@ export default function ChatSidebar() {
     socket.on("userStatus", onUserStatus);
     socket.on("receiveMessage", onReceiveMessage);
 
-    // start auth attempt
+    // Start authentication
     const token = localStorage.getItem("user-token");
     if (token) {
       authenticate(token);
@@ -150,9 +152,9 @@ export default function ChatSidebar() {
       socket.off("userStatus", onUserStatus);
       socket.off("receiveMessage", onReceiveMessage);
     };
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [socket]);
+  }, [socket, userRoomId]);
 
+  // Filter users based on search query
   const filtered = users.filter((item) => {
     if (!query) return true;
     const name = (item.user?.firstName ?? item.user?.name ?? "")
@@ -161,10 +163,7 @@ export default function ChatSidebar() {
     return name.includes(query.toLowerCase());
   });
 
-  // console.log('chat users: ', users)
-
   const handleSelectChat = (selectedUser) => {
-    // console.log('selectedUser', selectedUser?.user)
     const id = selectedUser?.user?.id;
     setSelectedUserId(id);
     setSelectedUser(selectedUser);
@@ -174,8 +173,7 @@ export default function ChatSidebar() {
   const unreadMessage = selectedUser?.unreadMessageCount;
   const receiver = selectedUser?.user;
 
-  // console.log('receiver: ', receiver)
-
+  // Update Redux store with selected chat data
   useEffect(() => {
     if (selectedUser) {
       dispatch(
@@ -188,18 +186,16 @@ export default function ChatSidebar() {
     }
   }, [selectedUser, dispatch]);
 
-  // Auto-select a conversation when Redux `receiver` is set (e.g., from details page)
+  // Auto-select a conversation when Redux `receiver` is set
   useEffect(() => {
-    if (!reduxReceiver) return;
-    if (!users || users.length === 0) return;
+    if (!reduxReceiver || !users.length) return;
 
-    // try to find matching user by id or by roomId
     const match = users.find((item) => {
       const uid = String(item.user?.id ?? item.roomId ?? "");
-      if (!uid) return false;
-      if (String(item.user?.id) === String(reduxReceiver.id)) return true;
-      if (String(item.roomId) === String(reduxRoomId)) return true;
-      return false;
+      return (
+        String(item.user?.id) === String(reduxReceiver.id) ||
+        String(item.roomId) === String(reduxRoomId)
+      );
     });
 
     if (match) {
@@ -207,7 +203,6 @@ export default function ChatSidebar() {
       const id = String(match.user?.id ?? match.roomId ?? "");
       setSelectedUserId(id);
     } else {
-      // if no existing conversation found, optionally create a temporary item to show selected state
       const temp = {
         user: reduxReceiver,
         roomId: reduxRoomId ?? null,
@@ -218,18 +213,13 @@ export default function ChatSidebar() {
       setSelectedUser(temp);
       const id = String(reduxReceiver.id ?? "");
       setSelectedUserId(id);
-      // also prepend to users so it appears in sidebar (avoid duplicates thanks to dedupe)
-      setUsers((prev) => {
-        const merged = [temp, ...(prev || [])];
-        return dedupeUsers(merged);
-      });
+      setUsers((prev) => dedupeUsers([temp, ...prev]));
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [reduxReceiver, reduxRoomId, users]);
 
   return (
     <div className="w-full lg:w-80 h-screen border-r border-gray-200 flex flex-col lg:flex">
-      <div className="p-6 ">
+      <div className="p-6">
         <h1 className="text-2xl font-bold text-gray-900 mb-4">Inbox</h1>
         <div className="relative">
           <input
@@ -250,7 +240,6 @@ export default function ChatSidebar() {
         {error && !loading && (
           <div className="px-6 py-4 text-sm text-red-500">{error}</div>
         )}
-
         {!loading && !error && filtered.length === 0 && (
           <div className="px-6 py-4 text-sm text-gray-500">No users found</div>
         )}
@@ -286,7 +275,7 @@ export default function ChatSidebar() {
                     />
                   ) : (
                     <div className="w-12 h-12 rounded-full bg-gray-200 flex justify-center items-center">
-                      <p className="text-xl font-semibold ">{name[0]}</p>
+                      <p className="text-xl font-semibold">{name[0]}</p>
                     </div>
                   )}
                   <div
@@ -302,7 +291,7 @@ export default function ChatSidebar() {
                       {name}
                     </h3>
                     {unread > 0 && (
-                      <span className="text-xs text-gray-900  px-[5px] py-[1px] bg-[#d8ecdc] rounded-full font-medium">
+                      <span className="text-xs text-gray-900 px-[5px] py-[1px] bg-[#d8ecdc] rounded-full font-medium">
                         {unread}
                       </span>
                     )}

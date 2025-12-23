@@ -1,101 +1,94 @@
 'use client'
+import { TagTypes } from "@/constants/constants";
 import { baseApi } from "./baseApi";
 
 const profileApi = baseApi.injectEndpoints({
-    endpoints: (builder) => ({
+  endpoints: (builder) => ({
+    // get freeLancer home
+    getFreelancerHome: builder.query({
+      query: () => ({
+        url: "users/freelancer-home",
+        method: "GET",
+      }),
+      providesTags: [TagTypes.user],
+      keepUnusedDataFor: 0, // delete cached data immediately
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
+      refetchOnFocus: true,
+    }),
+    // get freeLancer home
+    getClientHome: builder.query({
+      query: () => ({
+        url: "users/user-home",
+        method: "GET",
+      }),
+      providesTags: [TagTypes.user],
+      keepUnusedDataFor: 0, // delete cached data immediately
+      refetchOnMountOrArgChange: true,
+      refetchOnReconnect: true,
+      refetchOnFocus: true,
+    }),
 
-        // get freeLancer home
-        getFreelancerHome: builder.query({
-            query: () => ({
-                url: 'users/freelancer-home',
-                method: 'GET',
-            }),
-            providesTags: ['User'],
-            keepUnusedDataFor: 0,      // delete cached data immediately
-            refetchOnMountOrArgChange: true,
-            refetchOnReconnect: true,
-            refetchOnFocus: true,
+    // edit profile
+    editProfile: builder.mutation({
+      query: (data) => ({
+        url: "users/profile-update",
+        method: "PUT",
+        body: data,
+      }),
+      invalidatesTags: [TagTypes.user],
+    }),
 
-        }),
-        // get freeLancer home
-        getClientHome: builder.query({
-            query: () => ({
-                url: 'users/user-home',
-                method: 'GET',
-            }),
-            providesTags: ['User'],
-            keepUnusedDataFor: 0,      // delete cached data immediately
-            refetchOnMountOrArgChange: true,
-            refetchOnReconnect: true,
-            refetchOnFocus: true,
+    // Change password
+    changePassword: builder.mutation({
+      query: (data) => ({
+        url: "auth/change-password",
+        method: "PUT",
+        body: data,
+      }),
+    }),
 
-        }),
+    // upload profile image
+    uploadProfileImage: builder.mutation({
+      query: (formData) => ({
+        url: "users/profile-image",
+        method: "PUT",
+        body: formData,
+      }),
 
-        // edit profile
-        editProfile: builder.mutation({
-            query: (data) => ({
-                url: 'users/profile-update',
-                method: 'PUT',
-                body: data,
-            }),
-            invalidatesTags: ['User'],
-        }),
+      invalidatesTags: [TagTypes.user],
+    }),
 
-        // Change password
-        changePassword: builder.mutation({
-            query: (data) => ({
-                url: 'auth/change-password',
-                method: 'PUT',
-                body: data,
-            })
-        }),
+    // upload cover photo for Professional
+    uploadCoverPhoto: builder.mutation({
+      query: (formData) => ({
+        url: "users/profile-cover-image",
+        method: "PUT",
+        body: formData,
+      }),
 
-        // upload profile image
-        uploadProfileImage: builder.mutation({
+      invalidatesTags: [TagTypes.user],
+    }),
 
-            query: (formData) => ({
-                url: 'users/profile-image',
-                method: 'PUT',
-                body: formData,
-            }),
+    // add Whats App
+    updateWhatsAppNumber: builder.mutation({
+      query: (data) => ({
+        url: "users/whatsapp-update",
+        method: "PUT",
+        body: data,
+      }),
+    }),
 
-            invalidatesTags: ['User'],
-        }),
-
-        // upload cover photo for Professional
-        uploadCoverPhoto: builder.mutation({
-
-            query: (formData) => ({
-                url: 'users/profile-cover-image',
-                method: 'PUT',
-                body: formData,
-            }),
-
-            invalidatesTags: ['User'],
-        }),
-
-        // add Whats App
-        updateWhatsAppNumber: builder.mutation({
-            query: (data) => ({
-                url: 'users/whatsapp-update',
-                method: 'PUT',
-                body: data,
-
-            }),
-        }),
-
-        // varify account for freelancers via certificate upload
-        uploadCertificate: builder.mutation({
-            query: (formData) => ({
-                url: 'users/certificate',
-                method: 'PUT',
-                body: formData,
-            })
-        })
-
-
-    })
-})
+    // varify account for freelancers via certificate upload
+    uploadCertificate: builder.mutation({
+      query: (formData) => ({
+        url: "users/certificate",
+        method: "PUT",
+        body: formData,
+      }),
+    }),
+  }),
+});
 
 export const {
     useGetFreelancerHomeQuery,

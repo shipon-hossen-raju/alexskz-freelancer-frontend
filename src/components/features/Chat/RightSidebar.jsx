@@ -1,77 +1,77 @@
-import Loading from "@/components/shared/Loading";
+import { icons } from "@/assets/icons/icons";
 import TealBtn from "@/components/ui/TealBtn";
-import { useGetUserProfileQuery } from "@/redux/auth/authApi";
-import { Download, Play, Video } from "lucide-react";
-import Link from "node_modules/next/link";
+import { useGetDeliveryProjectQuery } from "@/redux/api/bookingApi";
+import {
+  useGetChatFilesQuery,
+  useGetMeetingFilesQuery,
+} from "@/redux/api/chatApi";
+import { Image, Modal } from "antd";
+import { Download, Play } from "lucide-react";
+import { useState } from "react";
+import { useSelector } from "react-redux";
+import DeliveryItems from "./DeliveryItems";
 
-export default function RightSidebar({ receiver }) {
+export default function ChattingHistorySide() {
+  // Redux: selected conversation
   const {
-    data: userData,
-    isLoading: isUserLoading,
-    error: isUserError,
-  } = useGetUserProfileQuery();
+    receiver,
+    chatRoomId: roomId,
+    unreadMessage,
+  } = useSelector((state) => state.chat);
+  const userProfile = useSelector((state) => state.user?.user || null);
 
-  if (isUserLoading) {
-    return <Loading />;
-  }
+  const [modalOpen, setModalOpen] = useState(false);
+  const { data, isLoading } = useGetChatFilesQuery(roomId, {
+    skip: !roomId,
+  });
+  const { data: getMeetingFiles, isLoading: isMeetingLoading } =
+    useGetMeetingFilesQuery(receiver?.id, {
+      skip: !receiver?.id,
+    });
+  const { data: deliveryRes } = useGetDeliveryProjectQuery(
+    { receiverId: receiver?.id },
+    {
+      skip: !receiver?.id,
+    }
+  );
+  const mediaFiles = data?.data;
 
-  // console.log("receiver", receiver);
-  const role = userData?.data?.role;
+  const meetingFiles = getMeetingFiles?.data;
 
-  //   const [visible, setVisible] = useState(false);
+  const downloadFile = (url) => {
+    window.open(url, "_blank");
+  };
 
-  //   const [mobileView, setMobileView] = useState("sidebar")
+  const deliveryData = deliveryRes?.data;
+  const receiverImage = receiver?.profileImage || "";
+  const receiverName = `${receiver?.firstName ?? ""} ${
+    receiver?.lastName ?? ""
+  }`;
+  const isOnline = receiver?.isOnline;
+  const profileId = receiver?.id;
 
-  // const openModal = () => setVisible(true);
-  // const closeModal = () => setVisible(false);
+  console.log("deliveryData ", deliveryData);
 
-  // const handleConversationClick = () => {
-  //   setMobileView("chat")
-  // }
-
-  // const handleAvatarClick = () => {
-  //   setMobileView("profile")
-  // }
-
-  // const handleBackToChat = () => {
-  //   setMobileView("chat")
-  // }
-
-  // const handleBackToSidebar = () => {
-  //   setMobileView("sidebar")
-  // }
-
-  return (
-    <div>
-      {/* <div
-          className={`w-full lg:w-80 border-l border-gray-200 flex flex-col 
-            ${mobileView === "profile" ? "flex" : "hidden"} 
-          lg:flex`}
-        > */}
-      <div
-        className={`w-full lg:w-80 border-l border-gray-200 flex flex-col 
-          lg:flex`}
-      >
+  if (roomId) {
+    return (
+      <div className="w-80 bg-white border-l border-gray-200 flex flex-col max-h-[88vh] overflow-y-auto no-scrollbar">
         <div className="p-6 text-center border-b border-gray-200">
-          {/* <button onClick={handleBackToChat} className="lg:hidden mb-4 p-2 hover:bg-gray-100 rounded-lg"> */}
-          {/* <button  className="lg:hidden mb-4 p-2 hover:bg-gray-100 rounded-lg">
-              <ChevronLeft className="w-6 h-6 text-gray-600" />
-            </button> */}
           <img
-            src={receiver?.profileImage}
-            alt="User"
+            src={receiverImage}
+            alt={receiverName}
             className="w-24 h-24 rounded-full mx-auto mb-3"
           />
-          <h2 className="text-xl font-bold text-gray-900 mb-4">
-            {receiver?.firstName} {receiver?.lastName}
-          </h2>
-          {/* <p className="text-sm text-gray-500 mb-4">Online</p> */}
-          <Link
-            href={`/details/${receiver?.id}`}
-            className="w-full border !border-[#144A6C] !text-[#144A6C] font-semibold font-open-sans py-2 rounded-lg hover:bg-blue-50 cursor-pointer px-4"
+          <h2 className="text-xl font-bold text-gray-900">{receiverName}</h2>
+          <p className="text-sm text-gray-500 mb-4">
+            {isOnline ? "Online" : "Offline"}
+          </p>
+          <a
+            href={`/profile/${profileId}`}
+            target="_blank"
+            className="w-full border border-primary text-primary font-medium py-2 px-3 rounded-lg hover:bg-blue-50"
           >
             View Profile
-          </Link>
+          </a>
         </div>
 
         {/* Media File */}
@@ -79,33 +79,27 @@ export default function RightSidebar({ receiver }) {
           <h3 className="text-sm font-semibold text-gray-900 mb-3">
             Media File
           </h3>
-          <div className="grid grid-cols-3 gap-2">
-            <div className="aspect-square bg-gray-900 rounded-lg overflow-hidden relative">
-              <img
-                src="https://images.unsplash.com/photo-1611974789855-9c2a0a7236a3?w=200&h=200&fit=crop"
-                alt="Finance"
-                className="w-full h-full object-cover"
-              />
-              <div className="absolute inset-0 flex items-center justify-center bg-black bg-opacity-40">
-                <span className="text-white text-xs font-semibold">
-                  FINANCE
-                </span>
-              </div>
-            </div>
-            <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1484480974693-6ca0a78fb36b?w=200&h=200&fit=crop"
-                alt="Workspace"
-                className="w-full h-full object-cover"
-              />
-            </div>
-            <div className="aspect-square bg-gray-200 rounded-lg overflow-hidden">
-              <img
-                src="https://images.unsplash.com/photo-1519389950473-47ba0277781c?w=200&h=200&fit=crop"
-                alt="Person"
-                className="w-full h-full object-cover"
-              />
-            </div>
+
+          {/* Responsive & Scrollable */}
+          <div className="grid grid-cols-3 gap-2 max-h-64 overflow-y-auto pr-1 no-scrollbar">
+            {isLoading
+              ? Array.from({ length: 6 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="animate-pulse bg-gray-300 aspect-square rounded-lg"
+                  ></div>
+                ))
+              : mediaFiles?.map((file, index) => (
+                  <div
+                    key={index}
+                    className="relative group rounded-lg overflow-hidden aspect-square bg-gray-200"
+                  >
+                    <Image
+                      src={file}
+                      className="w-full h-full object-cover transition-transform duration-300 group-hover:scale-110 "
+                    />
+                  </div>
+                ))}
           </div>
         </div>
 
@@ -114,39 +108,99 @@ export default function RightSidebar({ receiver }) {
           <h3 className="text-sm font-semibold text-gray-900 mb-3">
             Meeting Record
           </h3>
-          <div className="bg-gray-50 rounded-lg p-4 space-y-3">
-            <div className="flex items-center gap-3">
-              <div className="bg-blue-500 rounded-lg p-2">
-                <Video className="w-5 h-5 text-white" />
-              </div>
-              <div className="flex-1">
-                <h4 className="text-sm font-semibold text-gray-900">
-                  Finance meeting
-                </h4>
-                <p className="text-xs text-gray-500">Zoom Recording</p>
-                <p className="text-xs text-gray-500">45:32 • 285</p>
-              </div>
-              <button className="p-2 hover:bg-gray-200 rounded-lg">
-                <Download className="w-4 h-4 text-gray-600" />
-              </button>
-            </div>
-            <button className="w-full bg-[#1DBF73] cursor-pointer text-white font-medium py-2 rounded-lg flex items-center justify-center gap-2">
-              <Play className="w-4 h-4 fill-white" />
-              Play
-            </button>
+
+          <div className="space-y-4 max-h-64 overflow-y-auto no-scrollbar">
+            {mediaFiles?.length > 0 && !isMeetingLoading
+              ? meetingFiles?.map((meeting) => (
+                  <div>
+                    <div
+                      key={meeting.id}
+                      className="bg-gray-50 rounded-lg p-4 space-y-3"
+                    >
+                      <div className="flex items-center gap-3">
+                        <div className="bg-blue-500 rounded-lg p-2 text-white size-10">
+                          {icons.videoCall}
+                        </div>
+                        <div className="flex-1">
+                          <h4 className="text-sm font-semibold text-gray-900">
+                            {meeting.topic}
+                          </h4>
+                          <p className="text-xs text-gray-500">
+                            Zoom Recording
+                          </p>
+                          {/* <p className="text-xs text-gray-500">45:32 • 285</p> */}
+                        </div>
+                        <button
+                          onClick={() =>
+                            downloadFile(meeting?.recordings?.downloadUrl)
+                          }
+                          className="p-2 hover:bg-gray-200 rounded-lg"
+                        >
+                          <Download className="w-4 h-4 text-gray-600" />
+                        </button>
+                      </div>
+                      <a
+                        href={meeting?.recordings?.videoUrl}
+                        target="_blank"
+                        className="w-full bg-green-500 hover:bg-green-600 text-white font-medium py-2 rounded-lg flex items-center justify-center gap-2"
+                      >
+                        <Play className="w-4 h-4 fill-white" />
+                        Play
+                      </a>
+                    </div>
+                  </div>
+                ))
+              : null}
+
+            {/* loading skeleton */}
+            {isMeetingLoading
+              ? Array.from({ length: 2 }).map((_, i) => (
+                  <div
+                    key={i}
+                    className="animate-pulse bg-gray-300 rounded-lg p-4 space-y-3"
+                  >
+                    <div className="flex items-center gap-3">
+                      <div className="bg-blue-500 rounded-lg p-2 text-white size-10">
+                        {icons.videoCall}
+                      </div>
+                      <div className="flex-1">
+                        <h4 className="text-sm font-semibold text-gray-900"></h4>
+                        <p className="text-xs text-gray-500"></p>
+                        {/* <p className="text-xs text-gray-500">45:32 • 285</p> */}
+                      </div>
+                    </div>
+                  </div>
+                ))
+              : null}
           </div>
         </div>
 
         {/* Deliver Button */}
-        <div className="p-6 flex justify-center">
-          {role === "USER" ? (
-            // <TealBtn text="Accept Delivery" onClick={openModal} />
-            <TealBtn text="Accept Delivery" />
-          ) : (
-            <TealBtn text="Deliver the project" />
-          )}
+        <div className="p-6">
+          {deliveryData?.length
+            ? deliveryData?.length > 0 && (
+                <TealBtn
+                  onClick={() => setModalOpen(true)}
+                  // className="w-full bg-primary hover:bg- shadow-card-shadow text-white font-semibold py-3 rounded-lg"
+                  text={"Deliver the project"}
+                />
+              )
+            : null}
         </div>
+
+        {/* Modal for Project Deliveries */}
+        <Modal
+          // title="Project Delivery Details"
+          open={modalOpen}
+          onCancel={() => setModalOpen(false)}
+          footer={null}
+          width={600}
+        >
+          <DeliveryItems deliveryData={deliveryData} />
+        </Modal>
       </div>
-    </div>
-  );
+    );
+  }
+
+  return null;
 }

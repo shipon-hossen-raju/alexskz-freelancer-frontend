@@ -9,27 +9,24 @@ import { CiClock2 } from "react-icons/ci";
 import { useSelector } from "react-redux";
 
 export default function BookingList({ rawBookings = [], isLoading = false }) {
-  const { socket, authenticate } = useSocket();
   const [messageUserId, setMessageUserId] = useState(null);
-  const router = useRouter();
   const role = useSelector((state) => state.user?.role || null);
+  const { socket } = useSocket();
+  const navigate = useRouter();
 
   // socket event handlers
   useEffect(() => {
     if (!socket) return;
-    if (messageUserId) {
-      console.log("useEffect messageUserId ", messageUserId);
+    if (!messageUserId) return;
 
-      socket.emit("joinRoom", {
-        receiverId: messageUserId,
-      });
+    socket.emit("joinRoom", { receiverId: messageUserId });
 
-      socket.on("joinRoom", (data) => {
-        console.log("joined room", data);
-      });
-
-      // router.push(`/inbox`);
-    }
+    socket.on("joinRoom", (data) => {
+      const roomId = data?.chatRoom?.id;
+      if (roomId) {
+        navigate.push(`/inbox?roomId=${roomId}`);
+      }
+    });
   }, [socket, messageUserId]);
 
   if (!rawBookings.length) {
@@ -40,13 +37,11 @@ export default function BookingList({ rawBookings = [], isLoading = false }) {
     );
   }
 
-  console.log("rawBookings ", rawBookings);
-
   const isUser = role === "USER";
   const bookings = rawBookings.map((b) => {
     const parts = b.dateTime.split(" ");
     const userName = `${b.user?.firstName ?? ""}  ${b.user?.lastName ?? ""}`;
-    const userId = b.user?.id;
+    const userId = isUser ? b?.service?.userId : b.user?.id;
 
     // console.log("user name b ", b);
 
@@ -64,20 +59,27 @@ export default function BookingList({ rawBookings = [], isLoading = false }) {
 
   return (
     <div className="space-y-6">
-      {bookings.map((b) => (
-        <BookingItem
-          key={b.id}
-          item={b}
-          role={role}
-          setMessageUserId={setMessageUserId}
-        />
-      ))}
+      {isLoading ? (
+        <BookingSkeleton />
+      ) : (
+        <>
+          {bookings.map((b) => (
+            <BookingItem
+              key={b.id}
+              item={b}
+              role={role}
+              setMessageUserId={setMessageUserId}
+            />
+          ))}
+        </>
+      )}
     </div>
   );
 }
 
 /* -------------------- Booking Item -------------------- */
 function BookingItem({ item, role, setMessageUserId }) {
+  const router = useRouter();
   const [
     createBookingStatusForProfessional,
     { isLoading: isBookingStatusLoading },
@@ -115,10 +117,11 @@ function BookingItem({ item, role, setMessageUserId }) {
       });
   };
 
-  const handleMessage = (userId) => {
-    console.log("handleMessage id ", userId);
-    if (userId) {
-      setMessageUserId(userId);
+  const handleMessage = (item) => {
+    console.log("handleMessage id ", item);
+    if (item?.userId) {
+      setMessageUserId(item?.userId);
+      // router.push(`/inbox/${item?.userId}`);
     }
   };
 
@@ -169,6 +172,7 @@ function BookingItem({ item, role, setMessageUserId }) {
             item.status !== "completed" &&
             item.status !== "pending" && (
               <TealBtn
+                onClick={() => handleMessage(item)}
                 text={item.status === "canceled" ? "Reschedule" : "Message Now"}
               />
             )}
@@ -189,10 +193,7 @@ function BookingItem({ item, role, setMessageUserId }) {
           )}
 
           {role === "FREELANCER" && item.status === "confirmed" && (
-            <TealBtn
-              onClick={() => handleMessage(item?.userId)}
-              text="Message Now"
-            />
+            <TealBtn onClick={() => handleMessage(item)} text="Message Now" />
           )}
         </div>
       </div>
@@ -242,4 +243,41 @@ function StatusPill({ status }) {
         <span className={`${base} bg-gray-100 text-gray-700`}>{status}</span>
       );
   }
+}
+
+/* -------------------- Booking skeleton loader -------------------- */
+function BookingSkeleton() {
+  const items = Array.from({ length: 3 }, (_, index) => index);
+  return (
+    <>
+      {items.map((index) => (
+        <div
+          key={index}
+          className="w-full bg-white rounded-lg shadow-[0_6px_16px_rgba(14,35,37,0.06)] border border-[#e9eef0] p-4 flex items-center gap-6"
+        >
+          <div className="w-30 h-20 rounded-md overflow-hidden bg-gray-200 animate-pulse"></div>
+
+          <div className="flex justify-between items-center w-full">
+            <div>
+              <div className="text-sm font-semibold text-[#0b1320] bg-gray-200 animate-pulse"></div>
+
+              <div className="mt-2 inline-block">
+                <span className="text-xs font-medium px-2 py-1 rounded-md bg-[#e7f3e9] text-[#1e863a] animate-pulse"></span>
+              </div>
+
+              <div className="mt-3 text-sm text-[#7b8590] bg-gray-200 animate-pulse"></div>
+            </div>
+
+            {/* Time */}
+            <div className="text-[#6b7280]"> </div>
+
+            {/* Actions */}
+            <div className="flex flex-col items-end gap-3">
+              <span className="text-xs font-medium px-3 py-1 rounded-lg bg-gray-200 animate-pulse"></span>
+            </div>
+          </div>
+        </div>
+      ))}
+    </>
+  );
 }

@@ -19,8 +19,25 @@ const chatApi = baseApi.injectEndpoints({
       }),
       providesTags: (result, error, id) => [{ type: "Messages", id }],
     }),
+
+    getChatFiles: builder.query({
+      query: (roomId) => {
+        return {
+          url: `/users/get-chat-files/${roomId}`,
+          method: "GET",
+        };
+      },
+    }),
+    getMeetingFiles: builder.query({
+      query: (receiverId) => {
+        return {
+          url: `/zoom/meetings/recordings/${receiverId}`,
+          method: "GET",
+        };
+      },
+    }),
   }),
 });
 
-export const { useGetAllChatUsersQuery, useGetChatMessagesByUserIdQuery } =
+export const { useGetAllChatUsersQuery, useGetChatMessagesByUserIdQuery, useGetChatFilesQuery , useGetMeetingFilesQuery } =
   chatApi;

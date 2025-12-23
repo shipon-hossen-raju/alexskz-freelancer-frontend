@@ -53,8 +53,6 @@ export default function ClientHome() {
     },
   ];
 
-  console.log("homeData ", homeData);
-
   return (
     <div>
       <div className="pb-6 md:hidden ">
