@@ -1,105 +1,175 @@
-"use client"
+"use client";
 
-import CustomContainer from "@/components/ui/CustomContainer"
-import Heading from "@/components/ui/Heading"
-import { useGetAllCategoryQuery } from "@/redux/api/categoryApi"
-import React, { useMemo } from "react"
-import dayjs from "dayjs"
-import relativeTime from "dayjs/plugin/relativeTime"
-import isToday from "dayjs/plugin/isToday"
-import isYesterday from "dayjs/plugin/isYesterday"
-import { useGetAllNotificationQuery } from "@/redux/api/notificationApi"
+import SkeletonNotificationLoader from "@/components/loader/SkeletonNotificationLoader";
+import NoDataFount from "@/components/notFount/NoDataFount";
+import { useGetNotificationQuery, useGetSingleNotificationMutation, useMarkAsReadMutation } from "@/redux/api/notificationApi";
+import { convertDate, convertTime } from "@/utils/dateConverter";
+import { Pagination } from "antd";
+import { useRouter } from "next/navigation";
+import { useState } from "react";
 
-dayjs.extend(relativeTime)
-dayjs.extend(isToday)
-dayjs.extend(isYesterday)
+export default function NotificationPage() {
+  const [isId, setIsId] = useState();
+  const [paginate, setPaginate] = useState({
+    current: 1,
+    pageSize: 10,
+  });
+  const navigate = useRouter();
+  const [getSingleNotification, { isLoading: isDetailsLoading }] =
+    useGetSingleNotificationMutation();
+  const [markAsRead, { isLoading: isMarkLoading }] = useMarkAsReadMutation();
+  const { data, isLoading, isError } = useGetNotificationQuery([
+    { name: "page", value: paginate.current },
+    { name: "limit", value: paginate.pageSize },
+  ]);
 
-function Icon({ type }) {
-  if (type === "BOOKING_REQUEST") {
-    return (
-      <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-        <rect x="4" y="4" width="16" height="16" rx="3" stroke="currentColor" strokeWidth="1.5" />
-        <path d="M12 8v8M8 12h8" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" strokeLinejoin="round" />
-      </svg>
-    )
-  }
+  // if (isLoading || isMarkLoading) {
+  //   return <SkeletonNotificationLoader />;
+  // }
+  console.log("data?.data ", data);
+  const notifications = data?.data?.notifications;
+  const meta = data?.data?.meta || {};
 
-  return (
-    <svg className="w-6 h-6" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg" aria-hidden>
-      <rect x="2.5" y="7" width="19" height="10" rx="2" stroke="currentColor" strokeWidth="1.5" />
-      <path d="M2.5 11h19" stroke="currentColor" strokeWidth="1.5" strokeLinecap="round" />
-    </svg>
-  )
-}
+  // filter unread notifications
+  const unreadNotifications =
+    notifications?.filter((notification) => notification?.isRead === false) ||
+    [];
+  const readNotifications =
+    notifications?.filter((notification) => notification?.isRead === true) ||
+    [];
+  const allNotifications = [...unreadNotifications, ...readNotifications];
 
-export default function NotificationsPanel() {
-  const { data: notificationData, isLoading, isError } = useGetAllNotificationQuery()
-
-  // console.log('notifications', notificationData)
-
-  // Transform notifications to group by date
-  const groupedNotifications = useMemo(() => {
-    if (!notificationData?.data?.notifications) return []
-
-    const groups = {}
-
-    notificationData.data.notifications.forEach((notif) => {
-      const dateObj = dayjs(notif.createdAt)
-      let dateKey = dateObj.format("DD/MM/YYYY")
-
-      if (dateObj.isToday()) dateKey = "Today"
-      else if (dateObj.isYesterday()) dateKey = "Yesterday"
-
-      if (!groups[dateKey]) groups[dateKey] = []
-      groups[dateKey].push({
-        id: notif.id,
-        type: notif.type,
-        title: notif.title,
-        subtitle: notif.body,
-      })
+  // data structure and sorting
+  const dataSource = allNotifications?.map(
+    (recently, index) => ({
+      key: index,
+      serial: Number(index + 1),
+      _id: recently?.id,
+      createdAt: convertTime(recently?.createdAt),
+      createDate: convertDate(recently?.createdAt),
+      type: recently?.type,
+      message_prefix: recently?.title,
+      highlight_text: recently?.body,
+      isRead: recently?.isRead,
     })
+  );
 
-    // Convert to array of { date, items }
-    return Object.keys(groups)
-      .sort((a, b) => dayjs(b, ["DD/MM/YYYY"]).unix() - dayjs(a, ["DD/MM/YYYY"]).unix())
-      .map((date) => ({ date, items: groups[date] }))
-  }, [notificationData])
+  // const dateTime = convertTime(booking.dateTime);
+  const handleView = async (id) => {
+    if (id) {
+      setIsId(id);
+      const res = await getSingleNotification(id).unwrap();
+      const data = res?.data;
+      if (data?.type === "BOOKING_REQUEST") {
+        navigate("/bookings", { state: data?.details });
+      }
+    }
+  };
 
-  if (isLoading) return <p>Loading notifications...</p>
-  if (isError) return <p>Failed to load notifications.</p>
+  const handleMarkAsRead = async () => {
+    await markAsRead(undefined).unwrap();
+  };
+
+  // pagination
+  const handlePagination = (data) => {
+    setPaginate({ current: data, pageSize: paginate.pageSize });
+  };
+
+  // if (isError) {
+  //   return <ServerErrorCard />;
+  // }
+
+  console.log("dataSource ", dataSource);
 
   return (
-    <CustomContainer>
-      <div className="w-full md:px-[10%]">
-        <div className="mb-6 md:mb-10">
-          <Heading text="Notifications" />
-          <hr className="text-[#E9E9E9] mt-4" />
+    <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4 ">
+      <div className="bg-white rounded-3xl shadow-lg w-full max-w-4xl p-8">
+        {/* Header */}
+        <div className="flex items-center justify-between mb-8 pb-6 border-b border-gray-200">
+          <h1 className="text-3xl font-semibold text-gray-900">Notification</h1>
+          <button
+            onClick={() => handleMarkAsRead()}
+            className="bg-slate-700 hover:bg-slate-800 text-white px-6 py-3 rounded-lg text-base font-medium transition-colors cursor-pointer"
+          >
+            Mark as Read
+          </button>
         </div>
 
-        {groupedNotifications.map((group) => (
-          <section key={group.date} className="mb-6 font-open-sans">
-            <h3 className="text-sm font-medium text-gray-700 mb-3">{group.date}</h3>
+        {/* Notification Items */}
+        <div className="max-w-full">
+          {isLoading ? (
+            // If data is still loading, show the skeleton loader
+            <>
+              <SkeletonNotificationLoader />
+            </>
+          ) : (
+            <div>
+              {/* <div className="space-y-4"> */}
+              {dataSource.length > 0 ? (
+                <div>
+                  <div className="space-y-4">
+                    {dataSource?.map((ra) => (
+                      <div
+                        key={ra?._id}
+                        className={`flex justify-between items-center rounded-lg  border border-[#144a6c1a] hover:bg-[#8bcf9a98] transition-all duration-300 py-3 px-4 ${
+                          !ra.isRead ? "bg-[#8bcf9a27]" : "bg-white"
+                        }`}
+                      >
+                        <div className="flex-1 flex justify-between">
+                          {/* Message (prefix + highlight text) */}
+                          <div className="w-full max-w-[300px] flex-1 space-y-3">
+                            <p className="text-sm font-medium text-gray-800">
+                              {ra?.message_prefix}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {ra?.highlight_text}
+                            </p>
+                          </div>
 
-            <div className="space-y-4">
-              {group.items.map((item) => (
-                <article
-                  key={item.id}
-                  className="flex items-start gap-4 p-4 rounded-xl bg-white shadow-[6px_6px_0_rgba(0,0,0,0.04)] ring-1 ring-gray-100"
-                >
-                  <div className="flex-shrink-0 w-12 h-12 rounded-lg bg-gray-50 border border-gray-200 flex items-center justify-center">
-                    <Icon type={item.type} />
+                          {/* Created date */}
+                          <div className="w-full max-w-[300px] flex-1 space-y-3">
+                            <p className="text-sm font-medium text-gray-800">
+                              {ra?.createdAt}
+                            </p>
+                            <p className="text-sm text-gray-500">
+                              {ra?.createDate}
+                            </p>
+                          </div>
+                        </div>
+
+                        {/* View button */}
+                        <div className="w-24 flex justify-end">
+                          <button
+                            onClick={() => handleView(ra?._id)}
+                            className="text-sm text-[#144a6c] py-1 px-3 rounded-[4px] border border-[#144a6c] hover:bg-[#144A6CE6] hover:text-white transition disabled:cursor-not-allowed cursor-pointer"
+                            disabled={isLoading}
+                          >
+                            {isId === ra?._id && isDetailsLoading
+                              ? "Viewing..."
+                              : "View"}
+                          </button>
+                        </div>
+                      </div>
+                    ))}
                   </div>
 
-                  <div className="flex-1">
-                    <p className="text-sm font-semibold text-gray-900 leading-tight">{item.title}</p>
-                    <p className="text-xs text-gray-400 mt-1">{item.subtitle}</p>
+                  <div className="flex justify-center mt-6">
+                    <Pagination
+                      onChange={handlePagination}
+                      current={paginate.current}
+                      pageSize={paginate.pageSize}
+                      total={meta?.total}
+                    />
                   </div>
-                </article>
-              ))}
+                </div>
+              ) : (
+                <NoDataFount text="No Notification Found!" />
+              )}
+              {/* </div> */}
             </div>
-          </section>
-        ))}
+          )}
+        </div>
       </div>
-    </CustomContainer>
-  )
+    </div>
+  );
 }

@@ -18,8 +18,8 @@ export default function ChattingHistorySide() {
     chatRoomId: roomId,
     unreadMessage,
   } = useSelector((state) => state.chat);
-  const userProfile = useSelector((state) => state.user?.user || null);
-
+  const role = useSelector((state) => state.user?.role || null);
+  const isUser = role === "USER";
   const [modalOpen, setModalOpen] = useState(false);
   const { data, isLoading } = useGetChatFilesQuery(roomId, {
     skip: !roomId,
@@ -49,8 +49,6 @@ export default function ChattingHistorySide() {
   }`;
   const isOnline = receiver?.isOnline;
   const profileId = receiver?.id;
-
-  console.log("deliveryData ", deliveryData);
 
   if (roomId) {
     return (
@@ -179,11 +177,13 @@ export default function ChattingHistorySide() {
         <div className="p-6">
           {deliveryData?.length
             ? deliveryData?.length > 0 && (
-                <TealBtn
-                  onClick={() => setModalOpen(true)}
-                  // className="w-full bg-primary hover:bg- shadow-card-shadow text-white font-semibold py-3 rounded-lg"
-                  text={"Deliver the project"}
-                />
+                <div className="w-full">
+                  <TealBtn
+                    onClick={() => setModalOpen(true)}
+                    text={isUser ? "Accept Deliveries" : "View Deliveries"}
+                    className="!w-full"
+                  />
+                </div>
               )
             : null}
         </div>

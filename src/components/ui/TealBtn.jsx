@@ -7,18 +7,15 @@ export default function TealBtn({
   onClick = () => {},
   icon = null,
   isLoading = false,
+  className = "",
 }) {
   return (
     <div className="gold-btn">
       <Button
         onClick={onClick}
         htmlType="submit"
-        className="
-          !bg-[#144A6C] !text-white !font-open-sans !border-none
-          !rounded-[8px] !font-semibold
-          !px-5 sm:!px-8   /* narrower padding on mobile */
-          w-full sm:w-auto /* optional: full width on mobile */
-        "
+        className={`${className ?? ""} !bg-[#144A6C] !text-white !font-open-sans !border-none !rounded-[8px] !font-semibold !px-5 sm:!px-8 w-full sm:w-auto 
+        `}
         loading={isLoading}
       >
         {text} {icon}

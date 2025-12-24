@@ -73,7 +73,6 @@ export default function HomePage() {
       )}
 
       {/* professional home */}
-
       {user && role === "FREELANCER" && <ProfessionalHome />}
     </div>
   );
