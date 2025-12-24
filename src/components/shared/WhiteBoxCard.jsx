@@ -1,8 +1,8 @@
-import { Calendar, MessageCircle, MessageCircleCode, Star } from "lucide-react";
+"use client";
+// import { Calendar, MessageCircle, MessageCircleCode, Star } from "lucide-react";
 import { motion } from "motion/react";
 
 export default function WhiteBoxCard({ item = {} }) {
-  console.log("item", item);
   return (
     <motion.div className="bg-white rounded-[10px] p-6 font-open-sans border border-black/10  hover:shadow-2xl cursor-pointer hover:border-[#8BCF9A]">
       <motion.div
@@ -10,11 +10,8 @@ export default function WhiteBoxCard({ item = {} }) {
         transition={{ ease: [0.22, 1, 0.36, 1], duration: 0.9 }}
         className="space-y-2"
       >
-        <div className="bg-[#8BCF9A1A] w-10 h-10 flex items-center justify-center rounded-[10px]">
-          {/* <Image  preview={false} src={item.icon} alt="icon" /> */}
-          {item.icon}
-          {/* {icon1} */}
-          
+        <div className="bg-[#8BCF9A1A] text-2xl w-10 h-10 flex items-center justify-center rounded-[10px]">
+          {item.icon}          
         </div>
 
         <h2

@@ -1,35 +1,42 @@
-'use client'
-import { createSlice } from '@reduxjs/toolkit'
-
+"use client";
+import { createSlice } from "@reduxjs/toolkit";
 
 const initialState = {
-    serviceId: null,
-    availabilityTimeId: null,
-  }
+  serviceId: null,
+  availabilityTimeId: null,
+  bookingFromNotification: null,
+};
 
 export const bookingSlice = createSlice({
-  name: 'booking',
+  name: "booking",
   initialState,
   reducers: {
     serviceIdForBooking: (state, action) => {
-        state.serviceId = action.payload;
-        // console.log('from slice', state.serviceId)
+      state.serviceId = action.payload;
+      // console.log('from slice', state.serviceId)
     },
 
     availabilityTimeIdForBooking: (state, action) => {
-        state.availabilityTimeId = action.payload;
-    },
-    
-    clearServiceIdForBooking: (state) => {
-        state.serviceId = null;
-    },
-    clearAvailabilityTimeIdForBooking: (state) => {
-        state.availabilityTimeId = null;
+      state.availabilityTimeId = action.payload;
     },
 
+    clearServiceIdForBooking: (state) => {
+      state.serviceId = null;
+    },
+    clearAvailabilityTimeIdForBooking: (state) => {
+      state.availabilityTimeId = null;
+    },
+    setBookingFromNotification: (state, action) => {
+      state.bookingFromNotification = action.payload;
+    },
   },
 });
 
-
-export const { serviceIdForBooking, availabilityTimeIdForBooking, clearServiceIdForBooking, clearAvailabilityTimeIdForBooking } = bookingSlice.actions;
+export const {
+  serviceIdForBooking,
+  availabilityTimeIdForBooking,
+  clearServiceIdForBooking,
+  clearAvailabilityTimeIdForBooking,
+  setBookingFromNotification,
+} = bookingSlice.actions;
 export default bookingSlice.reducer;

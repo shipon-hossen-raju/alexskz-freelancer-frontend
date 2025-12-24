@@ -2,17 +2,21 @@
 
 import CustomContainer from "@/components/ui/CustomContainer";
 import "@/styles/AntSwitch.css";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import { useGetAllBookingsQuery } from "@/redux/api/bookingApi";
+import { setBookingFromNotification } from "@/redux/slices/bookingSlice";
 import { Switch } from "antd";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 import BookingList from "./BookingList";
 
 /* -------------------- Main Page -------------------- */
 export default function BookingsPage() {
+  const dispatch = useDispatch();
   const role = useSelector((state) => state.user?.role || null);
   const [activeTab, setActiveTab] = useState("CONFIRMED");
+  const [clientBooking, setClientBooking] = useState(false);
+  const [adminService, setAdminService] = useState(false);
   const { data: bookingData, isLoading: bookingLoading } =
     useGetAllBookingsQuery(
       [
@@ -20,13 +24,46 @@ export default function BookingsPage() {
         { name: "page", value: 1 },
         { name: "status", value: activeTab },
         // { name: "searchTerm", value: "" },
+        { name: "clientBooking", value: clientBooking },
+        { name: "adminService", value: adminService },
       ],
       {
         refetchOnMountOrArgChange: true,
       }
     );
 
+  const bookingFromNotification = useSelector(
+    (state) => state?.booking?.bookingFromNotification || {}
+  );
+
+  // after 10s clear notification
+  useEffect(() => {
+    if (bookingFromNotification?.id) {
+      setTimeout(() => {
+        dispatch(setBookingFromNotification({}));
+      }, 15000);
+    }
+  }, [bookingFromNotification, bookingData]);
+
+  useEffect(() => {
+    console.log(
+      "bookingFromNotification?.status ",
+      bookingFromNotification?.status
+    );
+    if (bookingFromNotification?.id && bookingFromNotification?.status) {
+      setActiveTab(bookingFromNotification?.status);
+    }
+  }, [bookingFromNotification]);
+
   const rawBookings = bookingData?.data?.data || [];
+
+  const handleClientBooking = (data) => {
+    setClientBooking(data);
+  };
+
+  const handleAdminBooking = (data) => {
+    setAdminService(data);
+  };
 
   return (
     <CustomContainer>
@@ -46,13 +83,13 @@ export default function BookingsPage() {
             {role === "FREELANCER" ? (
               <div className="flex gap-4 mt-4 md:mt-0">
                 <div className="flex items-center gap-2">
-                  <Switch />
+                  <Switch onChange={handleClientBooking} />
                   <label id="clientBookings" className="font-semibold">
                     Client Bookings
                   </label>
                 </div>
                 <div className="flex items-center gap-2">
-                  <Switch />
+                  <Switch onChange={handleAdminBooking} />
                   <label id="adminServices" className="font-semibold">
                     Admin Services
                   </label>
@@ -74,7 +111,11 @@ export default function BookingsPage() {
         )}
 
         {/* Content */}
-        <BookingList rawBookings={rawBookings} isLoading={bookingLoading} />
+        <BookingList
+          rawBookings={rawBookings}
+          isLoading={bookingLoading}
+          isActiveId={bookingFromNotification?.id}
+        />
       </div>
     </CustomContainer>
   );

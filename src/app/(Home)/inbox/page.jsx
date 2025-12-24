@@ -1,7 +1,7 @@
 "use client";
 import ChatSidebar from "@/components/features/Chat/ChatSidebar";
 import ChatWindow from "@/components/features/Chat/ChatWindow";
-import RightSidebar from "@/components/features/Chat/RightSidebar";
+import ChattingHistorySide from "@/components/features/Chat/RightSidebar";
 import RateReviewModal from "@/components/modals/RateReviewModal";
 import CustomContainer from "@/components/ui/CustomContainer";
 import "@/styles/Auth.css";
@@ -10,7 +10,9 @@ import { useSelector } from "react-redux";
 
 const MessagingInterface = () => {
   const user = useSelector((state) => state.user.user ?? null);
-  const role = useSelector((state) => state.user.role ?? null);
+  const receiver = useSelector((state) => state.chat.receiver ?? null);
+
+  // console.log("chat", chat);
 
   const [visible, setVisible] = useState(false);
 
@@ -35,24 +37,46 @@ const MessagingInterface = () => {
     setMobileView("sidebar");
   };
 
+  console.log("mobileView -", mobileView);
+
   return (
     <CustomContainer>
       <div className="flex min-h-screen bg-white rounded-md font-poppins ">
         {/* Left Sidebar - Inbox */}
-        <div className="">
-          <ChatSidebar />
+        <div
+          className={`hidden ${
+            mobileView === "sidebar" ? "!block" : "!hidden sm:!block"
+          }`}
+        >
+          <ChatSidebar onBack={handleBackToChat} />
         </div>
 
-        {/* Main Chat Area */}
-        <div className="flex-1">
-          <ChatWindow />
-        </div>
+        {receiver?.id ? (
+          <>
+            {/* Main Chat Area */}
+            <div className="flex-1">
+              <ChatWindow onBack={handleBackToSidebar} />
+            </div>
 
-        {/* Right Sidebar - Profile */}
-
-        <div>
-          <RightSidebar />
-        </div>
+            {/* Right Sidebar - Profile responsive view hidden */}
+            <div
+              className={`hidden sm:block ${
+                mobileView === "sidebar" ? "!block" : "!hidden sm:!block"
+              }`}
+            >
+              <ChattingHistorySide />
+            </div>
+          </>
+        ) : (
+          <div className="flex flex-col items-center justify-center flex-1">
+            <h1 className="text-2xl font-bold text-gray-900">
+              No Conversation Selected
+            </h1>
+            <p className="text-gray-600">
+              Please select a conversation to start messaging.
+            </p>
+          </div>
+        )}
       </div>
 
       <RateReviewModal

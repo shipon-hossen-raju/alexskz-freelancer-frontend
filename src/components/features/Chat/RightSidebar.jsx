@@ -7,7 +7,7 @@ import {
 } from "@/redux/api/chatApi";
 import { Image, Modal } from "antd";
 import { Download, Play } from "lucide-react";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import DeliveryItems from "./DeliveryItems";
 
@@ -42,7 +42,7 @@ export default function ChattingHistorySide() {
     window.open(url, "_blank");
   };
 
-  const deliveryData = deliveryRes?.data;
+  const deliveryData = deliveryRes?.data || [];
   const receiverImage = receiver?.profileImage || "";
   const receiverName = `${receiver?.firstName ?? ""} ${
     receiver?.lastName ?? ""
@@ -50,9 +50,17 @@ export default function ChattingHistorySide() {
   const isOnline = receiver?.isOnline;
   const profileId = receiver?.id;
 
+  useEffect(() => {
+    if (deliveryData?.length === 0) {
+      setModalOpen(false);
+    }
+  }, [deliveryData?.length]);
+
   if (roomId) {
     return (
-      <div className="w-80 bg-white border-l border-gray-200 flex flex-col max-h-[88vh] overflow-y-auto no-scrollbar">
+      <div
+        className={` w-80 bg-white border-l border-gray-200 flex flex-col max-h-[88vh] overflow-y-auto no-scrollbar`}
+      >
         <div className="p-6 text-center border-b border-gray-200">
           <img
             src={receiverImage}
@@ -64,7 +72,7 @@ export default function ChattingHistorySide() {
             {isOnline ? "Online" : "Offline"}
           </p>
           <a
-            href={`/profile/${profileId}`}
+            href={`/details/${profileId}`}
             target="_blank"
             className="w-full border border-primary text-primary font-medium py-2 px-3 rounded-lg hover:bg-blue-50"
           >
@@ -190,7 +198,6 @@ export default function ChattingHistorySide() {
 
         {/* Modal for Project Deliveries */}
         <Modal
-          // title="Project Delivery Details"
           open={modalOpen}
           onCancel={() => setModalOpen(false)}
           footer={null}

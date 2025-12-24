@@ -2,13 +2,20 @@
 
 import SkeletonNotificationLoader from "@/components/loader/SkeletonNotificationLoader";
 import NoDataFount from "@/components/notFount/NoDataFount";
-import { useGetNotificationQuery, useGetSingleNotificationMutation, useMarkAsReadMutation } from "@/redux/api/notificationApi";
+import {
+  useGetNotificationQuery,
+  useGetSingleNotificationMutation,
+  useMarkAsReadMutation,
+} from "@/redux/api/notificationApi";
+import { setBookingFromNotification } from "@/redux/slices/bookingSlice";
 import { convertDate, convertTime } from "@/utils/dateConverter";
 import { Pagination } from "antd";
 import { useRouter } from "next/navigation";
 import { useState } from "react";
+import { useDispatch } from "react-redux";
 
 export default function NotificationPage() {
+  const dispatch = useDispatch();
   const [isId, setIsId] = useState();
   const [paginate, setPaginate] = useState({
     current: 1,
@@ -23,10 +30,6 @@ export default function NotificationPage() {
     { name: "limit", value: paginate.pageSize },
   ]);
 
-  // if (isLoading || isMarkLoading) {
-  //   return <SkeletonNotificationLoader />;
-  // }
-  console.log("data?.data ", data);
   const notifications = data?.data?.notifications;
   const meta = data?.data?.meta || {};
 
@@ -40,19 +43,17 @@ export default function NotificationPage() {
   const allNotifications = [...unreadNotifications, ...readNotifications];
 
   // data structure and sorting
-  const dataSource = allNotifications?.map(
-    (recently, index) => ({
-      key: index,
-      serial: Number(index + 1),
-      _id: recently?.id,
-      createdAt: convertTime(recently?.createdAt),
-      createDate: convertDate(recently?.createdAt),
-      type: recently?.type,
-      message_prefix: recently?.title,
-      highlight_text: recently?.body,
-      isRead: recently?.isRead,
-    })
-  );
+  const dataSource = allNotifications?.map((recently, index) => ({
+    key: index,
+    serial: Number(index + 1),
+    _id: recently?.id,
+    createdAt: convertTime(recently?.createdAt),
+    createDate: convertDate(recently?.createdAt),
+    type: recently?.type,
+    message_prefix: recently?.title,
+    highlight_text: recently?.body,
+    isRead: recently?.isRead,
+  }));
 
   // const dateTime = convertTime(booking.dateTime);
   const handleView = async (id) => {
@@ -60,8 +61,11 @@ export default function NotificationPage() {
       setIsId(id);
       const res = await getSingleNotification(id).unwrap();
       const data = res?.data;
+
       if (data?.type === "BOOKING_REQUEST") {
-        navigate("/bookings", { state: data?.details });
+        // navigate.push(`/bookings?bookingId=${data?.id}`);
+        dispatch(setBookingFromNotification(data?.details));
+        navigate.push(`/bookings`);
       }
     }
   };
@@ -79,8 +83,6 @@ export default function NotificationPage() {
   //   return <ServerErrorCard />;
   // }
 
-  console.log("dataSource ", dataSource);
-
   return (
     <div className="flex items-center justify-center min-h-screen bg-gray-50 p-4 ">
       <div className="bg-white rounded-3xl shadow-lg w-full max-w-4xl p-8">
@@ -97,7 +99,7 @@ export default function NotificationPage() {
 
         {/* Notification Items */}
         <div className="max-w-full">
-          {isLoading ? (
+          {isLoading || isMarkLoading ? (
             // If data is still loading, show the skeleton loader
             <>
               <SkeletonNotificationLoader />
@@ -107,7 +109,7 @@ export default function NotificationPage() {
               {/* <div className="space-y-4"> */}
               {dataSource.length > 0 ? (
                 <div>
-                  <div className="space-y-4">
+                  <div className="space-y-4 max-h-[400px] overflow-y-auto">
                     {dataSource?.map((ra) => (
                       <div
                         key={ra?._id}

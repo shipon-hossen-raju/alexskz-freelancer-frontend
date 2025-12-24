@@ -1,3 +1,4 @@
+import NoDataFount from "@/components/notFount/NoDataFount";
 import TealBtn from "@/components/ui/TealBtn";
 import TealOutLineBtn from "@/components/ui/TealOutLineBtn";
 import { useSocket } from "@/hooks/useSocket";
@@ -8,7 +9,11 @@ import { useEffect, useState } from "react";
 import { CiClock2 } from "react-icons/ci";
 import { useSelector } from "react-redux";
 
-export default function BookingList({ rawBookings = [], isLoading = false }) {
+export default function BookingList({
+  rawBookings = [],
+  isLoading = false,
+  isActiveId = "",
+}) {
   const [messageUserId, setMessageUserId] = useState(null);
   const role = useSelector((state) => state.user?.role || null);
   const { socket } = useSocket();
@@ -31,9 +36,7 @@ export default function BookingList({ rawBookings = [], isLoading = false }) {
 
   if (!rawBookings.length) {
     return (
-      <div className="py-10 text-center text-sm text-[#6b7280]">
-        No bookings found
-      </div>
+      <NoDataFount text={isLoading ? "Loading..." : "No Bookings Found!"} />
     );
   }
 
@@ -42,8 +45,6 @@ export default function BookingList({ rawBookings = [], isLoading = false }) {
     const parts = b.dateTime.split(" ");
     const userName = `${b.user?.firstName ?? ""}  ${b.user?.lastName ?? ""}`;
     const userId = isUser ? b?.service?.userId : b.user?.id;
-
-    // console.log("user name b ", b);
 
     return {
       id: b.id,
@@ -69,6 +70,7 @@ export default function BookingList({ rawBookings = [], isLoading = false }) {
               item={b}
               role={role}
               setMessageUserId={setMessageUserId}
+              isActiveId={isActiveId}
             />
           ))}
         </>
@@ -78,8 +80,9 @@ export default function BookingList({ rawBookings = [], isLoading = false }) {
 }
 
 /* -------------------- Booking Item -------------------- */
-function BookingItem({ item, role, setMessageUserId }) {
+function BookingItem({ item, role, setMessageUserId, isActiveId }) {
   const router = useRouter();
+  const isUser = role === "USER";
   const [
     createBookingStatusForProfessional,
     { isLoading: isBookingStatusLoading },
@@ -118,7 +121,6 @@ function BookingItem({ item, role, setMessageUserId }) {
   };
 
   const handleMessage = (item) => {
-    console.log("handleMessage id ", item);
     if (item?.userId) {
       setMessageUserId(item?.userId);
       // router.push(`/inbox/${item?.userId}`);
@@ -126,7 +128,11 @@ function BookingItem({ item, role, setMessageUserId }) {
   };
 
   return (
-    <div className="w-full bg-white rounded-lg shadow-[0_6px_16px_rgba(14,35,37,0.06)] border border-[#e9eef0] p-4 flex items-center gap-6">
+    <div
+      className={`w-full rounded-lg shadow-[0_6px_16px_rgba(14,35,37,0.06)] border border-[#e9eef0] p-4 flex items-center gap-6 ${
+        isActiveId === item.id ? "bg-[#8bcf9a31] animate-pulse" : "bg-white"
+      } `}
+    >
       {/* Image */}
       <div className="w-30 h-20 rounded-md overflow-hidden ">
         <Image
@@ -166,9 +172,9 @@ function BookingItem({ item, role, setMessageUserId }) {
 
         {/* Actions */}
         <div className="flex flex-col items-end gap-3">
-          <StatusPill status={item.status} />
+          <StatusPill status={item.status} isUser={isUser} />
 
-          {role === "USER" &&
+          {isUser &&
             item.status !== "completed" &&
             item.status !== "pending" && (
               <TealBtn
@@ -202,7 +208,7 @@ function BookingItem({ item, role, setMessageUserId }) {
 }
 
 /* -------------------- Status Pill -------------------- */
-function StatusPill({ status }) {
+function StatusPill({ status, isUser }) {
   const base = "text-xs font-medium px-3 py-1 rounded-lg border";
 
   switch (status) {
@@ -236,6 +242,14 @@ function StatusPill({ status }) {
           className={`${base} bg-[#f0fbf6] text-[#0f9d6a] border-[#e6f7ef]`}
         >
           Completed
+        </span>
+      );
+    case "deliver_request":
+      return (
+        <span
+          className={`${base} bg-[#f0fbf6] text-[#0f9d6a] border-[#e6f7ef]`}
+        >
+          {isUser ? "Delivered" : "Deliver Request"}
         </span>
       );
     default:

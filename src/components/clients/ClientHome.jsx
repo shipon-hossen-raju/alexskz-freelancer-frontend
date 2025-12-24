@@ -1,15 +1,15 @@
-import icon1 from "@/assets/icons/icon1.svg";
-import icon2 from "@/assets/icons/icon2.svg";
-import icon3 from "@/assets/icons/icon3.svg";
-import icon4 from "@/assets/icons/icon4.svg";
+// import icon1 from "@/assets/icons/icon1.svg";
+// import icon2 from "@/assets/icons/icon2.svg";
+// import icon3 from "@/assets/icons/icon3.svg";
+// import icon4 from "@/assets/icons/icon4.svg";
 import { useGetClientHomeQuery } from "@/redux/api/profileApi";
+import { Calendar, MessageCircle, Star } from "lucide-react";
 import { motion } from "motion/react";
+import { IoIosBriefcase } from "react-icons/io";
 import HomeBooking from "../HomeBooking";
 import WhiteBoxCard from "../shared/WhiteBoxCard";
 import CustomSearch from "../ui/CustomSearch";
 import Paragraph from "../ui/Paragraph";
-import { Bug, Calendar, MessageCircle, Star } from "lucide-react";
-import { IoIosBriefcase } from "react-icons/io";
 
 export default function ClientHome() {
   const {
@@ -100,12 +100,15 @@ export default function ClientHome() {
 
 //  loading skeleton
 const BoxCardLoading = () => {
-    // 4x
-    const skeletons = Array.from({ length: 4 }, (_, index) => index);
+  // 4x
+  const skeletons = Array.from({ length: 4 }, (_, index) => index);
   return (
     <>
       {skeletons.map((index) => (
-        <motion.div key={index} className="bg-white rounded-[10px] p-6 font-open-sans border border-black/10 animate-pulse">
+        <motion.div
+          key={index}
+          className="bg-white rounded-[10px] p-6 font-open-sans border border-black/10 animate-pulse"
+        >
           <motion.div
             whileHover={{ y: 6, scale: 1.03 }}
             transition={{ ease: [0.22, 1, 0.36, 1], duration: 0.9 }}

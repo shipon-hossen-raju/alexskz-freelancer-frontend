@@ -3,24 +3,35 @@
 :root {
   --background: #f9fafb;
   --foreground: #333333;
-  --primary: #144A6C;
+  --primary: #144a6c;
 }
 
 @theme inline {
   --color-background: var(--background);
   --color-foreground: var(--foreground);
   --font-great-vibes: var(--font-great-vibes-src);
-  --font-cabin:       var(--font-cabin-src);
-  --font-adamina:     var(--font-adamina-src);
-  --font-open-sans:   var(--font-open-sans-src);
-  --font-inter:       var(--font-inter-src);
+  --font-cabin: var(--font-cabin-src);
+  --font-adamina: var(--font-adamina-src);
+  --font-open-sans: var(--font-open-sans-src);
+  --font-inter: var(--font-inter-src);
 
-  --font-nunito:      var(--font-nunito-src);
-  --font-poppins:     var(--font-poppins-src);
-  --font-noto-serif:  var(--font-noto-serif-src);
- 
+  --font-nunito: var(--font-nunito-src);
+  --font-poppins: var(--font-poppins-src);
+  --font-noto-serif: var(--font-noto-serif-src);
 }
 
+* {
+  box-sizing: border-box;
+}
 
-* { box-sizing: border-box; }
-
+/* Hide scrollbar */
+/* Chrome, Safari and Opera */
+.no-scrollbar::-webkit-scrollbar {
+  display: none;
+}
+/* IE and Edge */
+.no-scrollbar {
+  -ms-overflow-style: none;
+  /* Firefox */
+  scrollbar-width: none;
+}

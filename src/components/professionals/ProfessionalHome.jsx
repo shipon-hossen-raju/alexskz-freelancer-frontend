@@ -1,12 +1,15 @@
 "use client";
-import icon2 from "@/assets/icons/icon2.svg";
-import icon3 from "@/assets/icons/icon3.svg";
-import icon4 from "@/assets/icons/icon4.svg";
-import icon5 from "@/assets/icons/Profile2.svg";
+// import icon2 from "@/assets/icons/icon2.svg";
+// import icon3 from "@/assets/icons/icon3.svg";
+// import icon4 from "@/assets/icons/icon4.svg";
+// import icon5 from "@/assets/icons/Profile2.svg";
 import { useGetMyProjectsQuery } from "@/redux/api/portfolioApi";
 import { useGetFreelancerHomeQuery } from "@/redux/api/profileApi";
+import { MessageCircle, Star } from "lucide-react";
 import Link from "node_modules/next/link";
 import { useState } from "react";
+import { CgUserList } from "react-icons/cg";
+import { IoIosBriefcase } from "react-icons/io";
 import { useSelector } from "react-redux";
 import HomeBooking from "../HomeBooking";
 import AddEditProjectModal from "../modals/AddEditProjectModal";
@@ -45,35 +48,35 @@ export default function ProfessionalHome() {
   const items = [
     {
       id: 1,
-      icon: icon2,
+      icon: <MessageCircle color="#8BCF9A" />,
       title: "Messages",
       count: home?.unReadMessageCount || 0,
       status: "unread",
     },
     {
       id: 2,
-      icon: icon4,
+      icon: <IoIosBriefcase color="#8BCF9A" />,
       title: "Pending Request",
-      count: home?.bookingRequestPending || 0,
+      count: home?.bookingRequestPending || 0,  
       status: "waiting",
     },
     {
       id: 3,
-      icon: icon4,
+      icon: <IoIosBriefcase color="#8BCF9A" />,
       title: "Active Bookings",
       count: home?.activeBookings || 0,
       status: "Ongoing ",
     },
     {
       id: 4,
-      icon: icon3,
+      icon: <Star color="#8BCF9A" />,
       title: "Client Ratings",
       count: home?.ratingAvg || 0,
       status: "Average Rating",
     },
     {
       id: 5,
-      icon: icon5,
+      icon: <CgUserList color="#8BCF9A" />,
       title: "Profile View",
       count: home?.profileVisitorCount || 0,
       status: "This Month",
@@ -96,7 +99,6 @@ export default function ProfessionalHome() {
         <div
           className="flex w-full items-center gap-4 rounded-2xl p-6 shadow-sm border border-transparent"
           style={{
-            // base pale blue-gray background with two soft green radial highlights (left small, right large)
             backgroundColor: "#EAF3F6",
             backgroundImage: `radial-gradient(circle at 6% 50%, rgba(139,207,154,0.08) 0%, rgba(139,207,154,0.02) 25%, transparent 40%),
                                   radial-gradient(circle at 85% 55%, rgba(139,207,154,0.18) 0%, rgba(139,207,154,0.08) 20%, rgba(139,207,154,0.02) 45%, transparent 65%)`,

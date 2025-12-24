@@ -5,7 +5,7 @@ import { Search } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 
-export default function ChatSidebar() {
+export default function ChatSidebar({ onBack }) {
   const { socket, connected, authenticate } = useSocket();
   const [users, setUsers] = useState([]);
   const [loading, setLoading] = useState(true);
@@ -27,7 +27,10 @@ export default function ChatSidebar() {
       setSelectedUserId(userRoomId);
       const findUser = users.find((u) => u.roomId === userRoomId);
       console.log("useEffect findUser 29 ", findUser);
-      if (findUser) setSelectedUser(findUser);
+      if (findUser) {
+        setSelectedUser(findUser);
+        onBack();
+      }
     }
   }, [userRoomId]);
 
@@ -167,6 +170,7 @@ export default function ChatSidebar() {
     const id = selectedUser?.user?.id;
     setSelectedUserId(id);
     setSelectedUser(selectedUser);
+    onBack();
   };
 
   const roomId = selectedUser?.roomId;

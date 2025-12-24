@@ -8,6 +8,7 @@ export default function DeliveryItems({ deliveryData }) {
   const role = useSelector((state) => state.user?.role || null);
   const isUser = role === "USER";
 
+  console.log("isUser ", isUser);
   console.log("deliveryData 9 ", deliveryData);
 
   const desStructure =
@@ -15,7 +16,7 @@ export default function DeliveryItems({ deliveryData }) {
       deliveryData?.map((booking) => {
         const fullName = isUser
           ? `${booking?.service?.title ?? ""}`
-          : `${booking?.user?.fullName ?? ""}`;
+          : `${booking?.user?.firstName ?? ""} ${booking?.user?.lastName ?? ""}`;
         const profileImage = isUser
           ? booking?.service?.thumbnail
           : booking?.user?.profileImage;
@@ -27,7 +28,7 @@ export default function DeliveryItems({ deliveryData }) {
           dateTime: convertTime(booking?.dateTime),
           category: isUser
             ? booking?.service?.category?.title
-            : booking?.category?.title,
+            : booking?.user?.category?.title,
           profileImage: profileImage,
           bookingStatus: booking?.status,
         };
@@ -40,7 +41,7 @@ export default function DeliveryItems({ deliveryData }) {
         {isUser ? "Project Received" : "Projects Deliveries"}
       </h3>
 
-      <div className="space-y-4">
+      <div className="space-y-4 max-h-[500px] overflow-y-scroll no-scrollbar border border-black/10 rounded-2xl p-4">
         {desStructure.map((booking) => (
           <Item key={booking.id} booking={booking} isUser={isUser} />
         ))}
@@ -60,7 +61,7 @@ function Item({ booking, isUser }) {
   const bookingStatus = booking?.status;
   // const isLoading = false;
 
-  console.log("booking 61 ", booking);
+  // console.log("booking 61 ", booking);
 
   const handleDeliverProject = async ({ bookingId }) => {
     if (!bookingId) return;
@@ -69,7 +70,9 @@ function Item({ booking, isUser }) {
     await deliverProject({ bookingId });
   };
   return (
-    <div className={`shadow p-2.5 rounded-[10px] flex flex-col`}>
+    <div
+      className={`shadow-md border border-[#144a6c1a] p-2.5 rounded-[10px] flex flex-col`}
+    >
       {/* Left Section - Profile and Details */}
       <div className="flex items-center gap-6">
         {/* Profile Image */}

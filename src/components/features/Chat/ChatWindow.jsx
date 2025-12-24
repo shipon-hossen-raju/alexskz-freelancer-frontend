@@ -1,16 +1,15 @@
 "use client";
 import { ZoomTitleInputModal } from "@/components/modals/ZoomTitleInputModal";
 import { useSocket } from "@/hooks/useSocket";
-import { Drawer } from "antd";
+import { Drawer, Image } from "antd";
 import { format } from "date-fns";
 import { ChevronLeft, Video } from "lucide-react";
-import Image from "node_modules/next/image";
 import { useEffect, useRef, useState } from "react";
 import { useSelector } from "react-redux";
 import MessageInput from "./MessageInput";
-import RightSidebar from "./RightSidebar";
+import ChattingHistorySide from "./RightSidebar";
 
-export default function ChatWindow({ onBack = () => {} }) {
+export default function ChatWindow({ onBack }) {
   const { socket, authenticate } = useSocket();
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
   const [messages, setMessages] = useState([]); // ascending oldest -> newest
@@ -19,7 +18,7 @@ export default function ChatWindow({ onBack = () => {} }) {
   const [open, setOpen] = useState(false);
   const messagesRef = useRef(null);
   const pageRef = useRef(1);
-  const limit = 500 ;
+  const limit = 500;
   const userProfile = useSelector((state) => state.user?.user || null);
 
   // Redux: selected conversation
@@ -150,44 +149,46 @@ export default function ChatWindow({ onBack = () => {} }) {
       {/* Header */}
       <div className="border-b border-gray-200 px-6 py-4 flex items-center justify-between">
         <div className="flex items-center flex-1">
-          <button
-            className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
-            onClick={onBack}
-          >
-            <ChevronLeft className="w-6 h-6 text-gray-600" />
-          </button>
-
           {receiver && (
-            <div
-              className="flex items-center gap-3 cursor-pointer"
-              onClick={showDrawer}
-            >
-              {receiver?.profileImage ? (
-                <img
-                  src={receiver.profileImage}
-                  alt={receiver.firstName}
-                  className="w-12 h-12 rounded-full"
-                />
-              ) : (
-                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-xl font-semibold">
-                    {receiver?.firstName?.[0]}
-                  </span>
-                </div>
-              )}
+            <>
+              <button
+                className="lg:hidden p-2 hover:bg-gray-100 rounded-lg"
+                onClick={() => onBack()}
+              >
+                <ChevronLeft className="w-6 h-6 text-gray-600" />
+              </button>
 
-              <div>
-                <div className="flex gap-1">
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    {receiver?.firstName ?? ""}
-                  </h2>
-                  <h2 className="text-lg font-semibold text-gray-900">
-                    {receiver?.lastName ?? ""}
-                  </h2>
+              <div
+                className="flex items-center gap-3 cursor-pointer"
+                onClick={showDrawer}
+              >
+                {receiver?.profileImage ? (
+                  <img
+                    src={receiver.profileImage}
+                    alt={receiver.firstName}
+                    className="w-12 h-12 rounded-full"
+                  />
+                ) : (
+                  <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
+                    <span className="text-xl font-semibold">
+                      {receiver?.firstName?.[0]}
+                    </span>
+                  </div>
+                )}
+
+                <div>
+                  <div className="flex gap-1">
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      {receiver?.firstName ?? ""}
+                    </h2>
+                    <h2 className="text-lg font-semibold text-gray-900">
+                      {receiver?.lastName ?? ""}
+                    </h2>
+                  </div>
+                  {/* <p className="text-sm text-gray-500">Online</p> */}
                 </div>
-                {/* <p className="text-sm text-gray-500">Online</p> */}
               </div>
-            </div>
+            </>
           )}
         </div>
 
@@ -222,12 +223,12 @@ export default function ChatWindow({ onBack = () => {} }) {
       {/* drawer */}
       <div>
         <Drawer
-          title="Settings"
+          // title="Settings"
           closable={{ "aria-label": "Close Button" }}
           onClose={onClose}
           open={open}
         >
-          <RightSidebar receiver={receiver} />
+          <ChattingHistorySide receiver={receiver} />
         </Drawer>
       </div>
 
@@ -260,11 +261,6 @@ function Messages({
       ref={messagesRef}
       className="flex-1 overflow-auto px-4 py-6 space-y-4 bg-white"
     >
-      {loading && (
-        <div className="text-sm text-gray-500 px-2 text-center">
-          Select an user to start chatting
-        </div>
-      )}
       {error && <div className="text-sm text-red-500 px-2">{error}</div>}
 
       {!loading && !error && messages.length === 0 && (
@@ -329,7 +325,7 @@ function Messages({
                 {meeting && (
                   <div>
                     {/* meeting card */}
-                    <div className="flex flex-col md:flex-row items-center gap-4 border border-gray-200 rounded-xl p-4 max-w-full md:max-w-md shadow-sm">
+                    <div className="flex flex-col xl:flex-row items-center gap-4 border border-gray-200 rounded-xl p-4 w-max max-w-full xl:max-w-xl shadow-sm">
                       <div className="bg-blue-500 rounded-lg p-3">
                         <Video className="w-6 h-6 text-white" />
                       </div>
