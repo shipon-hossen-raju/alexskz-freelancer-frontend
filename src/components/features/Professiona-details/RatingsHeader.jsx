@@ -22,7 +22,7 @@ function RatingsHeader({ total = 0, rating = 0, defaultSortKey = 'recent', onSor
   };
 
   return (
-    <section className="w-full ">
+    <section className="w-full">
       <div className="py-4">
         {/* Title */}
         <SubHeadingBlack text="Ratings & Review" />
@@ -43,21 +43,21 @@ function RatingsHeader({ total = 0, rating = 0, defaultSortKey = 'recent', onSor
 
           {/* Right: dropdown */}
           {
-            total > 0 && (
-              <Dropdown
-                trigger={['click']}
-                menu={{ items, onClick: handleMenuClick }}
-                placement="bottomRight"
-              >
-                <button
-                  className="cursor-pointer inline-flex items-center gap-2 font-medium text-gray-800 hover:text-gray-900"
-                  aria-label="Sort reviews"
-                >
-                  {selectedLabel}
-                  <DownOutlined className="text-xs font-medium" />
-                </button>
-              </Dropdown>
-            )
+            // total > 0 && (
+            //   <Dropdown
+            //     trigger={['click']}
+            //     menu={{ items, onClick: handleMenuClick }}
+            //     placement="bottomRight"
+            //   >
+            //     <button
+            //       className="cursor-pointer inline-flex items-center gap-2 font-medium text-gray-800 hover:text-gray-900"
+            //       aria-label="Sort reviews"
+            //     >
+            //       {selectedLabel}
+            //       <DownOutlined className="text-xs font-medium" />
+            //     </button>
+            //   </Dropdown>
+            // )
           }
         </div>
 

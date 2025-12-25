@@ -1,9 +1,9 @@
 // components/sections/FreelancerCarousel.jsx
-'use client';
+"use client";
 
-import { useEffect, useRef, useState } from 'react';
-import { IoIosArrowBack, IoIosArrowForward } from 'react-icons/io';
-import FreelancerCard from '@/components/Home/FreelancerCard';
+import FreelancerCard from "@/components/Home/FreelancerCard";
+import { useEffect, useRef, useState } from "react";
+import { IoIosArrowBack, IoIosArrowForward } from "react-icons/io";
 
 export default function CustomCarousel({ items = [] }) {
   const [currentIndex, setCurrentIndex] = useState(0);
@@ -12,13 +12,15 @@ export default function CustomCarousel({ items = [] }) {
   const containerRef = useRef(null);
 
   const getGapSize = () => {
-    if (typeof window === 'undefined') return 24; // SSR default
-    return window.innerWidth < 768 ? 12 : 24;     // md breakpoint
+    if (typeof window === "undefined") return 24;
+    return window.innerWidth < 768 ? 12 : 24;
   };
 
   const slideWidth =
     containerWidth && itemsPerView
-      ? Math.floor((containerWidth - getGapSize() * (itemsPerView - 1)) / itemsPerView)
+      ? Math.floor(
+          (containerWidth - getGapSize() * (itemsPerView - 1)) / itemsPerView
+        )
       : 0;
 
   const maxIndex = Math.max(0, items.length - itemsPerView);
@@ -26,15 +28,16 @@ export default function CustomCarousel({ items = [] }) {
   // set itemsPerView + measure container
   useEffect(() => {
     function update() {
-      if (typeof window === 'undefined') return;
+      if (typeof window === "undefined") return;
       const w = window.innerWidth;
       const per = w < 768 ? 1 : w < 1024 ? 2 : 4; // sm=1, md=2, lg=4
       setItemsPerView(per);
-      if (containerRef.current) setContainerWidth(containerRef.current.clientWidth);
+      if (containerRef.current)
+        setContainerWidth(containerRef.current.clientWidth);
     }
     update();
-    window.addEventListener('resize', update);
-    return () => window.removeEventListener('resize', update);
+    window.addEventListener("resize", update);
+    return () => window.removeEventListener("resize", update);
   }, []);
 
   // clamp index when layout changes
@@ -47,7 +50,8 @@ export default function CustomCarousel({ items = [] }) {
   useEffect(() => {
     if (!containerRef.current) return;
     const ro = new ResizeObserver(() => {
-      if (containerRef.current) setContainerWidth(containerRef.current.clientWidth);
+      if (containerRef.current)
+        setContainerWidth(containerRef.current.clientWidth);
     });
     ro.observe(containerRef.current);
     return () => ro.disconnect();
@@ -59,8 +63,8 @@ export default function CustomCarousel({ items = [] }) {
 
   // keyboard
   const handleKeyDown = (e) => {
-    if (e.key === 'ArrowLeft') handlePrevious();
-    if (e.key === 'ArrowRight') handleNext();
+    if (e.key === "ArrowLeft") handlePrevious();
+    if (e.key === "ArrowRight") handleNext();
   };
 
   // touch/swipe
@@ -102,7 +106,11 @@ export default function CustomCarousel({ items = [] }) {
             disabled={currentIndex === 0}
             aria-label="Previous"
             className={`h-10 w-10 bg-white flex items-center justify-center rounded-full transition-colors focus:outline-none  shadow
-              ${currentIndex === 0 ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-200 cursor-pointer'}`}
+              ${
+                currentIndex === 0
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-200 cursor-pointer"
+              }`}
           >
             <IoIosArrowBack className="text-[#020202] text-xl" />
           </button>
@@ -111,7 +119,11 @@ export default function CustomCarousel({ items = [] }) {
             disabled={currentIndex >= maxIndex}
             aria-label="Next"
             className={`h-10 w-10 bg-white flex items-center justify-center rounded-full transition-colors focus:outline-none  shadow
-              ${currentIndex >= maxIndex ? 'opacity-50 cursor-not-allowed' : 'hover:bg-gray-200 cursor-pointer'}`}
+              ${
+                currentIndex >= maxIndex
+                  ? "opacity-50 cursor-not-allowed"
+                  : "hover:bg-gray-200 cursor-pointer"
+              }`}
           >
             <IoIosArrowForward className="text-[#020202] text-xl" />
           </button>
@@ -156,7 +168,9 @@ export default function CustomCarousel({ items = [] }) {
               onClick={() => setCurrentIndex(i)}
               aria-label={`Go to slide ${i + 1}`}
               className={`w-2 h-2 rounded-full transition-all duration-200 ${
-                currentIndex === i ? 'bg-gray-800 w-6' : 'bg-gray-300 hover:bg-gray-400'
+                currentIndex === i
+                  ? "bg-gray-800 w-6"
+                  : "bg-gray-300 hover:bg-gray-400"
               }`}
             />
           ))}
