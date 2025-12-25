@@ -11,13 +11,8 @@ import { useSelector } from "react-redux";
 const MessagingInterface = () => {
   const user = useSelector((state) => state.user.user ?? null);
   const receiver = useSelector((state) => state.chat.receiver ?? null);
-
-  // console.log("chat", chat);
-
-  const [visible, setVisible] = useState(false);
-
   const [mobileView, setMobileView] = useState("sidebar");
-
+  const [visible, setVisible] = useState(false);
   const openModal = () => setVisible(true);
   const closeModal = () => setVisible(false);
 
@@ -27,10 +22,6 @@ const MessagingInterface = () => {
 
   const handleAvatarClick = () => {
     setMobileView("profile");
-  };
-
-  const handleBackToChat = () => {
-    setMobileView("chat");
   };
 
   const handleBackToSidebar = () => {
@@ -48,7 +39,7 @@ const MessagingInterface = () => {
             mobileView === "sidebar" ? "!block" : "!hidden sm:!block"
           }`}
         >
-          <ChatSidebar onBack={handleBackToChat} />
+          <ChatSidebar onBack={handleConversationClick} />
         </div>
 
         {receiver?.id ? (
@@ -79,11 +70,7 @@ const MessagingInterface = () => {
         )}
       </div>
 
-      <RateReviewModal
-        visible={visible}
-        onCancel={closeModal}
-        // onSubmit={handleSubmit}
-      />
+      <RateReviewModal />
     </CustomContainer>
   );
 };

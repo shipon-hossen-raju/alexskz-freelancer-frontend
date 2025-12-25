@@ -5,6 +5,10 @@ const initialState = {
   serviceId: null,
   availabilityTimeId: null,
   bookingFromNotification: null,
+  reviewBookingData: {
+    model: false,
+    bookingId: null
+  },
 };
 
 export const bookingSlice = createSlice({
@@ -29,6 +33,9 @@ export const bookingSlice = createSlice({
     setBookingFromNotification: (state, action) => {
       state.bookingFromNotification = action.payload;
     },
+    setReviewBookingData: (state, action) => {
+      state.reviewBookingData = action.payload;
+    },
   },
 });
 
@@ -38,5 +45,6 @@ export const {
   clearServiceIdForBooking,
   clearAvailabilityTimeIdForBooking,
   setBookingFromNotification,
+  setReviewBookingData
 } = bookingSlice.actions;
 export default bookingSlice.reducer;

@@ -1,7 +1,9 @@
 "use client";
 import { TagTypes } from "@/constants/constants.js";
 import paramsGenerate from "@/utils/paramsGenerate.js";
+import toast from "react-hot-toast";
 import { baseApi } from "../api/baseApi.js";
+import { setReviewBookingData } from "../slices/bookingSlice.js";
 
 const bookingApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -63,16 +65,35 @@ const bookingApi = baseApi.injectEndpoints({
       async onQueryStarted(_arg, { queryFulfilled }) {
         try {
           await queryFulfilled;
-          SuccessToast("Deliver project is successfully");
+          toast.success("Project Delivered Successfully!");
         } catch (err) {
           const status = err?.error?.status;
           const message = err?.error?.data?.message || "Something Went Wrong";
 
           if (status === 500) {
-            ErrorToast("Something Went Wrong");
+            toast.error("Something Went Wrong");
           } else {
-            ErrorToast(message);
+            toast.error(message);
           }
+        }
+      },
+    }),
+    createReview: builder.mutation({
+      query: (data) => ({
+        url: "booking/service-review",
+        method: "POST",
+        body: data,
+      }),
+      async onQueryStarted(_arg, { queryFulfilled, dispatch }) {
+        try {
+          await queryFulfilled;
+          console.log("Dispatching setReviewBookingData...");
+          dispatch(setReviewBookingData({ model: false, bookingId: null }));
+          toast.success("Thank you for your feedback!");
+        } catch (err) {
+          const status = err?.error?.status;
+          const message = err?.error?.data?.message || "Something Went Wrong";
+          toast.error(message);
         }
       },
     }),
@@ -86,4 +107,5 @@ export const {
   useCreateBookingStatusForProfessionalMutation,
   useGetDeliveryProjectQuery,
   useDeliverProjectMutation,
+  useCreateReviewMutation,
 } = bookingApi;

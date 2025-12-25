@@ -1,22 +1,23 @@
+import RateReviewModal from "@/components/modals/RateReviewModal";
 import TealBtn from "@/components/ui/TealBtn";
 import { useDeliverProjectMutation } from "@/redux/api/bookingApi";
+import { setReviewBookingData } from "@/redux/slices/bookingSlice";
 import { convertDate, convertTime } from "@/utils/dateConverter";
 import { useState } from "react";
-import { useSelector } from "react-redux";
+import { useDispatch, useSelector } from "react-redux";
 
-export default function DeliveryItems({ deliveryData }) {
+export default function DeliveryItems({ deliveryData, onCancel }) {
   const role = useSelector((state) => state.user?.role || null);
   const isUser = role === "USER";
-
-  console.log("isUser ", isUser);
-  console.log("deliveryData 9 ", deliveryData);
 
   const desStructure =
     (deliveryData?.length &&
       deliveryData?.map((booking) => {
         const fullName = isUser
           ? `${booking?.service?.title ?? ""}`
-          : `${booking?.user?.firstName ?? ""} ${booking?.user?.lastName ?? ""}`;
+          : `${booking?.user?.firstName ?? ""} ${
+              booking?.user?.lastName ?? ""
+            }`;
         const profileImage = isUser
           ? booking?.service?.thumbnail
           : booking?.user?.profileImage;
@@ -43,14 +44,26 @@ export default function DeliveryItems({ deliveryData }) {
 
       <div className="space-y-4 max-h-[500px] overflow-y-scroll no-scrollbar border border-black/10 rounded-2xl p-4">
         {desStructure.map((booking) => (
-          <Item key={booking.id} booking={booking} isUser={isUser} />
+          <Item
+            key={booking.id}
+            booking={booking}
+            isUser={isUser}
+            onCancel={onCancel}
+          />
         ))}
       </div>
     </div>
   );
 }
 
-function Item({ booking, isUser }) {
+function Item({ booking, isUser, onCancel }) {
+  const reviewBookingData = useSelector(
+    (state) => state?.booking?.reviewBookingData || null
+  );
+  const dispatch = useDispatch();
+  // const [visible, setVisible] = useState(false);
+  // const openModal = () => setVisible(true);
+  // const closeModal = () => setVisible(false);
   const [deliverProject, { isLoading }] = useDeliverProjectMutation();
   const [selectedId, setSelectedId] = useState("");
   const fullName = booking?.fullName;
@@ -59,82 +72,97 @@ function Item({ booking, isUser }) {
   const category = booking?.category;
   const profileImage = booking?.profileImage;
   const bookingStatus = booking?.status;
-  // const isLoading = false;
 
-  // console.log("booking 61 ", booking);
+  console.log("reviewBookingData 67 ", reviewBookingData);
 
   const handleDeliverProject = async ({ bookingId }) => {
     if (!bookingId) return;
     setSelectedId(bookingId);
     console.log("delivering project", bookingId);
     await deliverProject({ bookingId });
+
+    isUser &&
+      dispatch(
+        setReviewBookingData({
+          model: true,
+          bookingId,
+        })
+      );
   };
   return (
-    <div
-      className={`shadow-md border border-[#144a6c1a] p-2.5 rounded-[10px] flex flex-col`}
-    >
-      {/* Left Section - Profile and Details */}
-      <div className="flex items-center gap-6">
-        {/* Profile Image */}
-        <img
-          src={profileImage}
-          alt={fullName}
-          className="w-32 h-32 rounded-lg object-cover"
-        />
+    <>
+      <div
+        className={`shadow-md border border-[#144a6c1a] p-2.5 rounded-[10px] flex flex-col`}
+      >
+        {/* Left Section - Profile and Details */}
+        <div className="flex items-center gap-6">
+          {/* Profile Image */}
+          <img
+            src={profileImage}
+            alt={fullName}
+            className="w-32 h-32 rounded-lg object-cover"
+          />
 
-        {/* Details */}
-        <div className="space-y-3">
-          <h2 className="text-xl font-semibold text-gray-900">{fullName}</h2>
+          {/* Details */}
+          <div className="space-y-3">
+            <h2 className="text-xl font-semibold text-gray-900">{fullName}</h2>
 
-          <div className="flex items-center gap-6">
-            <div className="flex items-center gap-2 text-gray-500">
-              {/* {icons.calendar} */}
-              <span className="text-base">{date}</span>
+            <div className="flex items-center gap-6">
+              <div className="flex items-center gap-2 text-gray-500">
+                {/* {icons.calendar} */}
+                <span className="text-base">{date}</span>
+              </div>
             </div>
+
+            <p className="text-base text-gray-700">{category}</p>
+          </div>
+        </div>
+
+        {/* Right Section - Status and Button */}
+        <div className="flex items-center justify-end gap-4 ">
+          <div className="flex items-center gap-2 text-gray-500">
+            {/* {icons.clock} */}
+            <span className="text-base">{dateTime}</span>
           </div>
 
-          <p className="text-base text-gray-700">{category}</p>
+          <span
+            className={`px-4 py-1 text-sm font-medium rounded ${
+              bookingStatus === "PENDING"
+                ? "text-[#FFBA51] bg-[#FFCA7C26]"
+                : bookingStatus === "COMPLETED"
+                ? "text-[#00B74A] bg-[#00B74A33]"
+                : bookingStatus === "CANCELED"
+                ? "text-[#FF0000] bg-[#FF000033]"
+                : bookingStatus === "CONFIRMED"
+                ? "text-[#0690E7] bg-[#0690E733]"
+                : ""
+            }`}
+          >
+            {bookingStatus}
+          </span>
+
+          <div className="flex items-center justify-center gap-6">
+            <TealBtn
+              btnType="solid"
+              onClick={() =>
+                handleDeliverProject({
+                  bookingId: booking.id,
+                })
+              }
+              isLoading={selectedId === booking.id && isLoading}
+              className="!max-w-32"
+              text={isUser ? "Accept" : "Deliver"}
+              TealBtn
+            />
+          </div>
         </div>
       </div>
 
-      {/* Right Section - Status and Button */}
-      <div className="flex items-center justify-end gap-4 ">
-        <div className="flex items-center gap-2 text-gray-500">
-          {/* {icons.clock} */}
-          <span className="text-base">{dateTime}</span>
-        </div>
-
-        <span
-          className={`px-4 py-1 text-sm font-medium rounded ${
-            bookingStatus === "PENDING"
-              ? "text-[#FFBA51] bg-[#FFCA7C26]"
-              : bookingStatus === "COMPLETED"
-              ? "text-[#00B74A] bg-[#00B74A33]"
-              : bookingStatus === "CANCELED"
-              ? "text-[#FF0000] bg-[#FF000033]"
-              : bookingStatus === "CONFIRMED"
-              ? "text-[#0690E7] bg-[#0690E733]"
-              : ""
-          }`}
-        >
-          {bookingStatus}
-        </span>
-
-        <div className="flex items-center justify-center gap-6">
-          <TealBtn
-            btnType="solid"
-            onClick={() =>
-              handleDeliverProject({
-                bookingId: booking.id,
-              })
-            }
-            isLoading={selectedId === booking.id && isLoading}
-            className="!max-w-32"
-            text={isUser ? "Accept" : "Deliver"}
-            TealBtn
-          />
-        </div>
-      </div>
-    </div>
+      <RateReviewModal
+      // visible={visible}
+      // onCancel={closeModal}
+      // bookingId={selectedId}
+      />
+    </>
   );
 }

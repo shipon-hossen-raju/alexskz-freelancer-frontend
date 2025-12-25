@@ -62,10 +62,17 @@ export default function NotificationPage() {
       const res = await getSingleNotification(id).unwrap();
       const data = res?.data;
 
-      if (data?.type === "BOOKING_REQUEST") {
+      if (
+        data?.type === "BOOKING_REQUEST" ||
+        data?.type === "BOOKING_DELIVER" ||
+        data?.type === "BOOKING_ACCEPT"
+      ) {
+        console.log("data?.details ", data?.details);
         // navigate.push(`/bookings?bookingId=${data?.id}`);
-        dispatch(setBookingFromNotification(data?.details));
-        navigate.push(`/bookings`);
+        if (data?.details) {
+          dispatch(setBookingFromNotification(data?.details));
+          navigate.push(`/bookings`);
+        }
       }
     }
   };

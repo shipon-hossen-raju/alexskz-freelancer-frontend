@@ -50,11 +50,11 @@ export default function ChattingHistorySide() {
   const isOnline = receiver?.isOnline;
   const profileId = receiver?.id;
 
-  useEffect(() => {
-    if (deliveryData?.length === 0) {
-      setModalOpen(false);
-    }
-  }, [deliveryData?.length]);
+  // useEffect(() => {
+  //   if (deliveryData?.length === 0) {
+  //     setModalOpen(false);
+  //   }
+  // }, [deliveryData?.length]);
 
   if (roomId) {
     return (
@@ -203,7 +203,10 @@ export default function ChattingHistorySide() {
           footer={null}
           width={600}
         >
-          <DeliveryItems deliveryData={deliveryData} />
+          <DeliveryItems
+            deliveryData={deliveryData}
+            onCancel={() => setModalOpen(false)}
+          />
         </Modal>
       </div>
     );

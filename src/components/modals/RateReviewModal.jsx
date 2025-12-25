@@ -1,8 +1,11 @@
-import React, { useState } from "react";
-import { Modal, Form, Input, Button, Rate, Row, Col } from "antd";
-import '@/styles/Auth.css'
-import TealOutLineBtn from "../ui/TealOutLineBtn";
+import { useCreateReviewMutation } from "@/redux/api/bookingApi";
+import "@/styles/Auth.css";
+import { Col, Form, Input, Modal, Rate, Row } from "antd";
+import React from "react";
+import { useDispatch, useSelector } from "react-redux";
 import TealBtn from "../ui/TealBtn";
+import TealOutLineBtn from "../ui/TealOutLineBtn";
+import { setReviewBookingData } from "@/redux/slices/bookingSlice";
 
 const { TextArea } = Input;
 
@@ -16,38 +19,31 @@ const improveOptions = [
   "communication gaps",
   "insufficient expertise",
   "the meeting was too short",
-  "he deliverable didn't convince me",
+  "the deliverable didn't convince me",
 ];
 
-export default function RateReviewModal({ visible, onCancel, onSubmit }) {
+// export default function RateReviewModal({ visible, onCancel, bookingId }) {
+export default function RateReviewModal() {
+  const reviewBookingData = useSelector(
+    (state) => state?.booking?.reviewBookingData || null
+  );
+  const dispatch = useDispatch();
+  const [createReview, { isLoading }] = useCreateReviewMutation();
   const [form] = Form.useForm();
+  const [whatLiked, setWhatLiked] = React.useState("");
+  const [whatImprove, setWhatImprove] = React.useState("");
+  const visible = reviewBookingData?.model;
+  const bookingId = reviewBookingData?.bookingId;
 
-  // selected chips
-  const [liked, setLiked] = useState([]);
-  const [improve, setImprove] = useState([]);
-
-  const toggleArrayValue = (arr, setArr, value) => {
-    if (arr.includes(value)) setArr(arr.filter((v) => v !== value));
-    else setArr([...arr, value]);
+  const onCancel = () => {
+    dispatch(setReviewBookingData({ model: false, bookingId: null }));
   };
 
-  const handleOk = async () => {
-    try {
-      const values = await form.validateFields();
-      const payload = {
-        ...values,
-        liked,
-        improve,
-      };
-      onSubmit?.(payload);
-      form.resetFields();
-      setLiked([]);
-      setImprove([]);
-    } catch (err) {
-      // validation failed — do nothing (antd will show errors)
-    }
-  };
-
+  console.log("reviewBookingData 34 ", reviewBookingData);
+  // {
+  //     "model": true,
+  //     "bookingId": "6936a4f6e67e1182d8e1856f"
+  // }
   // Small helper to render chip-like buttons
   const Chip = ({ children, selected, onClick }) => (
     <button
@@ -58,6 +54,29 @@ export default function RateReviewModal({ visible, onCancel, onSubmit }) {
       {children}
     </button>
   );
+
+  const handleOk = async () => {
+    try {
+      const payload = {
+        bookingId: bookingId,
+        rating: form.getFieldValue("rating"),
+        mostLike: form.getFieldValue("whatLiked") || whatLiked,
+        improve: form.getFieldValue("whatImprove") || whatImprove,
+        experience: form.getFieldValue("feedback"),
+      };
+
+      // onSubmit?.(payload);
+      await createReview(payload);
+      // onCancel();
+      form.resetFields();
+      setWhatLiked("");
+      setWhatImprove("");
+    } catch (err) {
+      // validation failed — do nothing (antd will show errors)
+      console.error(err);
+      // toast.success(err.message || "Something went wrong!");
+    }
+  };
 
   return (
     <>
@@ -72,7 +91,14 @@ export default function RateReviewModal({ visible, onCancel, onSubmit }) {
         maskStyle={{ background: "rgba(0,0,0,0.45)" }}
         className="rate-review-modal !font-open-sans"
       >
-        <h3 style={{ textAlign: "center", marginBottom: 6, fontWeight: 700, fontSize: 18 }}>
+        <h3
+          style={{
+            textAlign: "center",
+            marginBottom: 6,
+            fontWeight: 700,
+            fontSize: 18,
+          }}
+        >
           Rate &amp; Review Service
         </h3>
         <p
@@ -86,25 +112,25 @@ export default function RateReviewModal({ visible, onCancel, onSubmit }) {
           Share your experience to help others make informed choices
         </p>
 
-        <Form layout="vertical" form={form}
-        requiredMark={false}
-        >
+        <Form layout="vertical" form={form} requiredMark={false}>
           {/* What did you like the most? */}
-          <Form.Item 
-          label="What did you like the most?" 
-          name="whatLiked"
-          
-          rules={[{ required: true, message: "Please select at least one option" }]}
+          <Form.Item
+            label="What did you like the most?"
+            name="whatLiked"
+            rules={[
+              { required: true, message: "Please select at least one option" },
+            ]}
           >
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {likeOptions.map((opt) => (
                   <Chip
                     key={opt}
-                    selected={liked.includes(opt)}
-                    onClick={() =>
-                      toggleArrayValue(liked, setLiked, opt)
-                    }
+                    selected={whatLiked === opt}
+                    onClick={() => {
+                      setWhatLiked(opt);
+                      form.setFieldsValue({ whatLiked: opt });
+                    }}
                   >
                     {opt}
                   </Chip>
@@ -114,10 +140,9 @@ export default function RateReviewModal({ visible, onCancel, onSubmit }) {
               <Input
                 size="large"
                 placeholder="Other"
-                name="otherLike"
-                onChange={(e) =>
-                  form.setFieldsValue({ otherLike: e.target.value })
-                }
+                name="whatLiked"
+                value={form.getFieldValue("whatLiked") || whatLiked}
+                onChange={(e) => setWhatLiked(e.target.value)}
               />
             </div>
           </Form.Item>
@@ -126,17 +151,20 @@ export default function RateReviewModal({ visible, onCancel, onSubmit }) {
           <Form.Item
             label="Is there anything we could improve?"
             name="whatImprove"
-            rules={[{ required: true, message: "Please select at least one option" }]}
+            rules={[
+              { required: true, message: "Please select at least one option" },
+            ]}
           >
             <div style={{ display: "flex", flexDirection: "column", gap: 8 }}>
               <div style={{ display: "flex", gap: 8, flexWrap: "wrap" }}>
                 {improveOptions.map((opt) => (
                   <Chip
                     key={opt}
-                    selected={improve.includes(opt)}
-                    onClick={() =>
-                      toggleArrayValue(improve, setImprove, opt)
-                    }
+                    selected={whatImprove === opt}
+                    onClick={() => {
+                      setWhatImprove(opt);
+                      form.setFieldsValue({ whatImprove: opt });
+                    }}
                   >
                     {opt}
                   </Chip>
@@ -146,11 +174,11 @@ export default function RateReviewModal({ visible, onCancel, onSubmit }) {
               <Input
                 size="large"
                 placeholder="Other"
-                name="otherImprove"
-                // rules={[{ required: false }]}
-                onChange={(e) =>
-                  form.setFieldsValue({ otherImprove: e.target.value })
-                }
+                name="whatImprove"
+                value={form.getFieldValue("whatImprove") || whatImprove}
+                onChange={(e) => {
+                  setWhatImprove(e.target.value);
+                }}
               />
             </div>
           </Form.Item>
@@ -164,20 +192,31 @@ export default function RateReviewModal({ visible, onCancel, onSubmit }) {
             }
             name="rating"
             style={{ marginBottom: 12 }}
-            rules={[{ required: true, message: "Please provide a rating" }]}
           >
             <div style={{ display: "flex", justifyContent: "center" }}>
-              <Rate />
+              <Rate
+                name="rating"
+                value={form.getFieldValue("rating")}
+                onChange={(value) => form.setFieldsValue({ rating: value })}
+                allowHalf
+                defaultValue={3}
+                count={5}
+                size="large"
+              />
             </div>
           </Form.Item>
 
           {/* How was your experience? */}
-          <Form.Item label="How was your experience?" name="feedback"
-            rules={[{ required: true, message: "Please provide your feedback" }]}>
+          <Form.Item
+            label="How was your experience?"
+            name="feedback"
+            rules={[
+              { required: true, message: "Please provide your feedback" },
+            ]}
+          >
             <TextArea
               rows={6}
               placeholder="Add Feedback...."
-              // TextArea doesn't have size prop; we make it visually larger via rows and style
               style={{ resize: "vertical" }}
             />
           </Form.Item>
@@ -185,58 +224,53 @@ export default function RateReviewModal({ visible, onCancel, onSubmit }) {
           {/* Footer buttons */}
           <Row gutter={12} justify="end" style={{ marginTop: 6 }}>
             <Col>
-              <TealOutLineBtn text="Cancel"/>
+              <TealOutLineBtn
+                onClick={onCancel}
+                text="Cancel"
+                isLoading={isLoading}
+              />
             </Col>
-
             <Col>
-              {/* <Button
-                type="primary"
-                size="large"
-                onClick={handleOk}
-                style={{ background: "#0b5778", borderColor: "#0b5778" }}
-              >
-                Submit
-              </Button> */}
-              <TealBtn text="Submit"/>
+              <TealBtn onClick={handleOk} text="Submit" isLoading={isLoading} />
             </Col>
           </Row>
         </Form>
       </Modal>
 
       {/* Minimal component-scoped styles to reproduce the chip look */}
-      <style>{`
-        .rate-review-modal .ant-modal-content {
-          border-radius: 12px;
-          overflow: hidden;
-        }
-        .chip {
-          border: 1px solid #e5e7eb;
-          padding: 8px 12px;
-          border-radius: 9999px;
-          background: #f8fafc;
-          color: #374151;
-          font-size: 13px;
-          cursor: pointer;
-          transition: all .12s ease;
-          box-shadow: none;
-        }
-        .chip:hover { transform: translateY(-1px); }
-        .chip--selected {
-          background: #eef6f1;
-          border-color: #c9f0d9;
-          color: #0b5741;
-        }
+      <style>
+        {`
+      .rate-review-modal .ant-modal-content {
+        border-radius: 12px;
+        overflow: hidden;
+      }
+      .chip {
+        border: 1px solid #e5e7eb;
+        padding: 8px 12px;
+        border-radius: 9999px;
+        background: #f8fafc;
+        color: #374151;
+        font-size: 13px;
+        cursor: pointer;
+        transition: all .12s ease;
+        box-shadow: none;
+      }
+      .chip:hover { transform: translateY(-1px); }
+      .chip--selected {
+        background: #eef6f1;
+        border-color: #c9f0d9;
+        color: #0b5741;
+      }
 
-        /* ensure inputs look large and match screenshot spacing */
-        .rate-review-modal .ant-input,
-        .rate-review-modal .ant-input-affix-wrapper {
-          border-radius: 6px;
-        }
-        .ant-modal-body { padding-top: 8px; }
+      .rate-review-modal .ant-input,
+      .rate-review-modal .ant-input-affix-wrapper {
+        border-radius: 6px;
+      }
+      .ant-modal-body { padding-top: 8px; }
 
-        /* center modal title visually the same as screenshot */
-        .rate-review-modal .ant-modal-header { display:none; } /* hide default header */
-      `}</style>
+      .rate-review-modal .ant-modal-header { display:none; }
+    `}
+      </style>
     </>
   );
 }
