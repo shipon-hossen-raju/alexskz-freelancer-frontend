@@ -62,6 +62,8 @@ export default function NotificationPage() {
       const res = await getSingleNotification(id).unwrap();
       const data = res?.data;
 
+      console.log("data ", data);
+
       if (
         data?.type === "BOOKING_REQUEST" ||
         data?.type === "BOOKING_DELIVER" ||
@@ -73,6 +75,10 @@ export default function NotificationPage() {
           dispatch(setBookingFromNotification(data?.details));
           navigate.push(`/bookings`);
         }
+      }
+
+      if (data?.type === "SUBSCRIPTION_FREELANCER") {
+        navigate.push(`/profile/subscription`);
       }
     }
   };

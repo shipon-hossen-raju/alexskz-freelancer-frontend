@@ -39,11 +39,6 @@ export default function RateReviewModal() {
     dispatch(setReviewBookingData({ model: false, bookingId: null }));
   };
 
-  console.log("reviewBookingData 34 ", reviewBookingData);
-  // {
-  //     "model": true,
-  //     "bookingId": "6936a4f6e67e1182d8e1856f"
-  // }
   // Small helper to render chip-like buttons
   const Chip = ({ children, selected, onClick }) => (
     <button
