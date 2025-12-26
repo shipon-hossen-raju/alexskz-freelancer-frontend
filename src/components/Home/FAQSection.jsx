@@ -3,19 +3,15 @@
 
 import Heading from '@/components/ui/Heading';
 import { useGetFAQQuery } from '@/redux/api/legalApi';
+import NoDataFount from '../notFount/NoDataFount';
+import Loading from '../shared/Loading';
 
 export default function FaqSection() {
-  const {data, isLoading, isError, error} = useGetFAQQuery();
-  if(isLoading){
-    return <p>Loading FAQs...</p>
-  }
+  const {data, isLoading, isError} = useGetFAQQuery();
+
   const faqsData = data?.data?.result;
 
-  // console.log('faq ',faqsData)
-  
-  if(isError || faqsData?.length === 0){
-    return <p>No FAQ found</p>
-  }
+
   
 
   return (
@@ -36,46 +32,49 @@ export default function FaqSection() {
         </div>
 
         {/* List */}
-        <div className="divide-y divide-gray-200">
-          {faqsData.map((item, i) => (
-            <details
-              key={i}
-              className="group py-2"
-            >
-              <summary
-                className="flex cursor-pointer select-none items-center justify-between py-4 text-[15px] font-medium text-gray-700 hover:text-gray-900"
-              >
-                <span>{item.question}</span>
-                {/* chevron */}
-                <svg
-                  className="h-5 w-5 text-gray-500 transition-transform duration-200 group-open:rotate-180"
-                  viewBox="0 0 20 20"
-                  fill="currentColor"
-                >
-                  <path
-                    fillRule="evenodd"
-                    d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
-                    clipRule="evenodd"
-                  />
-                </svg>
-              </summary>
+        {isLoading ? (
+          <Loading />
+        ) : (
+          <div className="divide-y divide-gray-200">
+            {faqsData?.length > 0 && !isError ? (
+              faqsData.map((item, i) => (
+                <details key={i} className="group py-2">
+                  <summary className="flex cursor-pointer select-none items-center justify-between py-4 text-[15px] font-medium text-gray-700 hover:text-gray-900">
+                    <span>{item.question}</span>
+                    {/* chevron */}
+                    <svg
+                      className="h-5 w-5 text-gray-500 transition-transform duration-200 group-open:rotate-180"
+                      viewBox="0 0 20 20"
+                      fill="currentColor"
+                    >
+                      <path
+                        fillRule="evenodd"
+                        d="M5.23 7.21a.75.75 0 011.06.02L10 10.94l3.71-3.71a.75.75 0 111.06 1.06l-4.24 4.24a.75.75 0 01-1.06 0L5.21 8.29a.75.75 0 01.02-1.08z"
+                        clipRule="evenodd"
+                      />
+                    </svg>
+                  </summary>
 
-              <div className="pb-4 pr-2  leading-6 text-gray-600">
-                {item.answer}
-              </div>
-
-              
-            </details>
-          ))}
-        </div>
+                  <div className="pb-4 pr-2  leading-6 text-gray-600">
+                    {item.answer}
+                  </div>
+                </details>
+              ))
+            ) : (
+              <NoDataFount text="No FAQ found" />
+            )}
+          </div>
+        )}
 
         {/*  */}
-        <hr className='text-gray-200'/>
+        <hr className="text-gray-200" />
       </div>
 
       {/* hide default marker on summary (kept inside one file) */}
       <style jsx>{`
-        summary::-webkit-details-marker { display: none; }
+        summary::-webkit-details-marker {
+          display: none;
+        }
       `}</style>
     </section>
   );

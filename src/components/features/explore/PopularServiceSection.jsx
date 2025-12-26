@@ -19,13 +19,17 @@ export default function PopularServiceSection() {
         {isLoading ? (
           <Loading />
         ) : (
-          <div className="grid gap-6 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+          <>
             {services?.length > 0 && !isError ? (
-              services.map((s) => <PopularServiceCard key={s.id} service={s} />)
+              <div className="grid gap-6 grid-cols-1 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5">
+                {services.map((s) => (
+                  <PopularServiceCard key={s.id} service={s} />
+                ))}
+              </div>
             ) : (
               <NoDataFount />
             )}
-          </div>
+          </>
         )}
       </SectionContainer>
     </div>

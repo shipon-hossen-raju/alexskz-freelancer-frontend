@@ -1,30 +1,19 @@
-'use client'
+"use client";
 
-import Image from 'next/image';
-import FlexibleBanner from '@/components/shared/FlexibleBanner';
-import CustomContainer from '@/components/ui/CustomContainer';
-import SectionContainer from '@/components/shared/SectionContainer';
-import Paragraph from '@/components/ui/Paragraph';
-import StatsSection from '@/components/features/aboutUs/StatesSection';
-import Heading from '@/components/ui/Heading';
-
-import hero from '@/assets/image/aboutBG.png';
-import img1 from '@/assets/image/about/img1.png';
-import img2 from '@/assets/image/about/img2.png';
-import img3 from '@/assets/image/about/img3.png';
-import { useGetAboutUsQuery } from '@/redux/api/legalApi';
-import Loading from '@/components/shared/Loading';
+import StatsSection from "@/components/features/aboutUs/StatesSection";
+import FlexibleBanner from "@/components/shared/FlexibleBanner";
+import CustomContainer from "@/components/ui/CustomContainer";
+import Heading from "@/components/ui/Heading";
+import Image from "next/image";
+import img1 from "@/assets/image/about/img1.png";
+import img2 from "@/assets/image/about/img2.png";
+import img3 from "@/assets/image/about/img3.png";
+import hero from "@/assets/image/aboutBG.png";
+import Loading from "@/components/shared/Loading";
+import { useGetAboutUsQuery } from "@/redux/api/legalApi";
 
 export default function AboutUsPage() {
   const { data, isError, error, isLoading } = useGetAboutUsQuery();
-
-  if (isLoading) {
-    return <Loading />
-  }
-
-  if (isError) {
-    throw new Error(error?.data?.message)
-  }
 
   const content = data?.data?.content;
   // console.log(data?.data?.content)
@@ -93,14 +82,27 @@ export default function AboutUsPage() {
               <Heading text="Empowering Connections, Enabling Growth" />
             </div>
 
-            {/* <Paragraph text="We believe every professional deserves the opportunity to showcase their talent and connect with the right clients. Our platform bridges the gap between freelancers and businesses, making collaboration seamless, transparent, and rewarding..." /> */}
-            
-            <div
-              dangerouslySetInnerHTML={{
-                __html: content || 'No About us available.',
-              }}
-              className="text-justify"
-            ></div>
+            {isLoading ? (
+              <Loading />
+            ) : (
+              <>
+                {content ? (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: content || "No About us available.",
+                    }}
+                    className="text-justify"
+                  ></div>
+                ) : (
+                  <div
+                    dangerouslySetInnerHTML={{
+                      __html: "No About us available.",
+                    }}
+                    className="text-justify"
+                  ></div>
+                )}
+              </>
+            )}
 
             <div className="mt-6">
               <StatsSection />
