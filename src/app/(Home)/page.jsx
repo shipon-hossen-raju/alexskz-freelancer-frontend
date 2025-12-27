@@ -56,7 +56,7 @@ export default function HomePage() {
           </div>
           {/* Rising Star */}
           <div>
-            <RisingStarsSection heading="Rising Stars" />
+            <RisingStarsSection heading="New to AliumPro: rising stars" />
           </div>
 
           {/* FAQ */}

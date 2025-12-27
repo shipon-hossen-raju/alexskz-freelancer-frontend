@@ -20,12 +20,12 @@ export default function TestimonialsSection({ heading }) {
   return (
     <section className="relative pt-10 md:pt-20">
       <div className="mx-auto  px-4 container">
-        <div className="mb-4">
+        {/* <div className="mb-4">
           <span className="inline-block text-[18px] font-medium text-[#144A6C] relative pl-3 font-open-sans">
             <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-[2px] bg-[#144A6C]" />
             Testimonial
           </span>
-        </div>
+        </div> */}
 
         {/* Title */}
         <div className="mb-8">

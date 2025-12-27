@@ -4,18 +4,19 @@ import Image from "node_modules/next/image";
 import Link from "next/link";
 import GenerateSlug from "../ui/GenerateSlug";
 
-export default function CategoryCard({ title, icon , id}) {
-
-  const slug = GenerateSlug(title)
+export default function CategoryCard({ category }) {
+  // const slug = GenerateSlug(title);
   // console.log('slug', slug)
 
   const handleSetSlug = () => {
-    localStorage.setItem("slug", id)
-  }
-
+    localStorage.setItem("slug", id);
+  };
+  const slug = category?.slug;
+  const icon = category?.icon;
+  const title = category?.title;
   return (
     <Link
-      href={`/category/${id}`}
+      href={`/category/${slug}`}
       onClick={handleSetSlug}
       className="
         group w-full
@@ -29,11 +30,9 @@ export default function CategoryCard({ title, icon , id}) {
       "
     >
       <div className="flex flex-col items-start gap-3 ">
-
         <div className="relative w-full aspect-[4/3] rounded overflow-hidden ">
           <Image src={icon} alt={title} fill className="object-cover" />
         </div>
-
 
         <div className="flex-1">
           <h3
@@ -46,6 +45,4 @@ export default function CategoryCard({ title, icon , id}) {
       </div>
     </Link>
   );
-
-
 }

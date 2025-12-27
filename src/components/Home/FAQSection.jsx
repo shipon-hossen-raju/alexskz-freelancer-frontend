@@ -1,18 +1,15 @@
 // components/sections/FaqSection.jsx
-'use client';
+"use client";
 
-import Heading from '@/components/ui/Heading';
-import { useGetFAQQuery } from '@/redux/api/legalApi';
-import NoDataFount from '../notFount/NoDataFount';
-import Loading from '../shared/Loading';
+import Heading from "@/components/ui/Heading";
+import { useGetFAQQuery } from "@/redux/api/legalApi";
+import NoDataFount from "../notFount/NoDataFount";
+import Loading from "../shared/Loading";
 
 export default function FaqSection() {
-  const {data, isLoading, isError} = useGetFAQQuery();
+  const { data, isLoading, isError } = useGetFAQQuery();
 
   const faqsData = data?.data?.result;
-
-
-  
 
   return (
     <section className="py-12 md:py-16">
@@ -27,8 +24,8 @@ export default function FaqSection() {
 
         {/* Heading (your component) */}
         <div className="text-center mb-6 md:mb-8 space-y-2">
-          <Heading text={`Got Question?`} />
-          <Heading text={`We’ve Got Answer`} />
+          <Heading text={`Got questions?`} />
+          <Heading text={`We've got answers!`} />
         </div>
 
         {/* List */}

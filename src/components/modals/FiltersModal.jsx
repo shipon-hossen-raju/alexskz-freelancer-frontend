@@ -1,18 +1,30 @@
-'use client';
+"use client";
 
-import { useMemo, useState, useEffect } from 'react';
-import { Modal, Input, Checkbox, Form } from 'antd';
-import { CaretRightFilled } from '@ant-design/icons';
-import '@/styles/Auth.css';
-import TealBtn from '../ui/TealBtn';
-import '@/styles/AntCheckBox.css';
-import { useGetAllCategoryQuery } from '@/redux/api/categoryApi';
-import GreenBtn from '../ui/GreenBtn';
-import { useDispatch } from 'node_modules/react-redux/dist/react-redux';
-import { setCategoryIds, setIsCertified, setIsOnline, setMaxPrice, setMinPrice, setTopRated } from '@/redux/slices/filterSlice';
+import { useGetAllCategoryQuery } from "@/redux/api/categoryApi";
+import {
+  setCategoryIds,
+  setIsOnline,
+  setMaxPrice,
+  setMinPrice,
+  setTopRated,
+} from "@/redux/slices/filterSlice";
+import "@/styles/AntCheckBox.css";
+import "@/styles/Auth.css";
+import { CaretRightFilled } from "@ant-design/icons";
+import { Checkbox, Form, Input, Modal } from "antd";
+import { useDispatch } from "node_modules/react-redux/dist/react-redux";
+import { useMemo, useState } from "react";
+import GreenBtn from "../ui/GreenBtn";
+import TealBtn from "../ui/TealBtn";
 
-export default function FiltersModal({ open, onClose, onApply }) {
+export default function FiltersModal({
+  open,
+  onClose,
+  onApply,
+  categorySlug = null,
+}) {
   const [form] = Form.useForm();
+  // if categorySlug not working that useGetAllCategory
   const { data: categoryData } = useGetAllCategoryQuery();
   const dispatch = useDispatch();
 
@@ -22,21 +34,19 @@ export default function FiltersModal({ open, onClose, onApply }) {
 
   const canApply = useMemo(() => true, []);
 
-  useEffect(() => {
-    if (!open) return;
-    
-  }, [open]);
+  // useEffect(() => {
+  //   if (!open) return;
+  // }, [open]);
 
   const onFinish = (values) => {
-    
     // console.log('values: ', values);
 
-    dispatch(setCategoryIds(values?.categoryIds))
-    dispatch(setMinPrice(values?.min))
-    dispatch(setMaxPrice(values?.max))
-    dispatch(setIsOnline(values?.online))
-    dispatch(setTopRated(values?.topRated))
-    dispatch(setIsCertified(values?.inPerson))
+    dispatch(setCategoryIds(values?.categoryIds));
+    dispatch(setMinPrice(values?.min));
+    dispatch(setMaxPrice(values?.max));
+    dispatch(setIsOnline(values?.online));
+    dispatch(setTopRated(values?.topRated));
+    dispatch(setInPerson(values?.inPerson));
 
     // form.resetFields();
     setSelected([]);
@@ -50,8 +60,10 @@ export default function FiltersModal({ open, onClose, onApply }) {
 
   // keep categoryIds as the single source of truth
   const toggleCat = (catId) => {
-    const prev = form.getFieldValue('categoryIds') || [];
-    const next = prev.includes(catId) ? prev.filter((c) => c !== catId) : [...prev, catId];
+    const prev = form.getFieldValue("categoryIds") || [];
+    const next = prev.includes(catId)
+      ? prev.filter((c) => c !== catId)
+      : [...prev, catId];
     form.setFieldsValue({ categoryIds: next });
     setSelected(next);
   };
@@ -70,25 +82,34 @@ export default function FiltersModal({ open, onClose, onApply }) {
       styles={{
         content: {
           borderRadius: 12,
-          overflow: 'hidden',
+          overflow: "hidden",
         },
       }}
     >
       <div className="font-open-sans">
-        <div className="mb-3">
+        {/* <div className="mb-3">
           <h3 className="text-[18px] font-semibold text-gray-900">Filters</h3>
-        </div>
+        </div> */}
 
         {/* Use categoryIds in initialValues */}
         <Form
           form={form}
           layout="vertical"
           onFinish={onFinish}
-          initialValues={{ min: '', max: '', categoryIds: [], online: false, topRated: false, inPerson: false }}
+          initialValues={{
+            min: "",
+            max: "",
+            categoryIds: [],
+            online: false,
+            topRated: false,
+            inPerson: false,
+          }}
         >
           {/* Price Filter */}
           <div className="mt-2">
-            <div className="text-[14px] font-semibold text-gray-800">Price Filter</div>
+            <div className="text-[14px] font-semibold text-gray-800">
+              Price Filter
+            </div>
 
             <div className="mt-3 flex items-center gap-3">
               <Form.Item name="min" noStyle>
@@ -104,7 +125,9 @@ export default function FiltersModal({ open, onClose, onApply }) {
               {/* decorative apply */}
               <button
                 type="button"
-                onClick={() => {/* decorative: no-op */}}
+                onClick={() => {
+                  /* decorative: no-op */
+                }}
                 disabled={!canApply}
                 className="ml-2 inline-flex h-10 w-48 items-center justify-center rounded-md bg-[#144A6C] text-white shadow hover:bg-[#0f3a55] disabled:opacity-60 cursor-pointer"
                 title="Apply"
@@ -116,36 +139,57 @@ export default function FiltersModal({ open, onClose, onApply }) {
 
           {/* Categories */}
           <div className="mt-6">
-            <div className="text-[14px] font-semibold text-gray-800">All categories</div>
+            <h4 className="text-[14px] mb-2 font-semibold text-gray-800">
+              {categorySlug ? "Selected Category" : "All categories"}
+            </h4>
 
             <Form.Item name="categoryIds" className="mt-3 mb-0">
               <div className="grid grid-cols-1 sm:grid-cols-2 gap-2">
-                {ALL_CATEGORIES.map((cat) => {
-                  // compute active from categoryIds (NOT categories/title)
-                  const active = (form.getFieldValue('categoryIds') || []).includes(cat?.id);
-                  return (
-                    <button
-                      key={cat?.id}
-                      type="button"
-                      onClick={() => toggleCat(cat?.id)}
-                      className={[
-                        'cursor-pointer text-[13px] px-3 py-2 rounded-md text-left transition',
-                        active
-                          ? 'bg-[#6BB37A] text-white'
-                          : 'bg-gray-100 text-gray-700 hover:bg-gray-200',
-                      ].join(' ')}
-                    >
-                      {cat?.title}
-                    </button>
-                  );
-                })}
+                {categorySlug ? (
+                  <button
+                    key={categorySlug}
+                    type="button"
+                    onClick={() => toggleCat(cat?.id)}
+                    className={`cursor-pointer text-[13px] px-3 py-2 rounded-md text-left transition bg-[#6BB37A] text-white`}
+                  >
+                    {categorySlug}
+                  </button>
+                ) : (
+                  <>
+                    {" "}
+                    {ALL_CATEGORIES.map((cat) => {
+                      // compute active from categoryIds (NOT categories/title)
+                      const active = (
+                        form.getFieldValue("categoryIds") || []
+                      ).includes(cat?.id);
+
+                      return (
+                        <button
+                          key={cat?.id}
+                          type="button"
+                          onClick={() => toggleCat(cat?.id)}
+                          className={[
+                            "cursor-pointer text-[13px] px-3 py-2 rounded-md text-left transition",
+                            active
+                              ? "bg-[#6BB37A] text-white"
+                              : "bg-gray-100 text-gray-700 hover:bg-gray-200",
+                          ].join(" ")}
+                        >
+                          {cat?.title}
+                        </button>
+                      );
+                    })}{" "}
+                  </>
+                )}
               </div>
             </Form.Item>
           </div>
 
           {/* Freelancer details */}
           <div className="mt-6">
-            <div className="text-[14px] font-semibold text-gray-800">Freelancer details</div>
+            <div className="text-[14px] font-semibold text-gray-800">
+              Freelancer details
+            </div>
 
             <div className="mt-3 flex items-center gap-6">
               <Form.Item name="online" valuePropName="checked" noStyle>
@@ -179,7 +223,11 @@ export default function FiltersModal({ open, onClose, onApply }) {
             <div>
               {/* ensure GreenBtn is type="button" so click doesn't accidentally auto-submit;
                   we explicitly call form.submit() */}
-              <GreenBtn htmlType="button" text="Find" onClick={() => form.submit()} />
+              <GreenBtn
+                htmlType="button"
+                text="Find"
+                onClick={() => form.submit()}
+              />
             </div>
           </div>
         </Form>

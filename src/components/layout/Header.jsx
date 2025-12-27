@@ -63,7 +63,7 @@ export default function Header() {
       key: "start-selling",
       route: "/start-selling",
       isActive: pathname === "/start-selling",
-      text: "Join as a Pro",
+      text: "Join as a pro",
       visible: !user,
     },
     {
@@ -84,14 +84,14 @@ export default function Header() {
       key: "services",
       route: "/services",
       isActive: pathname === "/services",
-      text: "Certified Services",
+      text: "Certified services",
       visible: "all",
     },
     {
       key: "about-us",
       route: "/about-us",
       isActive: pathname === "/about-us",
-      text: "About Us",
+      text: "About us",
       visible: !user,
     },
   ];

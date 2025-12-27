@@ -11,7 +11,10 @@ export default function FreelancerSection({ heading }) {
 
   return (
     <div>
-      <SectionContainer heading={heading} title="Professional">
+      <SectionContainer
+        heading={heading}
+        //  title="Professional"
+      >
         {isLoading ? (
           <Loading />
         ) : pros.length > 0 ? (

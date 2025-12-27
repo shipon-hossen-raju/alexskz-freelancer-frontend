@@ -1,17 +1,11 @@
+"use client";
 
-'use client';
+import bgSrc from "@/assets/image/hero2.png";
+// import bgSrc from "@/assets/image/hero2.svg";
+import Image from "next/image";
+import SearchField from "../shared/SearchField";
 
-import Image from 'next/image';
-import { useState } from 'react';
-import { SearchOutlined, SlidersOutlined } from '@ant-design/icons';
-import TealBtn from '@/components/ui/TealBtn'; // your shared button
-import bgSrc from '@/assets/image/hero2.png'
-import SearchField from '../shared/SearchField';
-
-
-export default function BannerHero({  onSearch }) {
- 
-
+export default function BannerHero({ onSearch }) {
   return (
     <section className="relative  w-full h-[100vh] min-h-[520px]">
       {/* BG image fills the section */}
@@ -19,7 +13,7 @@ export default function BannerHero({  onSearch }) {
         src={bgSrc}
         alt="Office city view"
         fill
-        className="object-cover"
+        className="object-cover object-right"
       />
 
       {/* Soft left gradient to increase text contrast */}
@@ -30,17 +24,19 @@ export default function BannerHero({  onSearch }) {
         <div className="mx-auto h-full w-full max-w-6xl px-4 md:px-6 flex items-center">
           <div className="w-full max-w-3xl ">
             {/* Heading — Open Sans */}
-            <h1 className="font-open-sans text-white leading-[1.3] font-bold   text-[34px] sm:text-5xl md:text-[52px]  max-w-2xl">
-              Hire the Right Professional for Your  Business Growth
-              
-             
+            <h1 className="font-open-sans text-black leading-[1.3] font-bold   text-[34px] sm:text-5xl md:text-[52px]  max-w-2xl">
+              Hire the right professional to grow your business
             </h1>
 
             {/* Search row */}
 
-           <div className='mt-10'>
-             <SearchField onSearch={onSearch}/>
-           </div>
+            <div className="mt-5">
+              <p className="font-medium">
+                Find vetted experts in finance, HR, marketing and operations,
+                all in one place.
+              </p>
+              <SearchField onSearch={onSearch} />
+            </div>
           </div>
         </div>
       </div>

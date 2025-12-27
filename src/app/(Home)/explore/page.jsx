@@ -3,7 +3,8 @@ import FlexibleBanner from '@/components/shared/FlexibleBanner'
 import SearchField from '@/components/shared/SearchField'
 import CustomContainer from '@/components/ui/CustomContainer'
 import React from 'react'
-import hero from '@/assets/image/exploreBG.png'
+import hero from "@/assets/image/Explore _1.png";
+// import hero from '@/assets/image/exploreBG.png'
 import CategoriesSection from '@/components/shared/CategorySection'
 import FreelancerSection from '@/components/shared/FreelancerSection'
 import PopularServiceSection from '@/components/features/explore/PopularServiceSection'
@@ -18,46 +19,36 @@ export default function ExplorePage() {
     // console.log(categories)
   return (
     <CustomContainer>
-
       {/* Banner */}
       <div>
         <FlexibleBanner
           bgSrc={hero}
           variant="search"
-          title="Find The Right Pro For Your Business"
+          title="Explore services and professionals for your business"
+          subtitle="Browse categories, discover popular services and meet top-rated professionals."
           SearchField={SearchField}
-          onSearch={(q) => console.log('search:', q)}
-          tags={
-            categories
-            // [
-            // { label: 'Finance & Accounting', href: '/finance-accounting' },
-            // { label: 'Hr & legal', href: '/hr-legal' },
-            // { label: 'Online Freelancer', href: '/online' },
-            // // { label: 'Finance', href: '/search?cat=finance2' },
-            // { label: 'Finance', href: '/finance' },
-          // ]
-        }
+          onSearch={(q) => console.log("search:", q)}
+          tags={categories}
           overlayClass="bg-black/45"
           className="mb-6"
+          radius=""
         />
-
       </div>
 
       {/* Category of services */}
       <div>
-        <CategoriesSection heading="Categories of Services"/>
+        <CategoriesSection heading="Categories of Services" />
       </div>
 
       {/* Popular services */}
       <div>
-        <PopularServiceSection/>
+        <PopularServiceSection />
       </div>
 
       {/* Top rated Professionals */}
       <div>
-        <FreelancerSection heading="Top Rated Professionals"/>
+        <FreelancerSection heading="Top Rated Professionals" />
       </div>
-
     </CustomContainer>
-  )
+  );
 }

@@ -11,7 +11,10 @@ export default function RisingStarsSection({ heading, limit = 4 }) {
   const items = pros.slice(0, limit);
   return (
     <div>
-      <SectionContainer heading={heading} title="New comers">
+      <SectionContainer
+        heading={heading}
+        // title="New comers"
+      >
         {isLoading ? (
           <Loading />
         ) : (

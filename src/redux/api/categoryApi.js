@@ -1,12 +1,8 @@
-
 // import { baseApi } from '../api/baseApi.js';
-
-
 
 // const categoryApi = baseApi.injectEndpoints({
 
 //     endpoints: (builder) => ({
-
 
 //     //get all categories
 //     getAllCategory: builder.query({
@@ -16,19 +12,19 @@
 //         })
 //     }),
 
-
 // }),
 // });
 
 // export const {
 
-//     useGetAllCategoryQuery, 
+//     useGetAllCategoryQuery,
 
 // } = categoryApi;
 
 // categoryApi.js
 
-import { baseApi } from '../api/baseApi.js';
+import paramsGenerate from "@/utils/paramsGenerate.js";
+import { baseApi } from "../api/baseApi.js";
 
 const categoryApi = baseApi.injectEndpoints({
   endpoints: (builder) => ({
@@ -38,7 +34,9 @@ const categoryApi = baseApi.injectEndpoints({
       query: (filters = {}) => {
         // remove undefined / null / empty string values
         const filtered = Object.fromEntries(
-          Object.entries(filters).filter(([_, v]) => v !== undefined && v !== null && v !== '')
+          Object.entries(filters).filter(
+            ([_, v]) => v !== undefined && v !== null && v !== ""
+          )
         );
 
         // If your backend expects categoryIds as a JSON string like in your screenshot:
@@ -47,36 +45,43 @@ const categoryApi = baseApi.injectEndpoints({
         }
 
         return {
-          url: 'categories/',
-          method: 'GET',
+          url: "categories/",
+          method: "GET",
           // fetchBaseQuery will turn this `params` into query string
           params: filtered,
         };
       },
-
     }),
 
     getSearchedServices: builder.query({
       query: (params) => ({
-        url: 'categories/',
-        method: 'GET',
-        params: {searchTerm: params},
-      })
+        url: "categories/",
+        method: "GET",
+        params: { searchTerm: params },
+      }),
     }),
 
     // get services by category Id
     getServicesByCategoryId: builder.query({
       query: (ids) => ({
-        url: 'categories/',
-        method: 'GET',
-       
+        url: "categories/",
+        method: "GET",
         params: {
           categoryIds: JSON.stringify(Array.isArray(ids) ? ids : [ids]),
         },
       }),
+    }),
+
+    // get services by category slug
+    getServicesByCategorySlug: builder.query({
+      query: (slug) => {
+        const params = paramsGenerate(slug);
+        return {
+          url: "categories/",
+          method: "GET",
+          params: params,
+        };},
     })
-
-
   }),
 });
 
@@ -84,4 +89,5 @@ export const {
   useGetAllCategoryQuery,
   useGetSearchedServicesQuery,
   useGetServicesByCategoryIdQuery,
+  useGetServicesByCategorySlugQuery
 } = categoryApi;
