@@ -2,25 +2,26 @@
 
 import Image from 'next/image';
 import TealBtn from '@/components/ui/TealBtn';
-import freelancerImg from '@/assets/image/freelancer2.jpg'; // <-- your image
+// import freelancerImg from '@/assets/image/freelancer2.jpg'; // <-- your image
+import freelancerImg from "@/assets/image/freelancer2.webp"; // <-- your image
 import Link from 'node_modules/next/link';
 
 export default function JoinAsFreelancerSection() {
   const items = [
     {
       id: 1,
-      title: 'Showcase Your Expertise',
-      desc: 'Build a standout profile with case studies, credentials, and reviews.',
+      title: "Showcase your expertise",
+      desc: "Create a standout profile that highlights your experience, services and case studies, so clients can quickly see if you’re the right fit for their needs.",
     },
     {
-      id:2,
-      title: 'Connect with the Right Clients',
-      desc: 'Get matched with vetted companies or entrepreneurs ready to kick off projects.',
+      id: 2,
+      title: "Connect with the right clients",
+      desc: "Appear in relevant categories and connect with teams and businesses that are actively looking for skills like yours.",
     },
     {
       id: 3,
-      title: 'Scale your business. All in one place',
-      desc: 'Be found. Get booked. Meet. Showcase your best work. Turn reviews into new clients. All within AliumPro.',
+      title: "Scale your business, all in one place",
+      desc: "Manage inquiries, collaborate on projects and turn great results into long-term client relationships through AliumPro.",
     },
   ];
 

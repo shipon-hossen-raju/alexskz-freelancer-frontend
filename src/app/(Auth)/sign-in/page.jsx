@@ -1,71 +1,61 @@
-'use client';
+"use client";
 
-import { Form, Input, Checkbox, message } from 'antd';
-import Link from 'next/link';
-import AuthShell from '@/components/shared/AuthShell';
-import AuthButton from '@/components/ui/AuthButton';
-import { MailOutlined, LockOutlined } from '@ant-design/icons';
-import { useState } from 'react';
-import '@/styles/Auth.css'
-import { useDispatch } from 'react-redux';
+import AuthShell from "@/components/shared/AuthShell";
+import AuthButton from "@/components/ui/AuthButton";
+import "@/styles/Auth.css";
+import { LockOutlined, MailOutlined } from "@ant-design/icons";
+import { Form, Input } from "antd";
+import Link from "next/link";
+import { useDispatch } from "react-redux";
 // import { loginUser } from '@/redux/auth/userSlice';
-import { useRouter } from 'next/navigation';
-import { useLoginUserMutation } from '@/redux/auth/authApi';
-import { Password } from 'node_modules/@mui/icons-material/index';
-import toast from 'react-hot-toast';
-import { setUser } from '@/redux/auth/userSlice';
-import { useSocket } from '@/hooks/useSocket';
+import { useSocket } from "@/hooks/useSocket";
+import { useLoginUserMutation } from "@/redux/auth/authApi";
+import { setUser } from "@/redux/auth/userSlice";
+import { useRouter, useSearchParams } from "next/navigation";
+import toast from "react-hot-toast";
 
 export default function LoginPage() {
   const [form] = Form.useForm();
-
   const dispatch = useDispatch();
   const router = useRouter();
   const { authenticate } = useSocket();
-
-  const [loginUser, {isloading}] = useLoginUserMutation();
+  const [loginUser, { isLoading }] = useLoginUserMutation();
+  const searchParams = useSearchParams();
+  const redirect = searchParams.get("redirect") || "/";
 
   const onFinish = async (values) => {
-
-    // console.log(values)
-
     const payload = {
       email: values.email,
-      password: values.password
+      password: values.password,
+    };
 
-    }
-
-    loginUser(payload)
+    await loginUser(payload)
       .unwrap()
-        .then((res) =>{
-          // console.log('login res', res?.data?.token)
-          const accessToken = res?.data?.token
-          const user = res?.data?.userData;
-          if(accessToken) {
-            localStorage.setItem("user-token", accessToken)
-            authenticate(accessToken);    //for real time chatting
-          }
+      .then((res) => {
+        // console.log('login res', res?.data?.token)
+        const accessToken = res?.data?.token;
+        const user = res?.data?.userData;
+        if (accessToken) {
+          localStorage.setItem("user-token", accessToken);
+          authenticate(accessToken); //for real time chatting
+        }
 
-          dispatch(
-            setUser({
-              user: user,
-              token: accessToken,
-            })
-          );
-          
-          const userId = res?.data?.userData?.id
-          localStorage.setItem('user-id', userId);
+        dispatch(
+          setUser({
+            user: user,
+            token: accessToken,
+          })
+        );
 
-          toast.success('Login successful');
-          router.push('/');
-        })
-        .catch((error) =>{
-          toast.error(error?.data?.message || 'Login failed!');
-        })
-    
-    
+        const userId = res?.data?.userData?.id;
+        localStorage.setItem("user-id", userId);
 
-   
+        toast.success("Login successful");
+        router.push(redirect);
+      })
+      .catch((error) => {
+        toast.error(error?.data?.message || "Login failed!");
+      });
   };
 
   return (
@@ -73,13 +63,12 @@ export default function LoginPage() {
       title="Sign in to your account"
       subtitle={
         <>
-          Don’t have an account?{' '}
+          Don’t have an account?{" "}
           <Link href="/sign-up" className="text-[#1F4E78] hover:underline">
             Join here
           </Link>
         </>
       }
-      
       backHref="/"
       backText="Back"
     >
@@ -94,46 +83,59 @@ export default function LoginPage() {
           label="Email"
           name="email"
           rules={[
-            { required: true, message: 'Please enter your email' },
-            { type: 'email', message: 'Enter a valid email' },
+            { required: true, message: "Please enter your email" },
+            { type: "email", message: "Enter a valid email" },
           ]}
         >
-          <Input size="large" prefix={<MailOutlined />} placeholder="you@example.com" />
+          <Input
+            size="large"
+            prefix={<MailOutlined />}
+            placeholder="you@example.com"
+          />
         </Form.Item>
 
         <Form.Item
           label="Password"
           name="password"
-          rules={[{ required: true, message: 'Please enter your password' }]}
+          rules={[{ required: true, message: "Please enter your password" }]}
         >
-          <Input.Password size="large" prefix={<LockOutlined />} placeholder="********" />
+          <Input.Password
+            size="large"
+            prefix={<LockOutlined />}
+            placeholder="********"
+          />
         </Form.Item>
 
         <div className="mb-4 flex items-center justify-end">
           {/* <Checkbox>Remember me</Checkbox> */}
-          <Link href="/forgot-password" className="!text-[#595D62] text-sm !underline hover:!text-[#144A6C]">
+          <Link
+            href="/forgot-password"
+            className="!text-[#595D62] text-sm !underline hover:!text-[#144A6C]"
+          >
             Forgot Password?
           </Link>
         </div>
 
-        <AuthButton htmlType="submit"  text={`${isloading? "Signing In..." : "Sign In"}`}>
-          
-        </AuthButton>
-
-        
+        <AuthButton
+          htmlType="submit"
+          text={`${isLoading ? "Signing In..." : "Sign In"}`}
+        ></AuthButton>
       </Form>
 
       <p className="mt-4 text-[12px] leading-relaxed text-[#9F9C96] ">
-          By joining, you agree to the{' '}
-          <Link className="!text-[#8BCF9A] hover:underline" href="/terms-conditions">
-            Terms of Service
-          </Link>{' '}
-           and to occasionally receive emails from us. Please read our{' '}
-          <Link className="!text-[#8BCF9A] hover:underline" href="privacy-policy">
-            Privacy Policy
-          </Link>
-          to learn how we use your personal data.
-        </p>
+        By joining, you agree to the{" "}
+        <Link
+          className="!text-[#8BCF9A] hover:underline"
+          href="/terms-conditions"
+        >
+          Terms of Service
+        </Link>{" "}
+         and to occasionally receive emails from us. Please read our{" "}
+        <Link className="!text-[#8BCF9A] hover:underline" href="privacy-policy">
+          Privacy Policy
+        </Link>
+        to learn how we use your personal data.
+      </p>
     </AuthShell>
   );
 }

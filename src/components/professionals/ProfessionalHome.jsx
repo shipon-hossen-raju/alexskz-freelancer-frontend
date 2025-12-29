@@ -57,7 +57,7 @@ export default function ProfessionalHome() {
       id: 2,
       icon: <IoIosBriefcase color="#8BCF9A" />,
       title: "Pending Request",
-      count: home?.bookingRequestPending || 0,  
+      count: home?.bookingRequestPending || 0,
       status: "waiting",
     },
     {
@@ -168,7 +168,7 @@ export default function ProfessionalHome() {
       </CustomContainer>
 
       {/* foot */}
-      <div className=" w-full bg-gradient-to-br from-pink-200 via-green-200 to-blue-300 flex items-center justify-center py-8 px-4  md:py-24 md:px-10">
+      {/* <div className=" w-full bg-gradient-to-br from-pink-200 via-green-200 to-blue-300 flex items-center justify-center py-8 px-4  md:py-24 md:px-10">
         <div className="w-full max-w-4xl bg-transparent bg-opacity-40 backdrop-blur-md rounded-2xl shadow-xl p-12 md:p-16 text-center border border-[#0000000D]">
           <h1 className="text-3xl md:text-5xl font-bold text-gray-400 mb-4">
             Want to reach more clients?
@@ -181,7 +181,7 @@ export default function ProfessionalHome() {
             <TealBtn text="Verify Now" />
           </Link>
         </div>
-      </div>
+      </div> */}
     </>
   );
 }

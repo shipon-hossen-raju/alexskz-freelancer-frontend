@@ -16,7 +16,7 @@ export default function PopularServiceSection() {
   return (
     <div>
       <SectionContainer
-        heading="Popular Services"
+        heading="Popular services"
         // title="Services"
       >
         {isLoading ? (

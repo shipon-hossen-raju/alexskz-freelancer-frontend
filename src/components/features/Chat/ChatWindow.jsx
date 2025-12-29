@@ -69,6 +69,7 @@ export default function ChatWindow({ onBack }) {
     if (token) authenticate(token);
 
     const onGetMessages = (payload) => {
+      console.log("payload?.messages 72 ", payload?.messages);
       const msgs = Array.isArray(payload?.messages)
         ? payload.messages.slice().reverse()
         : [];
@@ -256,6 +257,10 @@ function Messages({
   receiver,
   userProfile,
 }) {
+  // message sorting 
+  const sortedMessages = messages.sort((a, b) => {
+    return new Date(a.createdAt) - new Date(b.createdAt);
+  })
   return (
     <div
       ref={messagesRef}
@@ -268,35 +273,34 @@ function Messages({
           Select a user to start or No messages yet.
         </div>
       )}
-
-      {messages.map((m) => {
+      {/* sorting message createdAt */}
+      {sortedMessages?.map((m) => {
         const isMe = currentUserId
           ? String(m.senderId) === String(currentUserId)
           : false;
+        const isMeeting = m?.meeting?.id ? true : false;
         const text = m.message ?? "";
         const date = m.createdAt ? formatDate(m.createdAt) : "";
         const time = m.createdAt ? formatTime(m.createdAt) : "";
         const images = m.images ?? "";
-        const meeting = m.meeting ?? "";
+        const meeting = m?.meeting ?? "";
         const meetingTime = m.meeting?.startTime ?? "";
         const meetingLink = m.meeting?.joinUrl ?? "";
 
         let formattedMeetingTime = "";
         if (meetingTime) {
-          const meetingdate = new Date(meetingTime);
+          const meetingDate = new Date(meetingTime);
           formattedMeetingTime = format(
-            meetingdate,
+            meetingDate,
             "EEEE, MMM dd, yyyy • h:mm a"
           );
         }
-
-        // console.log("single meeting:", meeting)
 
         if (isMe) {
           // sender (right)
           return (
             <div key={m.id} className="flex gap-3 justify-end">
-              <div className="max-w-[44%]">
+              <div className="max-w-[70%]">
                 {text && (
                   <div
                     style={{ background: "#EEF8F0" }}
@@ -322,7 +326,7 @@ function Messages({
                     );
                   })}
 
-                {meeting && (
+                {isMeeting && (
                   <div>
                     {/* meeting card */}
                     <div className="flex flex-col xl:flex-row items-center gap-4 border border-gray-200 rounded-xl p-4 w-max max-w-full xl:max-w-xl shadow-sm">
@@ -350,19 +354,20 @@ function Messages({
                 )}
                 <p className="text-xs text-gray-400 mt-1 mr-2 text-right">{`${date} ${time}`}</p>
               </div>
-              {userProfile?.profileImage ? (
-                <img
-                  src={userProfile.profileImage}
-                  alt={userProfile.firstName}
-                  className="w-12 h-12 rounded-full"
-                />
-              ) : (
-                <div className="w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
-                  <span className="text-lg">
+
+              <div className="size-12 rounded-full flex items-center justify-center">
+                {userProfile?.profileImage ? (
+                  <img
+                    src={userProfile.profileImage}
+                    alt={userProfile.firstName}
+                    className="size-full rounded-full"
+                  />
+                ) : (
+                  <span className="text-lg bg-gray-200">
                     {userProfile?.firstName?.[0] ?? "U"}
                   </span>
-                </div>
-              )}
+                )}
+              </div>
             </div>
           );
         }
@@ -409,6 +414,33 @@ function Messages({
                     </div>
                   );
                 })}
+
+              {isMeeting && (
+                <div>
+                  {/* meeting card */}
+                  <div className="flex flex-col xl:flex-row items-center gap-4 border border-gray-200 rounded-xl p-4 w-max max-w-full xl:max-w-xl shadow-sm">
+                    <div className="bg-blue-500 rounded-lg p-3">
+                      <Video className="w-6 h-6 text-white" />
+                    </div>
+                    <div className="flex-1 text-center md:text-left">
+                      <h4 className="text-sm font-semibold text-gray-900 font-adamina">
+                        {meeting.topic ?? "Topic"}
+                      </h4>
+                      <p className="text-xs text-gray-500">Zoom Meeting</p>
+                      <p className="text-xs text-gray-500">
+                        {formattedMeetingTime}
+                      </p>
+                    </div>
+                    <a
+                      href={meetingLink}
+                      target="_blank"
+                      className="bg-[#1DBF73] cursor-pointer text-white text-sm font-medium px-4 py-2 rounded-lg flex items-center gap-2"
+                    >
+                      Join
+                    </a>
+                  </div>
+                </div>
+              )}
               <p className="text-xs text-gray-400 mt-1 ml-2">{`${date} — ${time}`}</p>
             </div>
           </div>

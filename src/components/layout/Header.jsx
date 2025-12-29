@@ -74,6 +74,13 @@ export default function Header() {
       visible: !!user,
     },
     {
+      key: "profile",
+      route: "/profile",
+      isActive: pathname === "/profile",
+      text: "Profile",
+      visible: !!user,
+    },
+    {
       key: "bookings",
       route: "/bookings",
       isActive: pathname === "/bookings",
@@ -149,9 +156,9 @@ export default function Header() {
             {/* Auth / Profile area */}
             {user ? (
               <div className="flex items-center gap-2">
-                <Link href="/profile">
+                {/* <Link href="/profile"> */}
                   {/* Profile image */}
-                  <Avatar
+                  {/* <Avatar
                     size={{
                       xs: 48,
                       sm: 48,
@@ -161,8 +168,8 @@ export default function Header() {
                       xxl: 74,
                     }}
                     src={user?.profileImage}
-                  />
-                </Link>
+                  /> */}
+                {/* </Link> */}
                 <div>
                   <ProfileDropdown />
                 </div>

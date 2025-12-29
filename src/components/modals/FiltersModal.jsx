@@ -3,6 +3,7 @@
 import { useGetAllCategoryQuery } from "@/redux/api/categoryApi";
 import {
   setCategoryIds,
+  setInPerson,
   setIsOnline,
   setMaxPrice,
   setMinPrice,
@@ -34,13 +35,13 @@ export default function FiltersModal({
 
   const canApply = useMemo(() => true, []);
 
+  console.log("selected ", selected);
+
   // useEffect(() => {
   //   if (!open) return;
   // }, [open]);
 
   const onFinish = (values) => {
-    // console.log('values: ', values);
-
     dispatch(setCategoryIds(values?.categoryIds));
     dispatch(setMinPrice(values?.min));
     dispatch(setMaxPrice(values?.max));

@@ -1,22 +1,20 @@
-'use client';
+"use client";
 
-import { Modal } from 'antd';
-import Image from 'next/image';
-import Heading from '@/components/ui/Heading';
-import Paragraph from '@/components/ui/Paragraph';
-import TealBtn from '@/components/ui/TealBtn';
+import Heading from "@/components/ui/Heading";
+import Paragraph from "@/components/ui/Paragraph";
+import TealBtn from "@/components/ui/TealBtn";
+import { Modal } from "antd";
+import Image from "next/image";
 
 // local assets you want to show in the preview
-import cover from '@/assets/image/popularService.jpg';
-import { useState } from 'react';
-import ScheduleAppointmentModal from './ScheduleAppointmentModal';
-import ConfirmBookingModal from './ConfirmBookingModal';
-import { useDispatch } from 'react-redux';
-import { serviceIdForBooking } from '@/redux/slices/bookingSlice';
+import cover from "@/assets/image/popularService.jpg";
+import { serviceIdForBooking } from "@/redux/slices/bookingSlice";
+import { useState } from "react";
+import { useDispatch } from "react-redux";
+import ScheduleAppointmentModal from "./ScheduleAppointmentModal";
 
 export default function ServicePreviewModal({ open, onClose, service }) {
-
-  const [bookingModal, setBookingModal] = useState(false)
+  const [bookingModal, setBookingModal] = useState(false);
   const dispatch = useDispatch();
 
   const serviceId = service?.id;
@@ -26,9 +24,7 @@ export default function ServicePreviewModal({ open, onClose, service }) {
     dispatch(serviceIdForBooking(serviceId));
     onClose?.();
     setTimeout(() => setBookingModal(true), 500);
-
-
-  }
+  };
 
   const { title, description, price } = service || {};
 
@@ -45,7 +41,7 @@ export default function ServicePreviewModal({ open, onClose, service }) {
         title={null}
         className="font-open-sans"
         styles={{
-          content: { borderRadius: 12, overflow: 'hidden', padding: 0 },
+          content: { borderRadius: 12, overflow: "hidden", padding: 0 },
         }}
       >
         {/* Cover */}
@@ -75,10 +71,13 @@ export default function ServicePreviewModal({ open, onClose, service }) {
             {/* For now just close modal on click; wire to routing later if needed */}
             <TealBtn text="Book Now" onClick={handleBooking} />
 
-            <button onClick={onClose} className='cursor-pointer font-open-sans md:text-xl text-gray-600'>Cancel</button>
+            <button
+              onClick={onClose}
+              className="cursor-pointer font-open-sans md:text-xl text-gray-600"
+            >
+              Cancel
+            </button>
           </div>
-
-
         </div>
       </Modal>
 
@@ -88,10 +87,7 @@ export default function ServicePreviewModal({ open, onClose, service }) {
         // serviceId="692a78c78f267efb03e17b17"
         openBookingModal={bookingModal}
         onCloseBookingModal={() => setBookingModal(false)}
-
       />
-
-
     </>
   );
 }

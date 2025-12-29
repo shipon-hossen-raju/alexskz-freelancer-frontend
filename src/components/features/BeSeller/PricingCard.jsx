@@ -66,7 +66,7 @@ export default function PricingCard({ plan }) {
         {/* Features */}
         <div className="mt-5">
           <div className="text-[16px] font-semibold text-gray-700 mb-2">
-            AI Suite with:
+            This plan includes:
           </div>
           <ul className="space-y-3">
             {plan.features.map((f, i) => (
@@ -97,7 +97,7 @@ export default function PricingCard({ plan }) {
         {/* Price */}
         <div className="mt-4 flex items-baseline gap-2">
           <div className="text-[28px] sm:text-[30px] font-bold text-gray-900">
-            {plan.price} EUR
+            {plan.price} MXN
           </div>
           <span className="text-[13px] text-gray-600">/ {plan.type}</span>
         </div>
@@ -111,12 +111,19 @@ export default function PricingCard({ plan }) {
             onClick={handleSubscribe}
             // href={BeSeller? 'sign-up' : plan?.title === 'Launch — Get started'? '/sign-in' : `/payment/${plan.id}`}
             className="block cursor-pointer bg-[#144A6C] text-white font-open-sans font-semibold !w-full py-2 text-center 2xl:text-[18px] rounded-[6px]"
+            disabled={isLoading && subscriptionId}
           >
-            {plan?.title === "Launch — Get started"
-              ? "Get Started Free"
-              : plan?.title === "Scale -- Operate smarter"
-              ? "Upgrade to Scale"
-              : "Upgrade to Pro"}
+            {isLoading && subscriptionId ? (
+              "Loading..."
+            ) : (
+              <>
+                {plan?.title === "Launch — Get started"
+                  ? "Get started free"
+                  : plan?.title === "Scale — Operate smarter"
+                  ? "Upgrade to Scale"
+                  : "Upgrade to Pro"}
+              </>
+            )}
           </button>
         </div>
       </div>

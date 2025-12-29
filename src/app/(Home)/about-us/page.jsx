@@ -1,21 +1,75 @@
 "use client";
 
-import StatsSection from "@/components/features/aboutUs/StatesSection";
 import FlexibleBanner from "@/components/shared/FlexibleBanner";
 import CustomContainer from "@/components/ui/CustomContainer";
-import Heading from "@/components/ui/Heading";
-import Image from "next/image";
-import img1 from "@/assets/image/about/img1.png";
-import img2 from "@/assets/image/about/img2.png";
-import img3 from "@/assets/image/about/img3.png";
-import hero from "@/assets/image/aboutBG.png";
-import Loading from "@/components/shared/Loading";
-import { useGetAboutUsQuery } from "@/redux/api/legalApi";
+// import hero from "@/assets/image/aboutBG.png";
+import hero from "@/assets/image/about/about_us_banner-1.webp";
+import TealBtn from "@/components/ui/TealBtn";
+import Link from "next/link";
+import { useSelector } from "react-redux";
+
+const userRolesFor = [
+  {
+    audience: "clients",
+    description:
+      "Get access to professionals who understand business, not just theory.",
+    points: [
+      "Explore categories and shortlist experts with transparent profiles, services and reviews.",
+      "Start with one-to-one sessions or project-based work, depending on what your business needs.",
+      "Build long-term relationships with trusted partners as your company grows.",
+    ],
+  },
+  {
+    audience: "professionals",
+    description:
+      "AliumPro is built for finance, HR, marketing and operations professionals who want better clients and better projects.",
+    points: [
+      "Create a standout profile that highlights your expertise, services and case studies.",
+      "Get discovered by teams and businesses that are actively searching for skills like yours.",
+      "Focus on delivering great work while we help with visibility, structure and tools.",
+    ],
+  },
+];
+//   const principles = [
+//     {
+//       title: "Curation over volume",
+//       description:
+//         "We focus on quality, not endless lists. Every professional on AliumPro goes through a vetting process.",
+//     },
+//     {
+//       title: "Clarity over confusion",
+//       description:
+//         "Clear scopes, services and expectations, so both sides know how collaboration will work from day one.",
+//     },
+//     {
+//       title: "Relationships over transactions",
+//       description:
+//         "We believe the best work happens when businesses and professionals build long-term partnerships.",
+//     },
+// ];
+const principles = [
+  {
+    title: "Curation over volume",
+    description:
+      "We focus on quality, not endless lists. Every professional on AllumPro goes through a vetting process.",
+  },
+  {
+    title: "Clarity over confusion",
+    description:
+      "Clear scopes, services and expectations, so both sides know how collaboration will work from day one.",
+  },
+  {
+    title: "Relationships over transactions",
+    description:
+      "We believe the best work happens when businesses and professionals build long-term partnerships.",
+  },
+];
 
 export default function AboutUsPage() {
-  const { data, isError, error, isLoading } = useGetAboutUsQuery();
+  const user = useSelector((state) => state.user?.user || null);
+  // const { data, isError, error, isLoading } = useGetAboutUsQuery();
 
-  const content = data?.data?.content;
+  // const content = data?.data?.content;
   // console.log(data?.data?.content)
   return (
     <CustomContainer>
@@ -23,90 +77,117 @@ export default function AboutUsPage() {
       <FlexibleBanner
         bgSrc={hero}
         variant="simple"
-        title="Connecting Professionals with Opportunities that Matter"
-        subtitle="Join our community of professionals in finance, legal, and marketing. Create your profile, showcase your expertise, and connect with clients who need your services."
-        overlayClass="bg-black/45"
+        title="Where trusted professionals and growing businesses meet"
+        subtitle="AliumPro is a curated marketplace that connects teams and business owners with vetted professionals in finance, HR, marketing, operations and more."
+        overlayClass="bg-black/5"
+        height="h-[420px] sm:h-[480px] md:h-[560px] lg:h-[700px]"
+        radius=""
+        contentPosition="bottom"
       />
 
-      {/* Images + Content */}
-      <section className="pt-10 md:pt-20">
-        {/* items-stretch = equal column height */}
-        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8 items-stretch">
-          {/* Left: responsive collage */}
-          <div className="grid lg:grid-cols-3 gap-4 h-full">
-            {/* Big image (takes 2 cols on lg) */}
-            <div className="relative rounded-2xl overflow-hidden lg:col-span-2 h-[260px] sm:h-[320px] lg:h-full">
-              <Image
-                src={img1}
-                alt="About image 1"
-                fill
-                className="object-cover"
-                sizes="(min-width:1024px) 50vw, 100vw"
-                priority={false}
-              />
-            </div>
+      <section>
+        <div>
+          <div className="mt-10 space-y-4">
+            <h1 className="text-2xl font-bold">What is AliumPro?</h1>
+            <p className="">
+              AliumPro is a curated platform that helps growing businesses find
+              the right expert at the right time. Instead of endless searches
+              and cold outreach, we bring together vetted professionals in
+              finance, HR, marketing and operations, with clear profiles,
+              services and ways to work together.
+            </p>
+            <p>
+              With AliumPro, it’s easier to get the expert support your business
+              needs. From finance and HR to marketing and operations, our
+              marketplace connects growing businesses with trusted professionals
+              who are ready to help. Whether you’re launching a new project,
+              restructuring your finances or building your first team, AliumPro
+              gives you a clear view of each professional’s experience, services
+              and case studies, so you can choose with confidence.
+            </p>
+          </div>
 
-            {/* Right stack (2 small images) */}
-            <div className="grid grid-rows-2 gap-4 lg:col-span-1 h-[260px] sm:h-[320px] lg:h-full">
-              <div className="relative rounded-2xl overflow-hidden">
-                <Image
-                  src={img2}
-                  alt="About image 2"
-                  fill
-                  className="object-cover"
-                  sizes="(min-width:1024px) 25vw, 50vw"
-                />
+          <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mt-10">
+            {userRolesFor.map((item) => (
+              <div
+                key={item.audience}
+                className={`p-6 rounded-4xl ${
+                  item.audience === "clients" ? "bg-[#CDEAD8]" : "bg-[#A2B3C3]"
+                }`}
+              >
+                <h1 className="text-2xl font-bold mt-10">
+                  For {item.audience}
+                </h1>
+                <p className="mt-4">{item.description}</p>
+                <ul className="list-disc list-inside mt-4">
+                  {item.points.map((point, index) => (
+                    <li key={index}>{point}</li>
+                  ))}
+                </ul>
               </div>
-              <div className="relative rounded-2xl overflow-hidden">
-                <Image
-                  src={img3}
-                  alt="About image 3"
-                  fill
-                  className="object-cover"
-                  sizes="(min-width:1024px) 25vw, 50vw"
-                />
-              </div>
+            ))}
+          </div>
+
+          <div className="mx-auto px-6 py-12">
+            <h2 className="text-4xl font-bold text-gray-900 mb-12">
+              Our principles
+            </h2>
+
+            <div className="space-y-8">
+              {principles.map((principle, index) => (
+                <div
+                  key={index}
+                  className="flex gap-4"
+                  style={{ marginLeft: `${index * 30}%` }}
+                >
+                  <div className="flex-shrink-0 mt-1">
+                    <div className="outline p-1 outline-emerald-400 rounded-full">
+                      <span className="block size-5 rounded-full bg-emerald-400"></span>
+                    </div>
+                  </div>
+
+                  <div className="flex-1">
+                    <h3 className="text-xl font-semibold text-gray-900 mb-2">
+                      {principle.title}
+                    </h3>
+                    <p className="text-gray-600 leading-relaxed max-w-md">
+                      {principle.description}
+                    </p>
+                  </div>
+                </div>
+              ))}
             </div>
           </div>
 
-          {/* Right: content (centered vertically) */}
-          <div className="flex flex-col justify-center">
-            <div className="mb-4">
-              <span className="inline-block text-[18px] font-medium text-[#144A6C] relative pl-3 font-open-sans">
-                <span className="absolute left-0 top-1/2 -translate-y-1/2 h-4 w-[2px] bg-[#144A6C]" />
-                About us
-              </span>
-            </div>
+          <div className="mt-10 space-y-4">
+            <h2 className="text-4xl font-bold text-gray-900 mb-12">
+              Why we built AliumPro
+            </h2>
 
-            <div className="mb-8">
-              <Heading text="Empowering Connections, Enabling Growth" />
-            </div>
+            <p>
+              Growing a business often means needing expert help before you’re
+              ready to hire a full-time team. At the same time, great
+              professionals want meaningful projects, not just gig platforms and
+              price wars.
+            </p>
 
-            {isLoading ? (
-              <Loading />
-            ) : (
-              <>
-                {content ? (
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: content || "No About us available.",
-                    }}
-                    className="text-justify"
-                  ></div>
-                ) : (
-                  <div
-                    dangerouslySetInnerHTML={{
-                      __html: "No About us available.",
-                    }}
-                    className="text-justify"
-                  ></div>
-                )}
-              </>
+            <p>
+              AliumPro was created to bridge that gap: a curated space where
+              businesses can find trusted specialists, and professionals can
+              build sustainable, long-term work.
+            </p>
+
+            <p>
+              Ready to meet the right experts for your business — or the right
+              clients for your skills? Join AliumPro and start building better
+              collaborations.
+            </p>
+
+            {!user && (
+              <Link href="/sign-up">
+                <TealBtn text="Join AliumPro" />
+              </Link>
             )}
-
-            <div className="mt-6">
-              <StatsSection />
-            </div>
           </div>
         </div>
       </section>

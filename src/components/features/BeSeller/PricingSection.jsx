@@ -18,7 +18,7 @@ export default function PricingSection({}) {
 
   return (
     <div>
-      <SectionContainer heading="Plans for every Professional" title="Pricing">
+      <SectionContainer heading="Plans for every professional">
         {isLoading ? (
           <div className="flex justify-center items-center">
             <Loading />

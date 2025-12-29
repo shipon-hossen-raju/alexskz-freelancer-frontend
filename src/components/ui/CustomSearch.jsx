@@ -1,10 +1,8 @@
 "use client";
 
-import { useEffect, useState } from "react";
-
 import { setSearchTerm } from "@/redux/slices/filterSlice";
 import { SearchOutlined, SlidersOutlined } from "@ant-design/icons";
-import { useRouter } from "node_modules/next/navigation";
+import { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import FiltersModal from "../modals/FiltersModal";
 
@@ -12,8 +10,7 @@ export default function CustomSearch({ categorySlug = null }) {
   const searchTerm = useSelector((state) => state.filter?.searchTerm);
   const dispatch = useDispatch();
   const [open, setOpen] = useState(false);
-  const [q, setQ] = useState("");
-  const router = useRouter();
+  const [q, setQ] = useState(searchTerm || "");
 
   console.log("searchTerm 18 ✅ => ", searchTerm);
 
@@ -34,7 +31,7 @@ export default function CustomSearch({ categorySlug = null }) {
   // after 3s seconds close the modal
   useEffect(() => {
     setTimeout(() => {
-      if (q) dispatch(setSearchTerm(q));
+      if (q) dispatch(setSearchTerm(q || ""));
     }, 2000);
   }, [q]);
 

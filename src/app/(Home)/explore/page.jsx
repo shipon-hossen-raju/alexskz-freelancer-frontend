@@ -32,12 +32,14 @@ export default function ExplorePage() {
           overlayClass="bg-black/45"
           className="mb-6"
           radius=""
+          titleClass='text-white'
+          subtitleClass='text-white/80'
         />
       </div>
 
       {/* Category of services */}
       <div>
-        <CategoriesSection heading="Categories of Services" />
+        <CategoriesSection heading="Service categories" />
       </div>
 
       {/* Popular services */}
@@ -47,7 +49,7 @@ export default function ExplorePage() {
 
       {/* Top rated Professionals */}
       <div>
-        <FreelancerSection heading="Top Rated Professionals" />
+        <FreelancerSection heading="Top rated professionals" />
       </div>
     </CustomContainer>
   );

@@ -176,10 +176,11 @@ function BookingItem({ item, role, setMessageUserId, isActiveId }) {
 
           {isUser &&
             item.status !== "completed" &&
+            item.status !== "canceled" &&
             item.status !== "pending" && (
               <TealBtn
                 onClick={() => handleMessage(item)}
-                text={item.status === "canceled" ? "Reschedule" : "Message Now"}
+                text={"Message Now"}
               />
             )}
 

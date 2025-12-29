@@ -33,7 +33,7 @@ export const filterSlice = createSlice({
     },
 
     setInPerson: (state, action) => {
-      state.inPerson = action;
+      state.inPerson = action?.payload;
     },
 
     setTopRated: (state, action) => {

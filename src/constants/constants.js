@@ -3,4 +3,5 @@ export const TagTypes = {
   bookings: "Bookings",
   user: "User",
   notification: "Notification",
+  services: "Service",
 };

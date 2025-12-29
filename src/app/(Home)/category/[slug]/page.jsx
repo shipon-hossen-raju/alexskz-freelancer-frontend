@@ -106,7 +106,7 @@
 
 import FreelancerCard from "@/components/Home/FreelancerCard";
 import NoDataFount from "@/components/notFount/NoDataFount";
-import CustomPagenation from "@/components/shared/CustomPagenation";
+import CustomPagination from "@/components/shared/CustomPagination";
 import Loading from "@/components/shared/Loading";
 import CustomContainer from "@/components/ui/CustomContainer";
 import CustomSearch from "@/components/ui/CustomSearch";
@@ -254,7 +254,7 @@ export default function CategoryPage({ params }) {
           {/* Pagination */}
 
           <div className="mt-10 lg:mt-20">
-            <CustomPagenation
+            <CustomPagination
               total={total}
               page_size={page_size}
               current={currentPage}
