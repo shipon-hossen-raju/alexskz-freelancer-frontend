@@ -12,7 +12,7 @@ import ChattingHistorySide from "./RightSidebar";
 export default function ChatWindow({ onBack }) {
   const { socket, authenticate } = useSocket();
   const [isZoomModalOpen, setIsZoomModalOpen] = useState(false);
-  const [messages, setMessages] = useState([]); // ascending oldest -> newest
+  const [messages, setMessages] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
   const [open, setOpen] = useState(false);
@@ -69,7 +69,6 @@ export default function ChatWindow({ onBack }) {
     if (token) authenticate(token);
 
     const onGetMessages = (payload) => {
-      console.log("payload?.messages 72 ", payload?.messages);
       const msgs = Array.isArray(payload?.messages)
         ? payload.messages.slice().reverse()
         : [];
@@ -101,8 +100,8 @@ export default function ChatWindow({ onBack }) {
     socket.on("receiveMessage", onReceiveMessage);
 
     socket.on("receiveMessage", (message) => {
-      console.log("[SOCKET] receiveMessage event triggered");
-      console.log("Message data:", message);
+      // console.log("[SOCKET] receiveMessage event triggered");
+      // console.log("Message data:", message);
     });
     socket.on("error", onError);
 
@@ -129,12 +128,6 @@ export default function ChatWindow({ onBack }) {
     if (!receiver?.id) return;
     socket.emit("joinRoom", { receiverId: receiver.id });
   }, [socket, receiver?.id, roomId]);
-
-  const handleSendTitle = async (title) => {
-    // console.log("Title sent:", title)
-    // Add your logic here
-    setIsZoomModalOpen(false);
-  };
 
   //for right sidebar
   const showDrawer = () => {
@@ -312,7 +305,6 @@ function Messages({
 
                 {images &&
                   images.map((image) => {
-                    // console.log('single msg images: ', image)
                     return (
                       <div>
                         <Image
@@ -401,7 +393,6 @@ function Messages({
 
               {images &&
                 images.map((image) => {
-                  // console.log('single msg images: ', image)
                   return (
                     <div>
                       <Image

@@ -23,7 +23,6 @@ import TealBtn from "../ui/TealBtn";
 
 export default function ProfessionalHome() {
   const role = useSelector((state) => state.user?.role || null);
-
   const [openModal, setOpenModal] = useState(false);
   const [createModal, setCreateModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
@@ -148,7 +147,6 @@ export default function ProfessionalHome() {
                 setCreateModal(false);
                 setHeading("Edit Projects");
                 setSelectedProject(p);
-                //   console.log('p-', p)
               }}
               onDelete={(id) => console.log("delete", id)}
               profile={true}

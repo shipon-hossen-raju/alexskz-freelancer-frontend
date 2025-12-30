@@ -1,46 +1,47 @@
 "use client";
 
+import circleMark from "@/assets/icons/checkmark-circle.svg";
 import clock from "@/assets/icons/clock.svg";
 import sub from "@/assets/icons/crown.svg";
 import edit from "@/assets/icons/edit.svg";
+import location from "@/assets/icons/location.svg";
+import msg2 from "@/assets/icons/messages-2.svg";
+import skills from "@/assets/icons/skills.png";
 import star from "@/assets/icons/star.svg";
 import port from "@/assets/icons/task-square.svg";
 import msg from "@/assets/icons/whatsapp.svg";
+import { useGetMyProjectsQuery } from "@/redux/api/portfolioApi";
 import {
   useUploadCoverPhotoMutation,
   useUploadProfileImageMutation,
 } from "@/redux/api/profileApi";
-import { useDeleteServiceMutation } from "@/redux/api/serviceApi";
-import { useGetUserProfileQuery } from "@/redux/auth/authApi";
+import {
+  useGetUserProfileQuery,
+  useGetUserProgressQuery,
+} from "@/redux/auth/authApi";
 import Avatar from "@mui/material/Avatar";
-import { Skeleton, Upload } from "antd";
+import { Upload } from "antd";
 import Image from "next/image";
 import Link from "node_modules/next/link";
 import { useEffect, useState } from "react";
 import toast from "react-hot-toast";
 import { IoIosArrowForward } from "react-icons/io";
-import AddWhatsAppModal from "../modals/AddWhatsAppModal";
-import CreateEditPackageModal from "../modals/CreateEditPackageModal";
-import OfferedServicesCard from "../shared/OfferedServicesCard";
-import Paragraph from "../ui/Paragraph";
-import SubHeadingBlack from "../ui/SubHeadingBlack";
-import TealBtn from "../ui/TealBtn";
-
-import circleMark from "@/assets/icons/checkmark-circle.svg";
-import location from "@/assets/icons/location.svg";
-import msg2 from "@/assets/icons/messages-2.svg";
-import skills from "@/assets/icons/skills.png";
-import { useGetMyProjectsQuery } from "@/redux/api/portfolioApi";
 import RatingsHeader from "../features/Professiona-details/RatingsHeader";
 import Reviews from "../features/Professiona-details/Reviews";
 import ScheduleSection from "../features/Professiona-details/ScheduleSection";
 import AddEditProjectModal from "../modals/AddEditProjectModal";
+import AddWhatsAppModal from "../modals/AddWhatsAppModal";
+import CreateEditPackageModal from "../modals/CreateEditPackageModal";
 import NoDataFount from "../notFount/NoDataFount";
+import Loading from "../shared/Loading";
+import OfferedServicesCard from "../shared/OfferedServicesCard";
 import PortfolioCard from "../shared/PortfolioCard";
 import Heading from "../ui/Heading";
+import Paragraph from "../ui/Paragraph";
 import SubHeading from "../ui/SubHeading";
+import SubHeadingBlack from "../ui/SubHeadingBlack";
+import TealBtn from "../ui/TealBtn";
 import VerifiedDot from "../ui/VerifiedDot";
-import Loading from "../shared/Loading";
 
 const linkItems = [
   {
@@ -94,35 +95,33 @@ export default function ProfessionalProfile() {
     isLoading: amILoading,
     refetch,
   } = useGetUserProfileQuery();
-  const [uploadProfileImage, { isLoading }] = useUploadProfileImageMutation();
+  const [uploadProfileImage, { isLoading: isProfileImageLoading }] =
+    useUploadProfileImageMutation();
   const [uploadCoverPhoto, { isLoading: isCoverPhotoLoading }] =
     useUploadCoverPhotoMutation();
-  const [deleteService, { isLoading: isDeleteLoading }] =
-    useDeleteServiceMutation();
   const { data: projectData, isLoading: isProjectsLoading } =
     useGetMyProjectsQuery();
+  const { data, isLoading: isProgressLoading } = useGetUserProgressQuery();
   const projects = projectData?.data?.projects || [];
-
   const me = myData?.data;
+
+  const isVerified = me?.isVerify || false;
 
   useEffect(() => {
     if (!me) {
       return;
     }
-  }, [me]);
-  const isVerified = me?.isVerify || false;
-
-  useEffect(() => {
     if (me?.profileImage) {
       setAvatar(me.profileImage);
     }
-  }, [me?.profileImage]);
-
-  useEffect(() => {
     if (me?.cover) {
       setCoverPhoto(me.cover);
     }
-  }, [me?.cover]);
+  }, [me]);
+
+  const profileProgress = data?.data || {};
+
+  console.log("profileProgress 121", profileProgress);
 
   const professionalAboutLists = [
     {
@@ -252,6 +251,10 @@ export default function ProfessionalProfile() {
   const reviewAvg = me?.avgRating || 0;
   const reviews = me?.reviews;
 
+  const profileStrength = 56;
+  // const profileStrength = profileProgress?.profileStrength || 0;
+  const profileStrengthText = profileProgress?.message || {};
+  console.log("profileStrength ", profileStrength);
   return (
     <>
       {amILoading ? (
@@ -265,12 +268,15 @@ export default function ProfessionalProfile() {
                 src={coverPhoto}
                 alt="cover"
                 fill
-                className="object-cover rounded-[12px]"
+                className={`object-cover rounded-[12px] ${
+                  isCoverPhotoLoading ? "blur-sm" : ""
+                }`}
               />
               <div className="absolute bottom-1 right-1">
                 {/* upload cover photo */}
                 <Upload
-                  accept="image/*"
+                  // accept="image/*"
+                  maxCount={1}
                   showUploadList={false}
                   beforeUpload={beforeUploadCoverPhoto}
                 >
@@ -280,18 +286,27 @@ export default function ProfessionalProfile() {
                     className="cursor-pointer w-7 h-7 rounded-full bg-white border border-[#8BCF9A] grid place-items-center shadow-sm"
                   >
                     {/* camera icon */}
-                    <svg width="16" height="16" viewBox="0 0 24 24" fill="none">
-                      <path
-                        d="M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
-                        stroke="#8BCF9A"
-                        strokeWidth="2"
-                      />
-                      <path
-                        d="M4 8h3l2-3h6l2 3h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z"
-                        stroke="#8BCF9A"
-                        strokeWidth="2"
-                      />
-                    </svg>
+                    {isCoverPhotoLoading ? (
+                      <Loading />
+                    ) : (
+                      <svg
+                        width="16"
+                        height="16"
+                        viewBox="0 0 24 24"
+                        fill="none"
+                      >
+                        <path
+                          d="M12 17a4 4 0 1 0 0-8 4 4 0 0 0 0 8Z"
+                          stroke="#8BCF9A"
+                          strokeWidth="2"
+                        />
+                        <path
+                          d="M4 8h3l2-3h6l2 3h3a2 2 0 0 1 2 2v8a2 2 0 0 1-2 2H4a2 2 0 0 1-2-2v-8a2 2 0 0 1 2-2Z"
+                          stroke="#8BCF9A"
+                          strokeWidth="2"
+                        />
+                      </svg>
+                    )}
                   </button>
                 </Upload>
               </div>
@@ -350,125 +365,165 @@ export default function ProfessionalProfile() {
                 </div>
               </div>
 
-              <div className="font-open-sans mt-4">
-                {/* name + rating */}
-                <div className="flex justify-between items-center">
-                  {/* Name */}
-                  <div className="flex gap-2 items-center">
-                    <Heading text={name} />
-                    {isVerified && <VerifiedDot />}
+              <div
+                className={`${
+                  profileStrength < 95 ? "grid grid-cols-2 gap-1 lg:gap-4" : ""
+                }`}
+              >
+                <div className="font-open-sans mt-4">
+                  {/* name + rating */}
+                  <div className="flex justify-between items-center">
+                    {/* Name */}
+                    <div className="flex gap-2 items-center">
+                      <Heading text={name} />
+                      {isVerified && <VerifiedDot />}
+                    </div>
+
+                    {/* rating */}
+                    <div className="flex  gap-1 items-center">
+                      <Image src={star} alt="icon " className="lg:w-5" />
+                      <p className="text-[#333333] font-open-sans text-sm lg:text-xl">
+                        {reviewAvg}
+                      </p>
+                      <Paragraph text={`(${reviewCount})`} />
+                    </div>
                   </div>
 
-                  {/* rating */}
-                  <div className="flex  gap-1 items-center">
-                    <Image src={star} alt="icon " className="lg:w-5" />
-                    <p className="text-[#333333] font-open-sans text-sm lg:text-xl">
-                      {reviewAvg}
-                    </p>
-                    <Paragraph text={`(${reviewCount})`} />
-                  </div>
-                </div>
-
-                <div className="mt-3">
-                  <SubHeading text={me?.category?.title} />
-                </div>
-
-                {/* about lists */}
-                <div className="mt-4">
-                  <ul className="space-y-2 lg:space-y-6">
-                    {professionalAboutLists?.map((list) => (
-                      <li className="flex gap-2 items-center">
-                        <Image
-                          src={list.icon}
-                          alt="icon"
-                          className="w-7 h-7 object-cover"
-                        />
-                        <Paragraph text={list.text} />
-                      </li>
-                    ))}
-                  </ul>
-                </div>
-
-                {/* About */}
-                <div className="mt-4">
-                  <div className="text-[16px] font-semibold text-[#202020]">
-                    About me
+                  <div className="mt-3">
+                    <SubHeading text={me?.category?.title} />
                   </div>
 
-                  <Paragraph text={about} />
-                </div>
+                  {/* about lists */}
+                  <div className="mt-4">
+                    <ul className="space-y-2 lg:space-y-6">
+                      {professionalAboutLists?.map((list) => (
+                        <li className="flex gap-2 items-center">
+                          <Image
+                            src={list.icon}
+                            alt="icon"
+                            className="w-7 h-7 object-cover"
+                          />
+                          <Paragraph text={list.text} />
+                        </li>
+                      ))}
+                    </ul>
+                  </div>
 
-                {/* Divider */}
-                <div className="mt-6 h-px w-full bg-[#E9E9E9]" />
+                  {/* About */}
+                  <div className="mt-4">
+                    <div className="text-[16px] font-semibold text-[#202020]">
+                      About me
+                    </div>
 
-                {/* Menu list */}
-                <ul className="mt-2 space-y-1">
-                  {linkItems.map((item) => {
-                    if (item.id === 3) {
+                    <Paragraph text={about} />
+                  </div>
+
+                  {/* Divider */}
+                  <div className="mt-6 h-px w-full bg-[#E9E9E9]" />
+
+                  {/* Menu list */}
+                  <ul className="mt-2 space-y-1">
+                    {linkItems.map((item) => {
+                      if (item.id === 3) {
+                        return (
+                          <li
+                            key={item.id}
+                            className=" mb-4 cursor-pointer"
+                            onClick={handleWhatsApp}
+                          >
+                            <div className="flex justify-between items-center">
+                              <div className="flex gap-2 mb-4">
+                                <Image src={item.icon} alt="icon" />
+                                {item.text}
+                              </div>
+                              <IoIosArrowForward className="text-xl" />
+                            </div>
+
+                            <hr className="text-[#E9E9E9] " />
+                          </li>
+                        );
+                      }
+
                       return (
-                        <li
-                          key={item.id}
-                          className=" mb-4 cursor-pointer"
-                          onClick={handleWhatsApp}
-                        >
-                          <div className="flex justify-between items-center">
-                            <div className="flex gap-2 mb-4">
-                              <Image src={item.icon} alt="icon" />
-                              {item.text}
+                        <Link href={item.path}>
+                          <li key={item.id} className=" mb-4">
+                            <div className="flex justify-between items-center">
+                              <div className="flex gap-2 mb-4">
+                                <Image src={item.icon} alt="icon" />
+                                {item.text}
+                              </div>
+                              <IoIosArrowForward className="text-xl" />
                             </div>
-                            <IoIosArrowForward className="text-xl" />
-                          </div>
-
-                          <hr className="text-[#E9E9E9] " />
-                        </li>
+                            <hr className="text-[#E9E9E9] " />
+                          </li>
+                        </Link>
                       );
-                    }
+                    })}
+                  </ul>
 
-                    return (
-                      <Link href={item.path}>
-                        <li key={item.id} className=" mb-4">
-                          <div className="flex justify-between items-center">
-                            <div className="flex gap-2 mb-4">
-                              <Image src={item.icon} alt="icon" />
-                              {item.text}
-                            </div>
-                            <IoIosArrowForward className="text-xl" />
-                          </div>
-                          <hr className="text-[#E9E9E9] " />
-                        </li>
-                      </Link>
-                    );
-                  })}
-                </ul>
+                  {/* Verify + Change Password pills */}
+                  <div className="mt-10 space-y-4">
+                    {/* Verify your account */}
+                    <Link
+                      href="/profile/verify-account"
+                      className="w-full rounded-[10px] bg-[#E9F4EE] border border-[#D6EAD9] flex items-center justify-between px-4 py-3"
+                    >
+                      <span className="text-[14px] text-[#202020]">
+                        Verify your account
+                      </span>
+                      <div className="">
+                        <IoIosArrowForward className="text-[#8BCF9A]" />
+                      </div>
+                    </Link>
 
-                {/* Verify + Change Password pills */}
-                <div className="mt-10 space-y-4">
-                  {/* Verify your account */}
-                  <Link
-                    href="/profile/verify-account"
-                    className="w-full rounded-[10px] bg-[#E9F4EE] border border-[#D6EAD9] flex items-center justify-between px-4 py-3"
-                  >
-                    <span className="text-[14px] text-[#202020]">
-                      Verify your account
-                    </span>
-                    <div className="">
-                      <IoIosArrowForward className="text-[#8BCF9A]" />
-                    </div>
-                  </Link>
-
-                  {/* Change Password */}
-                  <Link
-                    href="/profile/change-password"
-                    className="w-full rounded-[10px] bg-[#E5E5E5] border border-[#D9D9D9] flex items-center justify-between px-4 py-3"
-                  >
-                    <span className="text-[14px] text-[#6F6F6F]">
-                      Change Password
-                    </span>
-                    <div className=" ">
-                      <IoIosArrowForward />
-                    </div>
-                  </Link>
+                    {/* Change Password */}
+                    <Link
+                      href="/profile/change-password"
+                      className="w-full rounded-[10px] bg-[#E5E5E5] border border-[#D9D9D9] flex items-center justify-between px-4 py-3"
+                    >
+                      <span className="text-[14px] text-[#6F6F6F]">
+                        Change Password
+                      </span>
+                      <div className=" ">
+                        <IoIosArrowForward />
+                      </div>
+                    </Link>
+                  </div>
                 </div>
+
+                {profileStrength < 95 ? (
+                  <div className={`max-w-lg p-4 bg-white rounded-lg`}>
+                    <div className="flex justify-between items-center">
+                      <h3 className="text-xl font-semibold">
+                        Profile Strength: {profileStrength}%
+                      </h3>
+                    </div>
+                    <div className="w-full h-6 bg-gray-200 rounded-full mt-2">
+                      <div
+                        className="h-full bg-green-500 rounded-full"
+                        style={{ width: `${profileStrength}%` }}
+                      ></div>
+                    </div>
+                    <p className="mt-2 text-sm text-gray-500">
+                      Ready to get booked — your profile is optimized for
+                      projects.
+                    </p>
+                    <div className="mt-4 text-sm text-gray-600">
+                      <p>Next steps:</p>
+                      <ul className="list-inside list-decimal">
+                        <li>Turn on reminders.</li>
+                        <li>
+                          Add 3–5 portfolio items (photos, files, or a short
+                          intro video).
+                        </li>
+                        <li>
+                          Upgrade to Pro for verified status + priority
+                          visibility.
+                        </li>
+                      </ul>
+                    </div>
+                  </div>
+                ) : ""}
               </div>
             </div>
           </div>
@@ -480,25 +535,29 @@ export default function ProfessionalProfile() {
               <Heading text="My Latest Projects" />
             </div>
 
-            <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
-              {projects?.slice(0, 4).map((project) => (
-                <PortfolioCard
-                  key={project.id ?? project._id ?? idx}
-                  project={project}
-                  onView={(id) => console.log("view", id)}
-                  onEdit={(p) => {
-                    setOpenProjectModal(true);
-                    setEditProjectModal(true);
-                    setCreateProjectModal(false);
-                    setHeading("Edit Projects");
-                    setSelectedProject(p);
-                    //   console.log('p-', p)
-                  }}
-                  onDelete={(id) => console.log("delete", id)}
-                  profile={true}
-                />
-              ))}
-            </div>
+            {isProjectsLoading ? (
+              <Loading />
+            ) : (
+              <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
+                {projects?.slice(0, 4).map((project) => (
+                  <PortfolioCard
+                    key={project.id ?? project._id ?? idx}
+                    project={project}
+                    onView={(id) => console.log("view", id)}
+                    onEdit={(p) => {
+                      setOpenProjectModal(true);
+                      setEditProjectModal(true);
+                      setCreateProjectModal(false);
+                      setHeading("Edit Projects");
+                      setSelectedProject(p);
+                      //   console.log('p-', p)
+                    }}
+                    onDelete={(id) => console.log("delete", id)}
+                    profile={true}
+                  />
+                ))}
+              </div>
+            )}
           </div>
 
           <div className="mt-8 flex flex-col gap-8 xl:flex-row ">
@@ -518,7 +577,7 @@ export default function ProfessionalProfile() {
               </div>
 
               {/* services */}
-              <div className="space-y-8 mt-10 ">
+              <div className="space-y-8 mt-10 max-h-[500px] overflow-y-auto">
                 {services?.map((service) => {
                   // setServiceId(service?.id)
                   return (
@@ -537,10 +596,8 @@ export default function ProfessionalProfile() {
               </div>
             </div>
             {/* availability */}
-            <div className="xl:w-2/5  p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)] overflow-hidden">
-              <div className="">
-                <ScheduleSection availability={me?.AvailabilityTime} />
-              </div>
+            <div className="xl:w-2/5  p-4 bg-white rounded-[12px] border border-[#E6E6E6] shadow-[0_12px_34px_rgba(0,0,0,0.10)]">
+              <ScheduleSection availability={me?.AvailabilityTime} />
             </div>
           </div>
 
@@ -550,12 +607,10 @@ export default function ProfessionalProfile() {
             <div className="mb-4">
               <RatingsHeader rating={reviewAvg} total={reviewCount} />
             </div>
-            <div className="grid grid-cols-1  gap-4 md:gap-5">
+            <div className="grid grid-cols-1 gap-4 md:gap-5 max-h-[500px] overflow-y-auto">
               {reviewCount > 0 ? (
                 reviews?.map((review, i) => (
-                  <div key={review.id}>
-                    <Reviews review={review} />
-                  </div>
+                  <Reviews key={review.id} review={review} />
                 ))
               ) : (
                 <NoDataFount text="No Reviews Found!" />

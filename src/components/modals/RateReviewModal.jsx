@@ -62,7 +62,7 @@ export default function RateReviewModal() {
 
       // onSubmit?.(payload);
       await createReview(payload);
-      // onCancel();
+      onCancel();
       form.resetFields();
       setWhatLiked("");
       setWhatImprove("");

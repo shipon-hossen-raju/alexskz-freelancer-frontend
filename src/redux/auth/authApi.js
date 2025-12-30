@@ -106,6 +106,14 @@ const authApi = baseApi.injectEndpoints({
         body: data,
       }),
     }),
+
+    // get user progress
+    getUserProgress: builder.query({
+      query: () => ({
+        url: "users/freelancer-profile-progress",
+        method: "GET",
+      }),
+    }),
   }),
 });
 
@@ -121,4 +129,6 @@ export const {
 
   useForgotPasswordMutation,
   useResetPasswordMutation,
+
+  useGetUserProgressQuery,
 } = authApi;

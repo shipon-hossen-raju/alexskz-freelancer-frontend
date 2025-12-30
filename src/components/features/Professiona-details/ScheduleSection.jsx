@@ -1,6 +1,4 @@
-'use client';
-
-import React from 'react';
+"use client";
 
 const WEEKDAY_FROM_API = {
   SUNDAY: 0,
@@ -19,18 +17,21 @@ function parseTimeToMinutes(t) {
   let hour = parseInt(m[1], 10);
   const minute = parseInt(m[2], 10);
   const ampm = m[3].toUpperCase();
-  if (ampm === 'PM' && hour !== 12) hour += 12;
-  if (ampm === 'AM' && hour === 12) hour = 0;
+  if (ampm === "PM" && hour !== 12) hour += 12;
+  if (ampm === "AM" && hour === 12) hour = 0;
   return hour * 60 + minute;
 }
 
 function formatMinutesToLabel(mins) {
   const hour24 = Math.floor(mins / 60);
   const minute = mins % 60;
-  const ampm = hour24 >= 12 ? 'PM' : 'AM';
+  const ampm = hour24 >= 12 ? "PM" : "AM";
   let hour12 = hour24 % 12;
   if (hour12 === 0) hour12 = 12;
-  return `${String(hour12).padStart(2, '0')}:${String(minute).padStart(2, '0')} ${ampm}`;
+  return `${String(hour12).padStart(2, "0")}:${String(minute).padStart(
+    2,
+    "0"
+  )} ${ampm}`;
 }
 
 function all24Hours() {
@@ -43,7 +44,8 @@ function buildWeekdayHourMaps(availability) {
 
   availability.forEach((entry) => {
     if (!entry) return;
-    const weekdayIndex = WEEKDAY_FROM_API[(entry.dayOfWeek || '').toUpperCase()];
+    const weekdayIndex =
+      WEEKDAY_FROM_API[(entry.dayOfWeek || "").toUpperCase()];
     if (weekdayIndex == null) return;
 
     const sMin = parseTimeToMinutes(entry.startTime);
@@ -84,8 +86,11 @@ function getNextDays(daysToShow = 7) {
       dateObj: d,
       iso: d.toISOString().slice(0, 10),
       weekdayIndex: d.getDay(),
-      label: d.toLocaleDateString(undefined, { weekday: 'short' }),
-      dateLabel: d.toLocaleDateString(undefined, { month: 'short', day: 'numeric' }),
+      label: d.toLocaleDateString(undefined, { weekday: "short" }),
+      dateLabel: d.toLocaleDateString(undefined, {
+        month: "short",
+        day: "numeric",
+      }),
     });
   }
   return out;
@@ -95,16 +100,17 @@ export default function ScheduleSection({ availability = [], daysToShow = 7 }) {
   const weekdayMaps = buildWeekdayHourMaps(availability);
   const days = getNextDays(daysToShow);
 
-  const slotBase = 'flex items-center justify-center text-[12px] leading-none select-none w-16 h-12';
+  const slotBase =
+    "flex items-center justify-center text-[12px] leading-none select-none w-16 h-12";
   const slotAvailable = `${slotBase} bg-[#DBF0E0] text-[#108a55] rounded-md`;
   const slotDisabled = `${slotBase} bg-black/5 text-black/50 rounded-md`;
 
   return (
     <div className="bg-white rounded-md p-4 w-full flex justify-center">
-      <div className="overflow-auto max-w-full h-100 ">
+      <div className="overflow-auto max-w-full max-h-[600px]">
         {/* Title */}
         <div className=" text-[15px] font-semibold text-gray-900 mb-4 text-center">
-          Schedule 
+          Schedule
         </div>
 
         {/* Grid */}
@@ -134,18 +140,21 @@ export default function ScheduleSection({ availability = [], daysToShow = 7 }) {
                   };
 
                   const inSource = maps.sourcePresentHoursSet.has(hour);
-                  const isAvailable = inSource && maps.availableHoursSet.has(hour);
+                  const isAvailable =
+                    inSource && maps.availableHoursSet.has(hour);
 
                   return (
                     <div
                       key={d.iso + hour}
-                      className={`${isAvailable ? slotAvailable : slotDisabled} m-1`}
+                      className={`${
+                        isAvailable ? slotAvailable : slotDisabled
+                      } m-1`}
                       title={
                         inSource
                           ? isAvailable
-                            ? 'Available'
-                            : 'Not available/fully booked'
-                          : 'Outside provider hours'
+                            ? "Available"
+                            : "Not available/fully booked"
+                          : "Outside provider hours"
                       }
                     >
                       {formatMinutesToLabel(hour * 60)}

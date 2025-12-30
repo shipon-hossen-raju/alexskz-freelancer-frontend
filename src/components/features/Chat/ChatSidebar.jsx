@@ -26,7 +26,6 @@ export default function ChatSidebar({ onBack }) {
     if (userRoomId) {
       setSelectedUserId(userRoomId);
       const findUser = users.find((u) => u.roomId === userRoomId);
-      console.log("useEffect findUser 29 ", findUser);
       if (findUser) {
         setSelectedUser(findUser);
         onBack();
