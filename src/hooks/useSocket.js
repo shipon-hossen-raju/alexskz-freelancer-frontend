@@ -1,4 +1,3 @@
-
 // hooks/useSocket.js
 "use client";
 
@@ -6,7 +5,7 @@ import { config } from "@/config";
 import { useEffect, useState } from "react";
 import { io } from "socket.io-client";
 
-const BACKEND_URL = config.backend_url
+const BACKEND_URL = config.backend_url;
 
 // singleton socket so HMR/dev doesn't create duplicates
 let singletonSocket = null;
@@ -30,9 +29,11 @@ export function useSocket(backendUrl = BACKEND_URL) {
 
       // auto re-authenticate on reconnect if token exists
       try {
-        const token = localStorage.getItem("user-token");
-        if (token) {
-          s.emit("authenticate", { token });
+        if (typeof window !== "undefined") {
+          const token = localStorage.getItem("user-token");
+          if (token) {
+            s.emit("authenticate", { token });
+          }
         }
       } catch (e) {
         /* ignore in non-browser env */

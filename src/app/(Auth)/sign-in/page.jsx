@@ -36,7 +36,9 @@ export default function LoginPage() {
         const accessToken = res?.data?.token;
         const user = res?.data?.userData;
         if (accessToken) {
-          localStorage.setItem("user-token", accessToken);
+          if (typeof window !== "undefined") {
+            localStorage.setItem("user-token", accessToken);
+          }
           authenticate(accessToken); //for real time chatting
         }
 
@@ -48,8 +50,9 @@ export default function LoginPage() {
         );
 
         const userId = res?.data?.userData?.id;
-        localStorage.setItem("user-id", userId);
-
+        if (typeof window !== "undefined") {
+          localStorage.setItem("user-id", userId);
+        }
         toast.success("Login successful");
         router.push(redirect);
       })

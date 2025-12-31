@@ -250,11 +250,9 @@ export default function ProfessionalProfile() {
   const reviewCount = me?.reviewCount || 0;
   const reviewAvg = me?.avgRating || 0;
   const reviews = me?.reviews;
-
-  const profileStrength = 56;
-  // const profileStrength = profileProgress?.profileStrength || 0;
+  const profileStrength = profileProgress?.profileStrength || 0;
   const profileStrengthText = profileProgress?.message || {};
-  console.log("profileStrength ", profileStrength);
+  console.log("profileStrengthText ", profileStrengthText);
   return (
     <>
       {amILoading ? (
@@ -505,25 +503,20 @@ export default function ProfessionalProfile() {
                       ></div>
                     </div>
                     <p className="mt-2 text-sm text-gray-500">
-                      Ready to get booked — your profile is optimized for
-                      projects.
+                      {profileStrengthText?.message}
                     </p>
                     <div className="mt-4 text-sm text-gray-600">
                       <p>Next steps:</p>
                       <ul className="list-inside list-decimal">
-                        <li>Turn on reminders.</li>
-                        <li>
-                          Add 3–5 portfolio items (photos, files, or a short
-                          intro video).
-                        </li>
-                        <li>
-                          Upgrade to Pro for verified status + priority
-                          visibility.
-                        </li>
+                        {profileStrengthText?.nextSteps?.map((step, index) => (
+                          <li key={index}>{step}</li>
+                        ))}
                       </ul>
                     </div>
                   </div>
-                ) : ""}
+                ) : (
+                  ""
+                )}
               </div>
             </div>
           </div>
@@ -538,25 +531,31 @@ export default function ProfessionalProfile() {
             {isProjectsLoading ? (
               <Loading />
             ) : (
-              <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
-                {projects?.slice(0, 4).map((project) => (
-                  <PortfolioCard
-                    key={project.id ?? project._id ?? idx}
-                    project={project}
-                    onView={(id) => console.log("view", id)}
-                    onEdit={(p) => {
-                      setOpenProjectModal(true);
-                      setEditProjectModal(true);
-                      setCreateProjectModal(false);
-                      setHeading("Edit Projects");
-                      setSelectedProject(p);
-                      //   console.log('p-', p)
-                    }}
-                    onDelete={(id) => console.log("delete", id)}
-                    profile={true}
-                  />
-                ))}
-              </div>
+              <>
+                {projects?.length > 0 ? (
+                  <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
+                    {projects?.slice(0, 4).map((project) => (
+                      <PortfolioCard
+                        key={project.id ?? project._id ?? idx}
+                        project={project}
+                        onView={(id) => console.log("view", id)}
+                        onEdit={(p) => {
+                          setOpenProjectModal(true);
+                          setEditProjectModal(true);
+                          setCreateProjectModal(false);
+                          setHeading("Edit Projects");
+                          setSelectedProject(p);
+                          //   console.log('p-', p)
+                        }}
+                        onDelete={(id) => console.log("delete", id)}
+                        profile={true}
+                      />
+                    ))}
+                  </div>
+                ) : (
+                  <NoDataFount text="No Projects Found!" />
+                )}
+              </>
             )}
           </div>
 
@@ -578,21 +577,25 @@ export default function ProfessionalProfile() {
 
               {/* services */}
               <div className="space-y-8 mt-10 max-h-[500px] overflow-y-auto">
-                {services?.map((service) => {
-                  // setServiceId(service?.id)
-                  return (
-                    <OfferedServicesCard
-                      service={service}
-                      profile={true}
-                      onEdit={() => {
-                        setOpenModal(true);
-                        setEditModal(true);
-                        setHeading("Edit Service");
-                        setServiceToEdit(service);
-                      }}
-                    />
-                  );
-                })}
+                {services?.length > 0 ? (
+                  services?.map((service) => {
+                    // setServiceId(service?.id)
+                    return (
+                      <OfferedServicesCard
+                        service={service}
+                        profile={true}
+                        onEdit={() => {
+                          setOpenModal(true);
+                          setEditModal(true);
+                          setHeading("Edit Service");
+                          setServiceToEdit(service);
+                        }}
+                      />
+                    );
+                  })
+                ) : (
+                  <NoDataFount text="No Services Found!" />
+                )}
               </div>
             </div>
             {/* availability */}

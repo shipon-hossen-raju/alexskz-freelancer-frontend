@@ -139,12 +139,14 @@ export default function ChatSidebar({ onBack }) {
     socket.on("receiveMessage", onReceiveMessage);
 
     // Start authentication
-    const token = localStorage.getItem("user-token");
-    if (token) {
-      authenticate(token);
-    } else {
-      setLoading(false);
-      setError("Please login to see your chats.");
+    if (typeof window !== "undefined") {
+      const token = localStorage.getItem("user-token");
+      if (token) {
+        authenticate(token);
+      } else {
+        setLoading(false);
+        setError("Please login to see your chats.");
+      }
     }
 
     return () => {

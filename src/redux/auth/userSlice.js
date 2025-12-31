@@ -2,6 +2,7 @@
 import { createSlice } from "@reduxjs/toolkit";
 
 const loadInitialState = () => {
+  if (typeof window === "undefined") return {};
   const token = localStorage.getItem("user-token");
 
   return {
@@ -50,8 +51,10 @@ export const userSlice = createSlice({
       state.user = null;
       state.token = null;
       state.isAuthenticated = false;
-      localStorage.removeItem("user-token");
-      localStorage.removeItem("user-id");
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem("user-token");
+        localStorage.removeItem("user-id");
+      }
     },
     setUserId: (state, action) => {
       state.userId = action.payload;

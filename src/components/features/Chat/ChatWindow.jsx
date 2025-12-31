@@ -65,8 +65,10 @@ export default function ChatWindow({ onBack }) {
     if (!socket) return;
 
     // try authenticate if token exists
-    const token = localStorage.getItem("user-token");
-    if (token) authenticate(token);
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem("user-token");
+      if (token) authenticate(token);
+    }
 
     const onGetMessages = (payload) => {
       const msgs = Array.isArray(payload?.messages)

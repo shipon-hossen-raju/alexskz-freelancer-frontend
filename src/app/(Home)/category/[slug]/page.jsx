@@ -123,8 +123,6 @@ export default function CategoryPage({ params }) {
   const filtered = useSelector((state) => state.filter);
   const [currentPage, setCurrentPage] = useState(1);
   const { slug } = params;
-  console.log("slug: 18 - ", slug);
-  //   const savedSlug = localStorage.getItem("slug");
   if (!slug) {
     return notFound(); // Handle missing slug
   }

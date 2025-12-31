@@ -1,5 +1,6 @@
 "use client";
 import AddEditProjectModal from "@/components/modals/AddEditProjectModal";
+import NoDataFount from "@/components/notFount/NoDataFount";
 import Loading from "@/components/shared/Loading";
 import PortfolioCard from "@/components/shared/PortfolioCard";
 import CustomContainer from "@/components/ui/CustomContainer";
@@ -11,20 +12,13 @@ import Link from "node_modules/next/link";
 import { useState } from "react";
 
 export default function PortfolioPage() {
-  // for create and edit project
   const [openModal, setOpenModal] = useState(false);
   const [createModal, setCreateModal] = useState(false);
   const [editModal, setEditModal] = useState(false);
   const [heading, setHeading] = useState("");
   const [selectedProject, setSelectedProject] = useState(null);
   const { data: projectData, isLoading } = useGetMyProjectsQuery();
-
-  if (isLoading) {
-    return <Loading />;
-  }
-
   const projects = projectData?.data?.projects;
-  // console.log('projects', projects)
 
   const handleCloseModal = () => {
     setOpenModal(false);
@@ -32,6 +26,10 @@ export default function PortfolioPage() {
     setEditModal(false);
     setSelectedProject(null);
   };
+
+  if (isLoading) {
+    return <Loading />;
+  }
 
   return (
     <CustomContainer>
@@ -60,24 +58,34 @@ export default function PortfolioPage() {
           }}
         />
       </div>
-      <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14 ">
-        {projects.map((project) => (
-          <PortfolioCard
-            key={project.id ?? project._id ?? idx}
-            project={project}
-            onView={(id) => console.log("view", id)}
-            onEdit={(p) => {
-              setOpenModal(true);
-              setEditModal(true);
-              setCreateModal(false);
-              setHeading("Edit Projects");
-              setSelectedProject(p);
-            }}
-            onDelete={(id) => console.log("delete", id)}
-            profile={true}
-          />
-        ))}
-      </div>
+      {isLoading ? (
+        <Loading />
+      ) : (
+        <>
+          {projects?.length > 0 ? (
+            <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14 ">
+              {projects.map((project) => (
+                <PortfolioCard
+                  key={project.id ?? project._id ?? idx}
+                  project={project}
+                  onView={(id) => console.log("view", id)}
+                  onEdit={(p) => {
+                    setOpenModal(true);
+                    setEditModal(true);
+                    setCreateModal(false);
+                    setHeading("Edit Projects");
+                    setSelectedProject(p);
+                  }}
+                  onDelete={(id) => console.log("delete", id)}
+                  profile={true}
+                />
+              ))}
+            </div>
+          ) : (
+            <NoDataFount text="No projects found" />
+          )}
+        </>
+      )}
 
       {/* modal */}
 

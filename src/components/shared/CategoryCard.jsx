@@ -1,15 +1,16 @@
-'use client';
+"use client";
 
-import Image from "node_modules/next/image";
 import Link from "next/link";
-import GenerateSlug from "../ui/GenerateSlug";
+import Image from "node_modules/next/image";
 
 export default function CategoryCard({ category }) {
   // const slug = GenerateSlug(title);
   // console.log('slug', slug)
 
   const handleSetSlug = () => {
-    localStorage.setItem("slug", id);
+    if (typeof window !== "undefined") {
+      localStorage.setItem("slug", id);
+    }
   };
   const slug = category?.slug;
   const icon = category?.icon;

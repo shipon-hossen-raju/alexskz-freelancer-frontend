@@ -7,11 +7,13 @@ const baseQuery = fetchBaseQuery({
 
   //  if token is saved in cookies then this portion is not needed
   prepareHeaders: (headers) => {
-    const token = localStorage.getItem("user-token");
-    if (token) {
-      headers.set("Authorization", `Bearer ${token}`);
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem("user-token");
+      if (token) {
+        headers.set("Authorization", `Bearer ${token}`);
+      }
+      return headers;
     }
-    return headers;
   },
   credentials: "include", // include
 });

@@ -119,7 +119,9 @@ export default function FlexibleBanner({
                     >
                       {tags.map((t, i) => {
                         const handleSetSlug = () => {
-                          localStorage.setItem("slug", t.slug);
+                          if (typeof window !== "undefined") {
+                            localStorage.setItem("slug", t.slug);
+                          }
                         };
                         return (
                           <Link
