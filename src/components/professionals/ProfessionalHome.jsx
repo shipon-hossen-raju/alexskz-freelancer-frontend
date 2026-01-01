@@ -136,22 +136,23 @@ export default function ProfessionalHome() {
         </div>
 
         <div className="grid grid-cols-1  md:grid-cols-2 lg:grid-cols-4 gap-8 mt-8 lg:mt-14">
-          {projects.map((project) => (
-            <PortfolioCard
-              key={project.id ?? project._id ?? idx}
-              project={project}
-              onView={(id) => console.log("view", id)}
-              onEdit={(p) => {
-                setOpenModal(true);
-                setEditModal(true);
-                setCreateModal(false);
-                setHeading("Edit Projects");
-                setSelectedProject(p);
-              }}
-              onDelete={(id) => console.log("delete", id)}
-              profile={true}
-            />
-          ))}
+          {projects?.length > 0 &&
+            projects?.map((project) => (
+              <PortfolioCard
+                key={project.id ?? project._id ?? idx}
+                project={project}
+                onView={(id) => console.log("view", id)}
+                onEdit={(p) => {
+                  setOpenModal(true);
+                  setEditModal(true);
+                  setCreateModal(false);
+                  setHeading("Edit Projects");
+                  setSelectedProject(p);
+                }}
+                onDelete={(id) => console.log("delete", id)}
+                profile={true}
+              />
+            ))}
         </div>
 
         {/* modal */}
